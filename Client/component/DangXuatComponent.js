@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import {Text,View,StyleSheet,TextInput, Button,Image,TouchableOpacity, Alert} from 'react-native';
+import {Text,View,StyleSheet,TextInput, Button,Image,TouchableOpacity, Alert, Dimensions} from 'react-native';
 
 export default function DangXuatComponent(){
     return(
@@ -11,7 +11,7 @@ export default function DangXuatComponent(){
                         </View>
     );
 }
-
+const {heigt,width} = Dimensions.get('window');
 const styles = StyleSheet.create({
     item:{
         width: '50%',

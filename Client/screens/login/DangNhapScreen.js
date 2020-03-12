@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, ImageBackground, TextInput, TouchableOpacity, Alert} from 'react-native';
+import {StyleSheet, Text, View, ImageBackground, TextInput, TouchableOpacity, Alert,ScrollView} from 'react-native';
 import axios from 'axios';
 export default class DangNhapScreen extends React.Component {
     constructor(props) {
@@ -13,48 +13,54 @@ export default class DangNhapScreen extends React.Component {
     render() {
         return (
             <ImageBackground source={require('../../assets/logowavesoft.jpg')} style={styles.backgroundstyle}>
-                <View style={styles.container}>
-                    <Text style={styles.title}>Wavesoft FM</Text>
-                    <View style={{flexDirection: 'row', paddingBottom: 16}}>
-                        <TextInput style={styles.input} placeholder="Username" onChangeText={(text)=> this.setState({username:text})}></TextInput>
-                    </View>
+                <View style={{alignItems:'center'}}>
+                    <ScrollView>
+                        <View style={styles.container}>
+                            <Text style={styles.title}>Wavesoft FM</Text>
+                            <View style={{flexDirection: 'row', paddingBottom: 16}}>
+                                <TextInput style={styles.input} placeholder="Username" onChangeText={(text)=> this.setState({username:text})}></TextInput>
+                            </View>
 
-                    <View style={{flexDirection: 'row'}}>
-                        <TextInput style={styles.input} autoCompleteType='password' placeholder="Password" onChangeText={(text)=> this.setState({password:text})}></TextInput>
+                            <View style={{flexDirection: 'row'}}>
+                                <TextInput style={styles.input} secureTextEntry placeholder="Password" onChangeText={(text)=> this.setState({password:text})}></TextInput>
 
-                    </View>
-                    <Text>{this.state.username}</Text>
-                    <Text>{this.state.password}</Text>
-                    <TouchableOpacity onPress={async ()=>{
-                        try{
-                            let response = await fetch('http://192.168.1.246:3000/api/v1/auth',{
-                                method:'POST',
-                                headers:{
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json',
-                                },
-                                body:JSON.stringify({
-                                    username:this.state.username,
-                                    password:this.state.password
-                                })
-                            })
-                            let responseJson = await response.json();
-                            if(responseJson.status == 'ok'){
-                                this.props.action('admin');
-                            }else if(responseJson.status == 'fail'){
-                                Alert.alert(responseJson.message);
-                            }
+                            </View>
+                            <Text>{this.state.username}</Text>
+                            <Text>{this.state.password}</Text>
+                            <TouchableOpacity onPress={async ()=>{
+                                try{
+                                    let response = await fetch('http://192.168.1.19:3000/api/v1/auth',{
+                                        method:'POST',
+                                        headers:{
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body:JSON.stringify({
+                                            username:this.state.username,
+                                            password:this.state.password
+                                        })
+                                    })
+                                    let responseJson = await response.json();
+                                    if(responseJson.status == 'ok'){
+                                        this.props.action('admin');
+                                    }else if(responseJson.status == 'fail'){
+                                        Alert.alert(responseJson.message);
+                                    }
 
-                        }catch (e) {
-                            await Alert.alert(e.toString());
-                        }
-                    }}>
-                        <View style={styles.button} >
-                            <Text style={styles.loginName}>Đăng nhập</Text>
+                                }catch (e) {
+                                    await Alert.alert(e.toString());
+                                }
+                            }}>
+                                <View style={styles.button} >
+                                    <Text style={styles.loginName}>Đăng nhập</Text>
+                                </View>
+                            </TouchableOpacity>
+
                         </View>
-                    </TouchableOpacity>
-
+                    </ScrollView>
                 </View>
+
+
             </ImageBackground>
         );
     }
@@ -109,9 +115,6 @@ const styles = StyleSheet.create({
     },
     backgroundstyle: {
         flex: 1,
-        height: null,
-        width: null,
-        alignItems: 'stretch',
         justifyContent: 'center',
     }
 });

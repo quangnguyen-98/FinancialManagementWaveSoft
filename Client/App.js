@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
 import DangNhapScreen from "./screens/login/DangNhapScreen";
 import MenuAdmin from "./screens/admin/MenuAdmin";
-
+import AdminNavigator from "./screens/admin/AdminNavigator";
 export default class App extends React.Component {
     constructor(props) {
         super(props);

@@ -7,11 +7,11 @@ import DangXuat from "../../component/DangXuat";
 import MainChuChoVayScreen from '../managers/MainChuChoVayScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import DongLaiScreen from '../../screens/options/DongLaiScreen';
-
+import AdminNavigator from '../admin/AdminNavigator';
 function HomeScreen({ navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <MainChuChoVayScreen></MainChuChoVayScreen>
+            <adminNavigator></adminNavigator>
         </View>
     );
 }
@@ -25,23 +25,17 @@ function NotificationsScreen({ navigation }) {
 
 
 const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
 
 
 export default function App() {
     return (
         <NavigationContainer>
             <Drawer.Navigator initialRouteName="Home">
-                <Drawer.Screen name="Home" component={HomeScreen} />
+                <Drawer.Screen name="Home" component={AdminNavigator} />
                 <Drawer.Screen name="Notifications" component={NotificationsScreen} />
                 <Drawer.Screen name="Quản lý chủ cho vay" component={QuanLyChuChoVay} />
                 <Drawer.Screen name="Out" component={DangXuat} />
-
-
             </Drawer.Navigator>
-            <Stack.Navigator>
-                <Stack.Screen name="DongLai" component={DongLaiScreen} options={{ title: 'Đóng lãi' }}></Stack.Screen>
-            </Stack.Navigator>
         </NavigationContainer>
     );
 }
