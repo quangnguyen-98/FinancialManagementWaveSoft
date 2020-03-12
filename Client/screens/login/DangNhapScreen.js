@@ -5,8 +5,8 @@ export default class DangNhapScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: null,
-            password: null
+            username: 'admin1@gmail.com',
+            password: 'admin'
         }
     }
 
@@ -27,7 +27,7 @@ export default class DangNhapScreen extends React.Component {
                     <Text>{this.state.password}</Text>
                     <TouchableOpacity onPress={async ()=>{
                         try{
-                            let response = await fetch('http://192.168.1.151:3000/api/v1/auth',{
+                            let response = await fetch('http://192.168.1.246:3000/api/v1/auth',{
                                 method:'POST',
                                 headers:{
                                     'Accept': 'application/json',
