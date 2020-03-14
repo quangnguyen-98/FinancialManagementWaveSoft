@@ -1,10 +1,12 @@
 import React,{useState} from 'react';
 import {Text,View,StyleSheet,TextInput, Button,Image,TouchableOpacity, Alert} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function QLHDComponent(navigation){
+export default function QLHDComponent(){
+    const navigation = useNavigation();
     return(
         <View style={styles.item}>
-                            <TouchableOpacity style={styles.item2}>
+                            <TouchableOpacity style={styles.item2} onPress={() => navigation.navigate('QLHD')}>
                             <Image style={styles.icon} source={require('../assets/contract.png')}></Image>
                             <Text style={styles.text3}>Quản lý hợp đồng</Text>
                             </TouchableOpacity>                            

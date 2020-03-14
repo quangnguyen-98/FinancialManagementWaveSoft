@@ -2,14 +2,13 @@ import React,{useState} from 'react';
 import {Text,View,StyleSheet,TextInput, Button,Image,TouchableOpacity, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-export default function GiaHanComponent(){
+export default function QLChuChoVayComponent(){
     const navigation = useNavigation();
-
     return(
         <View style={styles.item}>
-                            <TouchableOpacity style={styles.item2} onPress={() => navigation.navigate('GiaHan')}>
-                            <Image style={styles.icon} source={require('../assets/giahan.png')}></Image>
-                            <Text style={styles.text3}>Gia hạn kỳ</Text> 
+                            <TouchableOpacity style={styles.item2} onPress={() => navigation.navigate('QLChuChoVay')}>
+                            <Image style={styles.icon} source={require('../assets/QLChuchovay.png')}></Image>
+                            <Text style={styles.text3}>Quản lý chủ cho vay</Text>
                             </TouchableOpacity>                            
                         </View>
     );

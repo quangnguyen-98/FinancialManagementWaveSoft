@@ -29,7 +29,7 @@ export default class DangNhapScreen extends React.Component {
                             <Text>{this.state.password}</Text>
                             <TouchableOpacity onPress={async ()=>{
                                 try{
-                                    let response = await fetch('http://192.168.1.19:3000/api/v1/auth',{
+                                    let response = await fetch('http://172.16.1.98:3000/api/v1/auth',{
                                         method:'POST',
                                         headers:{
                                             'Accept': 'application/json',

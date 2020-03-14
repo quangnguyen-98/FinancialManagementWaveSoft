@@ -8,6 +8,7 @@ import GiaHanComponent from '../../component/GiaHanComponent';
 import NhanTinComponent from '../../component/NhanTinComponent';
 import TatToanComponent from '../../component/TatToanComponent';
 import TraBotVayThemComponent from '../../component/TraBotVayThemComponent';
+import QLChuChoVayComponent from '../../component/QLChuChoVayComponent';
 
 export default function MainChuChoVayScreen() {
     return (
@@ -24,6 +25,7 @@ export default function MainChuChoVayScreen() {
             <View style={styles.main}>
                 <ScrollView>
                     <View style={styles.chucnangALL}>
+                        <QLChuChoVayComponent></QLChuChoVayComponent>
 
                         <QLHDComponent></QLHDComponent>
 
@@ -53,7 +55,7 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        marginTop: 20
+        marginTop: 32
     },
     head: {
         flex: 1,
