@@ -1,12 +1,13 @@
 import React,{useState} from 'react';
 import {Text,View,StyleSheet,TextInput, Button,Image,TouchableOpacity, Alert} from 'react-native';
 
-export default function TraBotVayThemComponent(){
+export default function GiaHan(){
+
     return(
         <View style={styles.item}>
                             <TouchableOpacity style={styles.item2}>
-                            <Image style={styles.icon} source={require('../assets/trabotvaythem.png')}></Image>
-                            <Text style={styles.text3}>Trả bớt gốc , vay thêm</Text>
+                            <Image style={styles.icon} source={require('../assets/giahan.png')}></Image>
+                            <Text style={styles.text3}>Gia hạn kỳ</Text> 
                             </TouchableOpacity>                            
                         </View>
     );

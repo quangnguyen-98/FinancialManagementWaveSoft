@@ -1,9 +1,9 @@
 {
-  "expoServerNgrokUrl": "https://v6-ckn.bb4298.client.exp.direct",
-  "packagerNgrokUrl": "https://packager.v6-ckn.bb4298.client.exp.direct",
-  "ngrokPid": 14936,
+  "expoServerNgrokUrl": "https://s3-bfq.bb4298.client.exp.direct",
+  "packagerNgrokUrl": "https://packager.s3-bfq.bb4298.client.exp.direct",
+  "ngrokPid": 18228,
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 13120
+  "packagerPid": 1396
 }

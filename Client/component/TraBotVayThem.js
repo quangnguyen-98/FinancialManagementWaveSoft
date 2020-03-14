@@ -1,17 +1,17 @@
 import React,{useState} from 'react';
-import {Text,View,StyleSheet,TextInput, Button,Image,TouchableOpacity, Alert, Dimensions} from 'react-native';
+import {Text,View,StyleSheet,TextInput, Button,Image,TouchableOpacity, Alert} from 'react-native';
 
-export default function DangXuatComponent(){
+export default function TraBotVayThem(){
     return(
         <View style={styles.item}>
                             <TouchableOpacity style={styles.item2}>
-                            <Image style={styles.icon} source={require('../assets/logout.png')}></Image>
-                            <Text style={styles.text3}>Đăng xuất</Text>
+                            <Image style={styles.icon} source={require('../assets/trabotvaythem.png')}></Image>
+                            <Text style={styles.text3}>Trả bớt gốc , vay thêm</Text>
                             </TouchableOpacity>                            
                         </View>
     );
 }
-const {heigt,width} = Dimensions.get('window');
+
 const styles = StyleSheet.create({
     item:{
         width: '50%',

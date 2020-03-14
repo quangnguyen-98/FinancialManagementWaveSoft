@@ -8,13 +8,16 @@ const hopdongsController = require('../controllers/hopDongs.Controller');
 
 //Endpoint:localhost:3000/api/v1/users/
 
-/*Chức năng chỉnh sửa thông tin------------------------------------------------*/
+/*Chức năng quản lý thông tin------------------------------------------------*/
+
+// Lấy thông tin bản thân
+router.get('/',usersController.LayThongtinUser );
 
 // Cập nhật bản thân
-router.put('/', authController.KiemTraTokenUser,usersValidate.Validate_User_KhiSuaBanThan,usersController.CapNhatBanThanUser);
+router.put('/', usersValidate.Validate_User_KhiSuaBanThan,usersController.CapNhatBanThanUser);
 
 //Đổi mật khẩu
-router.put('/doimk', authController.KiemTraTokenUser,usersValidate.Validate_MatKhau_User,usersController.DoiMatKhau);
+router.put('/doimk', usersValidate.Validate_MatKhau_User,usersController.DoiMatKhau);
 
 /*Chức năng quản lý hợp đồng------------------------------------------------*/
 

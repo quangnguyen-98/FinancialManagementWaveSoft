@@ -1,12 +1,12 @@
 import React,{useState} from 'react';
 import {Text,View,StyleSheet,TextInput, Button,Image,TouchableOpacity, Alert} from 'react-native';
 
-export default function QLHDComponent(navigation){
+export default function TatToan(){
     return(
         <View style={styles.item}>
                             <TouchableOpacity style={styles.item2}>
-                            <Image style={styles.icon} source={require('../assets/contract.png')}></Image>
-                            <Text style={styles.text3}>Quản lý hợp đồng</Text>
+                            <Image style={styles.icon} source={require('../assets/tattoan.png')}></Image>
+                            <Text style={styles.text3}>Tất toán</Text>
                             </TouchableOpacity>                            
                         </View>
     );

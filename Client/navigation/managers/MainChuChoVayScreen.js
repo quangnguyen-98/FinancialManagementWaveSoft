@@ -1,43 +1,36 @@
 import React, {useState} from 'react';
 import {Text, View, StyleSheet, TextInput, Button, Image, TouchableOpacity, Alert, ScrollView} from 'react-native';
 
-import QLHDComponent from '../../component/QLHDComponent';
-import DangXuatComponent from '../../component/DangXuatComponent';
-import DongLaiComponent from '../../component/DongLaiComponent';
-import GiaHanComponent from '../../component/GiaHanComponent';
-import NhanTinComponent from '../../component/NhanTinComponent';
-import TatToanComponent from '../../component/TatToanComponent';
-import TraBotVayThemComponent from '../../component/TraBotVayThemComponent';
-
+import QLHD from '../../component/QLHD';
+import DangXuat from '../../component/DangXuat';
+import DongLai from '../../component/DongLai';
+import GiaHan from '../../component/GiaHan';
+import NhanTin from '../../component/NhanTin';
+import TatToan from '../../component/TatToan';
+import TraBotVayThemComponent from '../../component/TraBotVayThem';
+import TieuDeUser from "../../component/users/TieuDeUser";
+import Icon from 'react-native-vector-icons/FontAwesome'
 export default function MainChuChoVayScreen() {
     return (
         <View style={styles.container}>
-            <View style={styles.head}>
-                <View style={styles.mainhead}>
-                    <Image style={styles.KH_image} source={require('../../assets/react.png')}></Image>
-                    <View style={styles.KH_info}>
-                        <Text style={styles.text1}>Huỳnh Phúc Huy</Text>
-                        <Text style={styles.text2}>Mã KH: KH001</Text>
-                    </View>
-                </View>
-            </View>
+            <TieuDeUser/>
             <View style={styles.main}>
                 <ScrollView>
                     <View style={styles.chucnangALL}>
 
-                        <QLHDComponent></QLHDComponent>
+                        <QLHD></QLHD>
 
-                        <DongLaiComponent></DongLaiComponent>
+                        <DongLai></DongLai>
 
-                        <TatToanComponent></TatToanComponent>
+                        <TatToan></TatToan>
 
                         <TraBotVayThemComponent></TraBotVayThemComponent>
 
-                        <GiaHanComponent></GiaHanComponent>
+                        <GiaHan></GiaHan>
 
-                        <NhanTinComponent></NhanTinComponent>
+                        <NhanTin></NhanTin>
 
-                        <DangXuatComponent></DangXuatComponent>
+                        <DangXuat></DangXuat>
                     </View>
                 </ScrollView>
             </View>
@@ -50,19 +43,17 @@ export default function MainChuChoVayScreen() {
 
 
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
         marginTop: 20
+    },
+    main: {
+        flex: 3,
     },
     head: {
         flex: 1,
         backgroundColor: "#2075ed",
         justifyContent: 'center',
-        alignItems: 'stretch',
-    },
-    main: {
-        flex: 3,
     },
     mainhead: {
         height: 128,
@@ -75,6 +66,11 @@ const styles = StyleSheet.create({
         borderColor: "#FFFFFF",
         borderWidth: 1
     },
+    KH_info: {
+        justifyContent: 'center',
+        alignItems: 'stretch',
+        marginLeft: 16
+    },
     text1: {
         color: "#FFFFFF",
         fontSize: 24,
@@ -85,16 +81,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingTop: 5
     },
-    KH_info: {
-        justifyContent: 'center',
-        alignItems: 'stretch',
-        marginLeft: 16
-    },
     chucnangALL: {
         flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        alignItems: 'flex-start',
     },
     item: {
         width: '50%',

@@ -8,13 +8,13 @@ const usersValidate = require('../validator/users.Validate');
 
 //Endpoint:localhost:3000/api/v1/managers/
 
-/*Chức năng chỉnh sửa thông tin------------------------------------------------*/
+/*Chức năng quản lý thông tin------------------------------------------------*/
 
-// Cập nhật bản thân
-router.put('/', authController.KiemTraTokenManager,usersValidate.Validate_User_KhiSuaBanThan,usersController.CapNhatBanThanUser);
-
-//Đổi mật khẩu
-router.put('/doimk', authController.KiemTraTokenManager,usersValidate.Validate_MatKhau_User,usersController.DoiMatKhau);
+// // Cập nhật bản thân
+// router.put('/', authController.KiemTraTokenManager,usersValidate.Validate_User_KhiSuaBanThan,usersController.CapNhatBanThanUser);
+//
+// //Đổi mật khẩu
+// router.put('/doimk', authController.KiemTraTokenManager,usersValidate.Validate_MatKhau_User,usersController.DoiMatKhau);
 
 
 /*Chức năng CRUD nhân viên------------------------------------------------*/

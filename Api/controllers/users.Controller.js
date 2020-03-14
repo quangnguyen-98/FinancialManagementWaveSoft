@@ -4,6 +4,7 @@ const MongoClient = require('mongodb').MongoClient;
 const bcrypt = require('bcrypt');
 const ObjectId = require('mongodb').ObjectId;
 module.exports = {
+    //Chỉ thực hiện bởi quản lý
     LayTatCaUser: function (req, res, next) {
         const page = req.params.page;
         let token = req.query.token;
@@ -11,7 +12,8 @@ module.exports = {
         try {
             //Mở token ra kiểm tra id quản lý
             jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
-                managerId = payload.payload.userId;
+                //Lấy userId trong token để lọc ra những user thuộc từng quản lý
+                 managerId = payload.payload.userId;
                 const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
                 client.connect(function (err, client) {
                     console.log("Connected correctly to server");
@@ -36,9 +38,43 @@ module.exports = {
         } catch (err) {
             res.status(400).json({
                 status: "fail",
-                message: 'Token không hợp lệ 123'
+                message: 'Token không hợp lệ !'
             });
-            return;
+        }
+    },
+
+    LayThongtinUser:function(req,res,next){
+        let token = req.query.token;
+        try {
+            //Mở token ra kiểm tra id user
+            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
+                userId = payload.payload.userId;
+                const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+                client.connect(function (err, client) {
+                    console.log("Connected correctly to server");
+                    const db = client.db(paramsObj.name);
+                    const col = db.collection('NguoiDung');
+                    //Query những nhân viên thuộc quyền quản lý của chủ nhân viên
+                    col.find({_id: ObjectId(userId)}).toArray(function (err, docs) {
+                        client.close(() => {
+                            if (err) {
+                                res.status(500).json({
+                                    status: 'fail',
+                                    message: err.toString()
+                                });
+                            } else {
+                                res.status(200).json(docs);
+                            }
+                        });
+                    });
+                });
+            });
+
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
+            });
         }
     },
 
@@ -113,7 +149,7 @@ module.exports = {
         } catch (err) {
             res.status(400).json({
                 status: "fail",
-                message: 'Token không hợp lệ'
+                message: 'Token không hợp lệ !'
             });
         }
     },

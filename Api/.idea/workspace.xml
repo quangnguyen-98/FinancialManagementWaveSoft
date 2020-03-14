@@ -2,17 +2,48 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="13ab72f7-dc84-4e73-9e28-e910999a90f3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../Client/screens/admin/AdminNavigator.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/actions/actionTypes.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/actions/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/component/managers/ChuChoVayItem.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/component/managers/NutThemChuChoVay.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/component/users/ItemThongTinUser.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/component/users/TieuDeUser.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/component/users/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/config/constant.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/exampleRedux.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/navigation/admin/DrawerAdmin.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/reducers/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/reducers/switchScreenReducers.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/screenName.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/screens/ThongTinUserScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/screens/admin/QuanLyChuChoVayScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/screens/admin/ThemChuChoVay.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/users.Controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/users.Controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/admin.Route.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/admin.Route.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/managers.Route.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/managers.Route.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/users.Route.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.Route.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/.expo/packager-info.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/.expo/packager-info.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/.expo/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/.expo/settings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/assets/splash.png" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/assets/splash.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/component/DangXuatComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/component/DangXuatComponent.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/component/DongLaiComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/component/DongLaiComponent.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/screens/admin/MenuAdmin.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/screens/admin/MenuAdmin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/screens/login/DangNhapScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/screens/login/DangNhapScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/screens/managers/MainChuChoVayScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/screens/managers/MainChuChoVayScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/component/DangXuat.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/component/DangXuat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/component/DangXuatComponent.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/component/DongLaiComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/component/DongLai.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/component/GiaHanComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/component/GiaHan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/component/NhanTinComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/component/NhanTin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/component/QLHDComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/component/QLHD.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/component/TatToanComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/component/TatToan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/component/TraBotVayThemComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/component/TraBotVayThem.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/screens/admin/AdminNavigator.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/navigation/admin/StackQuanLyThongTin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/screens/admin/MenuAdmin.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/screens/admin/QuanLyChuChoVay.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/navigation/admin/StackQuanLyChuChoVay.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/screens/login/DangNhapScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/screens/DangNhapScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/screens/managers/MainChuChoVayScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/navigation/managers/MainChuChoVayScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/screens/managers/MenuManagers.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/navigation/managers/MenuManagers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/screens/options/DongLaiScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/navigation/options/DongLaiScreen.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -105,6 +136,8 @@
       <workItem from="1583946654631" duration="1912000" />
       <workItem from="1583995123683" duration="2938000" />
       <workItem from="1584019149535" duration="1615000" />
+      <workItem from="1584090500089" duration="3902000" />
+      <workItem from="1584162333495" duration="2196000" />
     </task>
     <servers />
   </component>

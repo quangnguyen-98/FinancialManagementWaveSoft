@@ -1,17 +1,13 @@
 import React,{useState} from 'react';
 import {Text,View,StyleSheet,TextInput, Button,Image,TouchableOpacity, Alert} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
-export default function DongLaiComponent(){
-    const navigation = useNavigation();
+export default function QLHD(navigation){
     return(
         <View style={styles.item}>
-            <TouchableOpacity  onPress={() => navigation.navigate('Details')}>
-                <Image style={styles.icon} source={require('../assets/donglai.png')}></Image>
-                <Text style={styles.text3}>Đóng lãi</Text>
-            </TouchableOpacity>
-
-
+                            <TouchableOpacity style={styles.item2}>
+                            <Image style={styles.icon} source={require('../assets/contract.png')}></Image>
+                            <Text style={styles.text3}>Quản lý hợp đồng</Text>
+                            </TouchableOpacity>                            
                         </View>
     );
 }

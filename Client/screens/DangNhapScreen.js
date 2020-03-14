@@ -1,48 +1,62 @@
-import React from 'react';
-import {StyleSheet, Text, View, ImageBackground, TextInput, TouchableOpacity, Alert,ScrollView} from 'react-native';
+import React,{useState} from 'react';
+import {StyleSheet, Text, View, ImageBackground, TextInput, TouchableOpacity, Alert,ScrollView, AsyncStorage} from 'react-native';
 import axios from 'axios';
-export default class DangNhapScreen extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            username: 'admin1@gmail.com',
-            password: 'admin'
-        }
+import {apiLink} from '../config/constant';
+export default function DangNhapScreen(props) {
+    const [acount, setAccount] = useState({username: 'admin1@gmail.com', password: 'admin'});
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         username: 'admin1@gmail.com',
+    //         password: 'admin'
+    //     }
+    // }
+    function handleChange(event) {
+        // Here, we invoke the callback with the new value
+        props.onChange(event.target.value);
     }
-
-    render() {
+    // render() {
         return (
-            <ImageBackground source={require('../../assets/logowavesoft.jpg')} style={styles.backgroundstyle}>
+            <ImageBackground source={require('../assets/logowavesoft.jpg')} style={styles.backgroundstyle}>
                 <View style={{alignItems:'center'}}>
                     <ScrollView>
                         <View style={styles.container}>
                             <Text style={styles.title}>Wavesoft FM</Text>
                             <View style={{flexDirection: 'row', paddingBottom: 16}}>
-                                <TextInput style={styles.input} placeholder="Username" onChangeText={(text)=> this.setState({username:text})}></TextInput>
+                                {/*<TextInput style={styles.input} placeholder="Username" onChangeText={(text)=> this.setState({username:text})}></TextInput>*/}
+                                <TextInput style={styles.input} placeholder="Username" onChangeText={(text)=> setAccount({username:text,password:acount.password})}></TextInput>
                             </View>
 
                             <View style={{flexDirection: 'row'}}>
-                                <TextInput style={styles.input} secureTextEntry placeholder="Password" onChangeText={(text)=> this.setState({password:text})}></TextInput>
+                                {/*<TextInput style={styles.input} secureTextEntry placeholder="Password" onChangeText={(text)=> this.setState({password:text})}></TextInput>*/}
+                                <TextInput style={styles.input} secureTextEntry placeholder="Password" onChangeText={(text)=> setAccount({username:acount.username,password:text})}></TextInput>
 
                             </View>
-                            <Text>{this.state.username}</Text>
-                            <Text>{this.state.password}</Text>
+                            {/*<Text>{this.state.username}</Text>*/}
+                            {/*<Text>{this.state.password}</Text>*/}
+                            <Text>{acount.username}</Text>
+                            <Text>{acount.password}</Text>
                             <TouchableOpacity onPress={async ()=>{
                                 try{
-                                    let response = await fetch('http://192.168.1.19:3000/api/v1/auth',{
+                                    let response = await fetch(apiLink+'auth',{
                                         method:'POST',
                                         headers:{
                                             'Accept': 'application/json',
                                             'Content-Type': 'application/json',
                                         },
                                         body:JSON.stringify({
-                                            username:this.state.username,
-                                            password:this.state.password
+                                            // username:this.state.username,
+                                            // password:this.state.password
+                                            username:acount.username,
+                                            password:acount.password
                                         })
                                     })
                                     let responseJson = await response.json();
                                     if(responseJson.status == 'ok'){
-                                        this.props.action('admin');
+                                            await AsyncStorage.setItem('token', responseJson.token.toString());
+                                            /*await this.props.action('admin');*/
+                                            await props.onChange('admin');
+
                                     }else if(responseJson.status == 'fail'){
                                         Alert.alert(responseJson.message);
                                     }
@@ -63,7 +77,7 @@ export default class DangNhapScreen extends React.Component {
 
             </ImageBackground>
         );
-    }
+    // }
 
 
 }

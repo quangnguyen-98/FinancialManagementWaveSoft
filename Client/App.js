@@ -1,40 +1,43 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
-import DangNhapScreen from "./screens/login/DangNhapScreen";
-import MenuAdmin from "./screens/admin/MenuAdmin";
-import AdminNavigator from "./screens/admin/AdminNavigator";
-export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-        // Bind the this context to the handler function
-        this.handler = this.handler.bind(this);
+import DangNhapScreen from "./screens/DangNhapScreen";
+import DrawerAdmin from "./navigation/admin/DrawerAdmin";
+import {useSelector,useDispatch} from 'react-redux';
 
-        this.state = {
-            screen: 'login'
-        }
+export default function App() {
+    // const screen = useSelector(state => state);
+    // const dispatch = useDispatch();
+    const [screen, setScreen] = useState('login');
+    function handleChange(newValue) {
+        setScreen(newValue);
     }
 
-    handler(string) {
-        if(string == 'admin'){
-            this.setState({
-                screen: 'admin'
-            });
-        }
 
+    // const {screen} = this.state;
+    let mainScreen;
+    if (screen === 'login') {
+        mainScreen = <DangNhapScreen onChange={handleChange}/>
+    } else if (screen === 'admin') {
+        mainScreen = <DrawerAdmin/>
     }
+    return(
+        mainScreen
 
-    render() {
-        const {screen} = this.state;
-        let mainScreen;
-        if (screen === 'login') {
-            mainScreen = <DangNhapScreen action={this.handler}/>
-        } else if (screen === 'admin') {
-            mainScreen = <MenuAdmin/>
-        }
-        return mainScreen;
-    }
-
+    );
 }
+// const mapStateToProps = (state /*, ownProps*/) => {
+//     return {
+//         screen: state.counter
+//     }
+// }
+// function mapDispatchToProps(dispath){
+//     return{};
+// }
+// export default connect(mapStateToProps) (App);
+//  const Connected = connect(mapStateToProps) (App);
+// export default Connected;
+
+
 
 const styles = StyleSheet.create({
     container: {
