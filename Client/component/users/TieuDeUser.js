@@ -17,13 +17,8 @@ export default class TieuDeUser extends React.Component {
                     </View>
 
             </View>
-
-
         );
     }
-
-
-
 
 }
 const styles = StyleSheet.create({
@@ -34,7 +29,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingTop: '2%',
         paddingBottom: '0.5%',
-        paddingLeft: '2%'
+        paddingLeft: '2%',
+        borderRadius:2,
+        shadowColor:'#000000',
+        shadowOpacity:0.3,
+        shadowRadius:5,
+        shadowOffset:{width:0,height:0}
     },
     KH_image: {
         flex:3,

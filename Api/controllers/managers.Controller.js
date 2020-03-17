@@ -16,7 +16,7 @@ module.exports = {
 
                 col.find({
                     vaiTro: 1
-                }).limit(paramsObj.soItemMoiPage).skip(paramsObj.soItemMoiPage * page).toArray(function (err, docs) {
+                }).sort({_id:-1}).limit(paramsObj.soItemMoiPage).skip(paramsObj.soItemMoiPage * page).toArray(function (err, docs) {
                     client.close(() => {
                         if (err) {
                             res.status(500).json({
@@ -32,7 +32,7 @@ module.exports = {
         } catch (err) {
             res.status(400).json({
                 status: "fail",
-                message: 'Token không hợp lệ 123'
+                message: 'Token không hợp lệ !'
             });
         }
     },
@@ -53,7 +53,7 @@ module.exports = {
                             email: req.body.email,
                             password: hash,
                             hoTen: req.body.hoTen,
-                            gioiTinh: req.body.gioiTinh.toLowerCase() == 'true' ? true : false,
+                            gioiTinh: req.body.gioiTinh,
                             ngaySinh: {
                                 ngay: parseInt(req.body.ngay),
                                 thang: parseInt(req.body.thang),
@@ -144,9 +144,7 @@ module.exports = {
                             });
                         }
                     });
-
                 });
-
             });
         } catch (err) {
             res.status(400).json({

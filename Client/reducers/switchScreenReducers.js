@@ -1,24 +1,30 @@
+import {AsyncStorage } from 'react-native';
+
 const switchScreenReducers =(state='login',action)=>{
     switch (action.type) {
-        case 'LOGIN':
-            return{
-                screenName:'login'
-            }
+        case 'LOGIN':{
+            resetToken().then((data)=>{
+                return'login';
+            });
+            return 'login'
+        }
         case 'ADMIN':
-            return {
-                screenName: 'admin'
-            }
+            return 'admin';
         case 'MANAGERS':
-            return{
-                screenName:'managers'
-            }
+            return 'managers';
         case 'USERS':
-            return {
-                screenName: 'users'
-            }
-
+            return 'users';
         default:
-            return screen
+            return state
     }
 }
+
+async function resetToken(){
+    let a = await AsyncStorage.setItem('token','none');
+    let b = await AsyncStorage.setItem('role','none');
+    return a;
+}
+
+
+
 export default switchScreenReducers;

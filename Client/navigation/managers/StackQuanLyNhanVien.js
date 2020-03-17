@@ -1,8 +1,8 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import NutThem from "../../component/controlButton/NutThem";
-import QuanLyChuChoVayScreen from "../../screens/admin/QuanLyChuChoVayScreen";
-import ThemChuChoVayScreen from "../../screens/admin/ThemChuChoVayScreen";
+import QuanLyNhanVienScreen from "../../screens/managers/QuanLyNhanVienScreen";
+import ThemNhanVienScreen from "../../screens/managers/ThemNhanVienScreen";
 const Stack = createStackNavigator();
 import {useNavigation} from "@react-navigation/core";
 import {TouchableOpacity} from "react-native";
@@ -11,17 +11,16 @@ export default function StackQuanLyChuChoVay() {
     return (
         <Stack.Navigator screenOptions={{
             headerBackTitle: 'Back',
-        }} initialRouteName="Quản lý chủ cho vay">
-            <Stack.Screen name="Quản lý chủ cho vay" component={QuanLyChuChoVayScreen} options={ {headerRight: () => (
-                    <TouchableOpacity onPress={()=> navigation.navigate('Thêm chủ cho vay')}>
-                        <NutThem />
+        }} initialRouteName="Quản lý nhân viên">
+            <Stack.Screen name="Quản lý nhân viên" component={QuanLyNhanVienScreen} options={ {headerRight: () => (
+                    <TouchableOpacity onPress={()=> navigation.navigate('Thêm nhân viên')}>
+                    <NutThem />
                     </TouchableOpacity>
-
                 ),
                 headerStyle: {
-            }
+                }
             }}></Stack.Screen>
-            <Stack.Screen name="Thêm chủ cho vay" component={ThemChuChoVayScreen}/>
+            <Stack.Screen name="Thêm nhân viên" component={ThemNhanVienScreen}/>
         </Stack.Navigator>
 
     );

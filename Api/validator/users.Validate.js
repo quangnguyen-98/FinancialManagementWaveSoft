@@ -1,6 +1,5 @@
 module.exports = {
     Validate_User_KhiThem: function (req, res, next) {
-
         try {
             let email = req.body.email;
             let password = req.body.password;
@@ -158,7 +157,6 @@ module.exports = {
             }else {
                 next();
             }
-
         }catch (err) {
             res.status(400).json({
                 status: "fail",

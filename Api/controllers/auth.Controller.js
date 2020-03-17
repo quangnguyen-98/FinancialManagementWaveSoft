@@ -49,6 +49,7 @@ module.exports = {
                                             status: "ok",
                                             message: "Đăng nhập thành công !",
                                             userId: docs[0]._id,
+                                            role:docs[0].vaiTro,
                                             token: token
                                         });
                                     }else {
@@ -60,7 +61,6 @@ module.exports = {
 
                                 });
                             }
-
                         }else {
 
                             res.status(400).json({
@@ -139,7 +139,6 @@ module.exports = {
                         status: "fail",
                         message: 'Token không hợp lệ !',
                     });
-                    return;
                 }
             });
         } catch (err) {

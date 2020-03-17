@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {Text, View, StyleSheet, TextInput, Button, Image, TouchableOpacity, Alert, ScrollView} from 'react-native';
 
-import QLHD from '../../component/QLHD';
-import DangXuat from '../../component/DangXuat';
-import DongLai from '../../component/DongLai';
+import QLHD from '../component/QLHD';
+import DangXuat from '../component/DangXuat';
+import DongLai from '../component/DongLai';
 import GiaHan from '../../component/GiaHan';
 import NhanTin from '../../component/NhanTin';
-import TatToan from '../../component/TatToan';
-import TraBotVayThemComponent from '../../component/TraBotVayThem';
-import TieuDeUser from "../../component/users/TieuDeUser";
+import TatToan from '../component/TatToan';
+import TraBotVayThemComponent from '../component/TraBotVayThem';
+import TieuDeUser from "../component/users/TieuDeUser";
 import Icon from 'react-native-vector-icons/FontAwesome'
 export default function MainChuChoVayScreen() {
     return (

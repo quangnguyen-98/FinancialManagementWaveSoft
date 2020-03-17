@@ -2,16 +2,16 @@ import React, {useState} from 'react';
 import {Text, View, StyleSheet, ScrollView, AsyncStorage, Button,Alert} from 'react-native';
 
 export default function ThemChuChoVay({navigation}) {
-        return (
-            <View style={styles.container}>
-                <Text>Màn hình thêm chủ cho vay</Text>
-                <Button onPress={async () =>{
-                    await Alert.alert('Thêm thành công');
-                    await navigation.goBack();
-                }}
-                    title="Thêm"/>
-            </View>
-        );
+    return (
+        <View style={styles.container}>
+            <Text>Màn hình thông báo hệ thống</Text>
+            <Button onPress={async () =>{
+                await Alert.alert('Quay trở lại');
+                await navigation.goBack();
+            }}
+                    title="Quay trở về"/>
+        </View>
+    );
 }
 
 

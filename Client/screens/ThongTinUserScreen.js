@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {Text, View, StyleSheet,  ScrollView, AsyncStorage} from 'react-native';
+import {Text, View, StyleSheet,  ScrollView, AsyncStorage,Dimensions} from 'react-native';
 import {TieuDeUser,ItemThongTinUser} from "../component/users";
 import {apiLink} from '../config/constant';
+const {width,height} = Dimensions.get('window');
 export default class ThongTinUserScreen extends React.Component {
    constructor(props){
        super(props);
@@ -62,8 +63,8 @@ export default class ThongTinUserScreen extends React.Component {
 }
 async function getInfor() {
     try{
-        let value = await AsyncStorage.getItem('token');
-        let response = await fetch(apiLink+'users?token='+value);
+        let token = await AsyncStorage.getItem('token');
+        let response = await fetch(apiLink+'users?token='+token);
         let responseJson = await response.json();
         return responseJson[0];
 
@@ -76,7 +77,6 @@ async function getInfor() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 20
     },
     thongTin:{
         flex:3,

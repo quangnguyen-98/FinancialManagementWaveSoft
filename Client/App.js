@@ -1,43 +1,20 @@
 import React,{useState} from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
-import DangNhapScreen from "./screens/DangNhapScreen";
-import DrawerAdmin from "./navigation/admin/DrawerAdmin";
-import {useSelector,useDispatch} from 'react-redux';
-
-export default function App() {
-    // const screen = useSelector(state => state);
-    // const dispatch = useDispatch();
-    const [screen, setScreen] = useState('login');
-    function handleChange(newValue) {
-        setScreen(newValue);
-    }
-
-
-    // const {screen} = this.state;
-    let mainScreen;
-    if (screen === 'login') {
-        mainScreen = <DangNhapScreen onChange={handleChange}/>
-    } else if (screen === 'admin') {
-        mainScreen = <DrawerAdmin/>
-    }
+import ChuyenManHinh from './navigation/ChuyenManHinh';
+import {createStore} from 'redux';
+import switchScreenReducers from "./reducers/switchScreenReducers";
+import allReducers from'./reducers';
+import {Provider} from 'react-redux';
+// const store = createStore(switchScreenReducers);
+const store = createStore(allReducers);
+function App() {
     return(
-        mainScreen
-
+        <Provider store={store}>
+            <ChuyenManHinh/>
+        </Provider>
     );
 }
-// const mapStateToProps = (state /*, ownProps*/) => {
-//     return {
-//         screen: state.counter
-//     }
-// }
-// function mapDispatchToProps(dispath){
-//     return{};
-// }
-// export default connect(mapStateToProps) (App);
-//  const Connected = connect(mapStateToProps) (App);
-// export default Connected;
-
-
+export default App;
 
 const styles = StyleSheet.create({
     container: {
