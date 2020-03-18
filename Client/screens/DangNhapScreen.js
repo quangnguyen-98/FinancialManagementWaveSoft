@@ -19,7 +19,7 @@ import switchScreenActions from "../actions/switchScreenActions";
 function DangNhapScreen(props) {
     const screen = useSelector(state => state.switchScreenReducers);
     const dispatch = useDispatch();
-    const [acount, setAccount] = useState({username: 'admin1@gmail.com', password: 'admin'});
+    const [acount, setAccount] = useState({username: 'manager1@gmail.com', password: 'manager'});
 
     return (
         <ImageBackground source={require('../assets/logowavesoft.jpg')} style={styles.backgroundstyle}>

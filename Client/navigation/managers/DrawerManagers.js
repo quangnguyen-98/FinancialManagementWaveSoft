@@ -5,6 +5,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import DangXuat from "../../component/DangXuat";
 import StackQuanLyThongTin from "../StackQuanLyThongTin"
 import StackQuanLyNhanVien from "./StackQuanLyNhanVien";
+import StackQuanLyHopDong from './StackQuanLyHopDong';
 
 const Drawer = createDrawerNavigator();
 const {width, height} = Dimensions.get('window');
@@ -19,6 +20,7 @@ export default function DrawerManagers(props) {
                               initialRouteName="Thông tin"
             >
                 <Drawer.Screen name="Thông tin" component={StackQuanLyThongTin}/>
+                <Drawer.Screen name="Quản lý hợp đồng" component={StackQuanLyHopDong}/>
                 <Drawer.Screen name="Quản lý nhân viên" component={StackQuanLyNhanVien}/>
                 <Drawer.Screen name="Cài đặt" component={DangXuat}/>
                 <Drawer.Screen name="Đăng xuất" component={DangXuat}/>

@@ -5,6 +5,7 @@ const authController =require('../controllers/auth.Controller');
 const managersController = require('../controllers/managers.Controller');
 const usersController = require('../controllers/users.Controller');
 const usersValidate = require('../validator/users.Validate');
+const hopdongsController = require('../controllers/hopDongs.Controller')
 
 //Endpoint:localhost:3000/api/v1/managers/
 
@@ -41,5 +42,11 @@ router.delete('/users', authController.KiemTraTokenManager,usersValidate.Validat
 /*Chức năng quản lý hợp đồng------------------------------------------------*/
 
 // router.get('/hopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_LayTatCaHopDong );
+
+//Lấy danh sách hợp đồng của chủ cho vay
+router.get('/hopdongs/:page',authController.KiemTraTokenManager,hopdongsController.Manager_LayTatCaHopDong );
+
+//Thêm hợp đồng mới bởi chủ cho vay
+router.post('/hopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_ThemHopDong );
 
 module.exports = router;

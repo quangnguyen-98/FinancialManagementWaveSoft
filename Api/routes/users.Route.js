@@ -22,7 +22,7 @@ router.put('/doimk', usersValidate.Validate_MatKhau_User,usersController.DoiMatK
 /*Chức năng quản lý hợp đồng------------------------------------------------*/
 
 //Lấy danh sách hợp đồng của nhân viên
-router.get('/hopdongs',authController.KiemTraTokenUser,hopdongsController.User_LayTatCaHopDong );
+router.get('/hopdongs/:page',authController.KiemTraTokenUser,hopdongsController.User_LayTatCaHopDong );
 
 //Thêm hợp đồng mới
 router.post('/hopdongs',authController.KiemTraTokenUser,hopdongsController.User_ThemHopDong );
