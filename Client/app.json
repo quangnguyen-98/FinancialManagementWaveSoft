@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Blank Template",
-    "slug": "TinChapExpo2",
+    "name": "WavesofFM",
+    "slug": "wavesoftfm-client",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
@@ -9,6 +9,15 @@
       "android",
       "web"
     ],
+    "android": {
+      "package": "com.wavesoftinc.wsfm",
+      "versionCode": 1
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wavesoftinc.wsfm",
+      "buildNumber": "1.0.0"
+    },
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +30,8 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
-      "**/*"
+      "assets/images/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    }
+    "description": ""
   }
 }

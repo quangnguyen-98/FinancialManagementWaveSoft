@@ -1,22 +1,99 @@
 const jwt = require('jsonwebtoken');
-const paramsObj = require('../config/staticVariable.Config');
+const {DbUrl,DbName,soItemMoiPage} = require('../config/constant');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
+const hamHoTro = require('../utils/hamHoTro');
 module.exports = {
     //Thao tác CRUD quản lý của admin
     LayTatCaManager: function (req, res, next) {
         const page = req.params.page;
         try {
-            const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+            client.connect(function (err, client) {
+                const db = client.db(DbName);
+                const col = db.collection('NguoiDung');
+                col.find({
+                    vaiTro: 1
+                }).sort({_id:-1}).limit(soItemMoiPage).skip(soItemMoiPage * page).toArray(function (err, docs) {
+                    client.close(() => {
+                        if (err) {
+
+                            res.status(500).json({
+                                status: 'fail',
+                                message: 'Lỗi ' + err
+                            });
+                        } else {
+                            console.log("Tìm thành công !");
+                            res.status(200).json(docs);
+                        }
+                    });
+                });
+            });
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
+            });
+        }
+    },
+
+    LayManagerTheoId: function (req, res, next) {
+        const id = ObjectId(req.query.id);
+        try {
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
             client.connect(function (err, client) {
                 console.log("Connected correctly to server");
-                const db = client.db(paramsObj.name);
+                const db = client.db(DbName);
                 const col = db.collection('NguoiDung');
 
                 col.find({
-                    vaiTro: 1
-                }).sort({_id:-1}).limit(paramsObj.soItemMoiPage).skip(paramsObj.soItemMoiPage * page).toArray(function (err, docs) {
+                    vaiTro: 1,
+                    _id:id
+                }).toArray(function (err, docs) {
+                    client.close(() => {
+                        if (err) {
+                            res.status(500).json({
+                                status: 'fail',
+                                message: 'Lỗi ' + err
+                            });
+                        } else {
+                            res.status(200).json(docs);
+                        }
+                    });
+                });
+            });
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
+            });
+        }
+    },
+
+    TimKiemManager: function (req, res, next) {
+        const ten = hamHoTro.BoDau(req.query.ten.toLowerCase());
+        try {
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+            client.connect(function (err, client) {
+                const db = client.db(DbName);
+                const col = db.collection('NguoiDung');
+                col.find({
+                    '$or':[
+                        {
+                            vaiTro: 1,
+                            lowerCase:{'$regex': ten,'$options':'$i'}
+                        },
+                        {
+                            vaiTro: 1,
+                            email:{'$regex': ten,'$options':'$i'}
+                        },
+                        {
+                            vaiTro: 1,
+                            sdt:{'$regex': ten,'$options':'$i'}
+                        }
+                    ]
+                }).sort({_id:-1}).limit(15).toArray(function (err, docs) {
                     client.close(() => {
                         if (err) {
                             res.status(500).json({
@@ -42,23 +119,20 @@ module.exports = {
             //Mã hóa mật khẩu trước khi add vào db
             bcrypt.genSalt(5, function (err, salt) {
                 bcrypt.hash(req.body.password, salt, function (err, hash) {
-                    const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+                    const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
                     //Kết nối db
                     client.connect(function (err, client) {
                         console.log("Connected correctly to server");
-                        const db = client.db(paramsObj.name);
+                        const db = client.db(DbName);
                         const col = db.collection('NguoiDung');
                         //Tạo parameter user
                         let user = {
-                            email: req.body.email,
+                            email: req.body.email.toLowerCase(),
                             password: hash,
                             hoTen: req.body.hoTen,
+                            lowerCase: hamHoTro.BoDau(req.body.hoTen.toLowerCase()),
                             gioiTinh: req.body.gioiTinh,
-                            ngaySinh: {
-                                ngay: parseInt(req.body.ngay),
-                                thang: parseInt(req.body.thang),
-                                nam: parseInt(req.body.nam)
-                            },
+                            ngaySinh: new Date(req.body.ngaySinh),
                             diaChi: req.body.diaChi,
                             sdt: req.body.sdt,
                             hinhAnh: req.body.hinhAnh,
@@ -97,10 +171,10 @@ module.exports = {
 
     CapNhatManager: function (req, res, next) {
         try {
-            const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
             client.connect(function (err, client) {
                 console.log("Connected correctly to server");
-                const db = client.db(paramsObj.name);
+                const db = client.db(DbName);
                 const col = db.collection('NguoiDung');
                 // var boolValue = req.query.gioiTinh.toLowerCase() == 'true' ? true : false;
                 let user = {
@@ -156,10 +230,10 @@ module.exports = {
 
     KhoaManager: function (req, res, next) {
         try {
-            const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
             client.connect(function (err, client) {
                 console.log("Connected correctly to server");
-                const db = client.db(paramsObj.name);
+                const db = client.db(DbName);
                 const col = db.collection('NguoiDung');
                 // var boolValue = req.query.gioiTinh.toLowerCase() == 'true' ? true : false;
                 let user = {
@@ -198,10 +272,10 @@ module.exports = {
 
     MoKhoaManager: function (req, res, next) {
         try {
-            const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
             client.connect(function (err, client) {
                 console.log("Connected correctly to server");
-                const db = client.db(paramsObj.name);
+                const db = client.db(DbName);
                 const col = db.collection('NguoiDung');
                 // var boolValue = req.query.gioiTinh.toLowerCase() == 'true' ? true : false;
                 let user = {
@@ -240,10 +314,10 @@ module.exports = {
 
     XoaManager: function (req, res, next) {
         try {
-            const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
             client.connect(function (err, client) {
                 console.log("Connected correctly to server");
-                const db = client.db(paramsObj.name);
+                const db = client.db(DbName);
                 const col = db.collection('NguoiDung');
                 const colHopDong = db.collection('HopDong');
                 // var boolValue = req.query.gioiTinh.toLowerCase() == 'true' ? true : false;
@@ -292,10 +366,10 @@ module.exports = {
 
     CapNhatManager: function (req, res, next) {
         try {
-            const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
             client.connect(function (err, client) {
                 console.log("Connected correctly to server");
-                const db = client.db(paramsObj.name);
+                const db = client.db(DbName);
                 const col = db.collection('NguoiDung');
                 // var boolValue = req.query.gioiTinh.toLowerCase() == 'true' ? true : false;
                 let user = {

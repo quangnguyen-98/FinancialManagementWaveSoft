@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <title>Reset Password</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--<link rel="shortcut icon" type="image/png" href="{{asset('img/favicon.jpeg')}}"/>-->
+    <link rel="shortcut icon" type="image/png" href="https://hqk.s3.us-west-1.amazonaws.com/Icon/favicon.ico"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!--Font Awesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+<!-- jQuery library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+<!-- Boostrap library -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<!-- Toastr library-->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="/NguoiDung/Admin"><i class="fas fa-home"></i> WavesoftFM</a>
+    </button>
+</nav>
+<div style="margin-top:70px;"></div>
+
+<div class="col row justify-content-sm-center ml-auto"style="margin: 15rem">
+
+    <form id="formDN" class="form-signin" >
+        <h2 class="form-signin-heading"><p id="tieuDe" class="font-weight-bold text-primary">Trang đặt lại mật khẩu</p></h2>
+
+        <br>
+    <div id="thongTin">
+        <input name="password" autocomplete="off" type="password" id="inputPassword" class="form-control" placeholder="Mật khẩu" value="<%if(typeof (values)!= 'undefined'){%><%=values.userName.trim()%><%}%>"  required >
+        <input name="password2" autocomplete="off" type="password" id="inputPassword2" class="form-control" placeholder="Nhập lại mật khẩu" required style="margin-top:10px">
+        <input name="token" type="text" id="token" value="<%=token%>" style="display: none">
+        <button name="btnLogin" class="btn btn-lg btn-primary btn-block" id="submit"  style="margin-top: 10px"> Xác nhận</button>
+    </div>
+    </form>
+</div>
+
+<!-- Toastr library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script>
+
+    $( "#submit" ).on( "click", function() {
+        if($("#inputPassword").val()==="" || $("#inputPassword2").val()===""){
+            toastr["error"]('Vui lòng không được để trống thông tin !');
+            return false;
+        }
+    else if($("#inputPassword").val() !== $("#inputPassword2").val()){
+            toastr["error"]('Mật khẩu và Nhập lại mật khẩu không trùng khớp. Vui lòng nhập lại !');
+            return false;
+        }
+        else if(!/^[a-zA-Z0-9_-]{6,18}$/.test($("#inputPassword").val())){
+            toastr["error"]('Mật khẩu phải thuộc từ a-z,A-Z,0-9, từ 6-18 kí tự ! ');
+            return false;
+        }
+        else {
+            $.ajax({
+                url: "<%=domain %>resetpassword",
+                method: "POST",
+                cache: false,
+                data: {
+                    token: $('#token').val(),
+                    password: $('#inputPassword').val()
+                },
+                error: function (err) {
+                    toastr["error"](JSON.stringify(err));
+                },
+                success: function (data) {
+                    if (data.status == "ok") {
+                        $("#thongTin").empty();
+                        $("#tieuDe").text('Thay đổi mật khẩu thành công');
+                        return false;
+                    } else {
+                        toastr["warning"](data.message);
+                        return false;
+                    }
+                }
+            });
+            return false;
+        }
+    });
+
+
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "4000",
+        "extendedTimeOut": "10000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+</script>
+
+</body>
+</html>
+
+
+
+

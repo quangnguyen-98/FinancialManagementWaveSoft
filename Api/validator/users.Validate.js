@@ -5,38 +5,36 @@ module.exports = {
             let password = req.body.password;
             let hoTen = req.body.hoTen;
             let gioiTinh = req.body.gioiTinh;
-            let ngaySinh = {
-                ngay: req.body.ngay,
-                thang: req.body.thang,
-                nam: req.body.nam
-            };
-            let diaChi = req.body.diaChi;
             let sdt = req.body.sdt;
-            let hinhAnh = req.body.hinhAnh;
 
-            if(email == undefined || password == undefined || hoTen == undefined || gioiTinh == undefined || sdt == undefined){
+            if (email == undefined || password == undefined || hoTen == undefined || gioiTinh == undefined || sdt == undefined) {
                 res.status(400).json({
-                    status:'fail',
-                    message:'Thông tin không được trống !'
+                    status: 'fail',
+                    message: 'Thông tin không được trống !'
+                });
+            } else if (email.length == 0 || password.length == 0 || hoTen.length == 0 || gioiTinh.length == 0 || sdt.length == 0) {
+                res.status(400).json({
+                    status: 'fail',
+                    message: 'Thông tin không được trống !'
+                });
+            } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+                res.status(400).json({
+                    status: 'fail',
+                    message: 'Email không hợp lệ !'
                 });
             }
-            else if(email.length == 0 || password.length == 0 || hoTen.length == 0 || gioiTinh.length == 0 || sdt.length == 0){
-                res.status(400).json({
-                    status:'fail',
-                    message:'Thông tin không được trống !'
-                });
-            }
-            else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
+            else if(!/^[a-zA-Z0-9_-]{6,18}$/.test(password))
             {
                 res.status(400).json({
-                    status:'fail',
-                    message:'Email không hợp lệ !'
+                    status: 'fail',
+                    message: 'Mật khẩu phải thuộc từ a-z,A-Z,0-9, từ 6-18 kí tự !'
                 });
-            }else {
+            }
+            else {
                 next();
             }
 
-        }catch (err) {
+        } catch (err) {
             res.status(400).json({
                 status: "fail",
                 message: err.toString()
@@ -57,22 +55,21 @@ module.exports = {
             let sdt = req.body.sdt;
             let hinhAnh = req.body.hinhAnh;
 
-            if(id == undefined || hoTen == undefined || gioiTinh == undefined || sdt == undefined ){
+            if (id == undefined || hoTen == undefined || gioiTinh == undefined || sdt == undefined) {
                 res.status(400).json({
-                    status:'fail',
-                    message:'Thông tin không được trống !'
+                    status: 'fail',
+                    message: 'Thông tin không được trống !'
                 });
-            }
-            else if(id.length != 24 || hoTen.length == 0 || gioiTinh.length == 0 || sdt.length == 0){
+            } else if (id.length != 24 || hoTen.length == 0 || gioiTinh.length == 0 || sdt.length == 0) {
                 res.status(400).json({
-                    status:'fail',
-                    message:'Thông tin không được trống !'
+                    status: 'fail',
+                    message: 'Thông tin không được trống !'
                 });
-            }else {
+            } else {
                 next();
             }
 
-        }catch (err) {
+        } catch (err) {
             res.status(400).json({
                 status: "fail",
                 message: err.toString()
@@ -81,34 +78,25 @@ module.exports = {
     },
     Validate_User_KhiSuaBanThan: function (req, res, next) {
         try {
-            let id = req.body.id;
             let hoTen = req.body.hoTen;
             let gioiTinh = req.body.gioiTinh;
-            let ngaySinh = {
-                ngay: req.body.ngay,
-                thang: req.body.thang,
-                nam: req.body.nam
-            };
-            let diaChi = req.body.diaChi;
             let sdt = req.body.sdt;
-            let hinhAnh = req.body.hinhAnh;
 
-            if( hoTen == undefined || gioiTinh == undefined || sdt == undefined ){
+            if (hoTen == undefined || gioiTinh == undefined || sdt == undefined) {
                 res.status(400).json({
-                    status:'fail',
-                    message:'Thông tin không được trống !'
+                    status: 'fail',
+                    message: 'Thông tin không được trống !'
                 });
-            }
-            else if( hoTen.length == 0 || gioiTinh.length == 0 || sdt.length == 0){
+            } else if (hoTen.length == 0 || gioiTinh.length == 0 || sdt.length == 0) {
                 res.status(400).json({
-                    status:'fail',
-                    message:'Thông tin không được trống !'
+                    status: 'fail',
+                    message: 'Thông tin không được trống !'
                 });
-            }else {
+            } else {
                 next();
             }
 
-        }catch (err) {
+        } catch (err) {
             res.status(400).json({
                 status: "fail",
                 message: err.toString()
@@ -118,22 +106,21 @@ module.exports = {
     Validate_User_KhiXoa: function (req, res, next) {
         try {
             let id = req.body.id;
-            if(id == undefined ){
+            if (id == undefined) {
                 res.status(400).json({
-                    status:'fail',
-                    message:'Id không được trống !'
+                    status: 'fail',
+                    message: 'Id không được trống !'
                 });
-            }
-            else if(id.length != 24  ){
+            } else if (id.length != 24) {
                 res.status(400).json({
-                    status:'fail',
-                    message:'Id không hợp lệ !'
+                    status: 'fail',
+                    message: 'Id không hợp lệ !'
                 });
-            }else {
+            } else {
                 next();
             }
 
-        }catch (err) {
+        } catch (err) {
             res.status(400).json({
                 status: "fail",
                 message: err.toString()
@@ -143,21 +130,42 @@ module.exports = {
     Validate_MatKhau_User: function (req, res, next) {
         try {
             let pass = req.body.password;
-            if(pass == undefined ){
+            if (pass == undefined) {
                 res.status(400).json({
-                    status:'fail',
-                    message:'Mật khẩu không được trống !'
+                    status: 'fail',
+                    message: 'Mật khẩu không được trống !'
                 });
-            }
-            else if(pass.length == 0  ){
+            } else if (pass.length == 0) {
                 res.status(400).json({
-                    status:'fail',
-                    message:'Mật khẩu không hợp lệ !'
+                    status: 'fail',
+                    message: 'Mật khẩu không hợp lệ !'
                 });
-            }else {
+            } else if (!/^[a-zA-Z0-9_-]{6,18}$/.test(pass)) {
+                res.status(400).json({
+                    status: 'fail',
+                    message: 'Mật khẩu phải thuộc từ a-z,A-Z,0-9, từ 6-18 kí tự !'
+                });
+            } else {
                 next();
             }
-        }catch (err) {
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: err.toString()
+            });
+        }
+    },
+    Validate_Email_QuenMatKhau_User: function (req, res, next) {
+        try {
+            if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(req.body.email)) {
+                res.status(400).json({
+                    status: 'fail',
+                    message: 'Email không hợp lệ !'
+                });
+            } else {
+                next();
+            }
+        } catch (err) {
             res.status(400).json({
                 status: "fail",
                 message: err.toString()

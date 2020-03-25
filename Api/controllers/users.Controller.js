@@ -1,89 +1,18 @@
 const jwt = require('jsonwebtoken');
-const paramsObj = require('../config/staticVariable.Config');
+const {DbUrl,DbName,soItemMoiPage} = require('../config/constant');
 const MongoClient = require('mongodb').MongoClient;
 const bcrypt = require('bcrypt');
 const ObjectId = require('mongodb').ObjectId;
+const hamHoTro = require('../utils/hamHoTro');
 module.exports = {
-    //Chỉ thực hiện bởi quản lý
-    LayTatCaUser: function (req, res, next) {
-        const page = req.params.page;
-        let token = req.query.token;
-        let managerId;
-        try {
-            //Mở token ra kiểm tra id quản lý
-            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
-                //Lấy userId trong token để lọc ra những user thuộc từng quản lý
-                 managerId = payload.payload.userId;
-                const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
-                client.connect(function (err, client) {
-                    console.log("Connected correctly to server");
-                    const db = client.db(paramsObj.name);
-                    const col = db.collection('NguoiDung');
-                    //Query những nhân viên thuộc quyền quản lý của chủ nhân viên
-                    col.find({vaiTro: 2,idManager: ObjectId(managerId)}).limit(paramsObj.soItemMoiPage).skip(paramsObj.soItemMoiPage * page).toArray(function (err, docs) {
-                        client.close(() => {
-                            if (err) {
-                                res.status(500).json({
-                                    status: 'fail',
-                                    message: err.toString()
-                                });
-                            } else {
-                                res.status(200).json(docs);
-                            }
-                        });
-                    });
-                });
-            });
 
-        } catch (err) {
-            res.status(400).json({
-                status: "fail",
-                message: 'Token không hợp lệ !'
-            });
-        }
-    },
-
-    LayThongtinUser:function(req,res,next){
-        let token = req.query.token;
-        try {
-            //Mở token ra kiểm tra id user
-            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
-                userId = payload.payload.userId;
-                const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
-                client.connect(function (err, client) {
-                    console.log("Connected correctly to server");
-                    const db = client.db(paramsObj.name);
-                    const col = db.collection('NguoiDung');
-                    //Query những nhân viên thuộc quyền quản lý của chủ nhân viên
-                    col.find({_id: ObjectId(userId)}).toArray(function (err, docs) {
-                        client.close(() => {
-                            if (err) {
-                                res.status(500).json({
-                                    status: 'fail',
-                                    message: err.toString()
-                                });
-                            } else {
-                                res.status(200).json(docs);
-                            }
-                        });
-                    });
-                });
-            });
-
-        } catch (err) {
-            res.status(400).json({
-                status: "fail",
-                message: 'Token không hợp lệ !'
-            });
-        }
-    },
-
+    //Thực hiện bởi admin hoặc chủ cho vay
     KiemTraUserTonTai_KhiThem: function (req, res, next) {
         try {
-            const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
             client.connect(function (err, client) {
                 console.log("Connected correctly to server");
-                const db = client.db(paramsObj.name);
+                const db = client.db(DbName);
                 const col = db.collection('NguoiDung');
 
                 let email = req.body.email;
@@ -118,10 +47,10 @@ module.exports = {
 
     KiemTraUserTonTai_KhiXoa: function (req, res, next) {
         try {
-            const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
             client.connect(function (err, client) {
                 console.log("Connected correctly to server");
-                const db = client.db(paramsObj.name);
+                const db = client.db(DbName);
                 const col = db.collection('NguoiDung');
 
                 let id = ObjectId(req.body.id);
@@ -154,6 +83,41 @@ module.exports = {
         }
     },
 
+    LayThongtinUser: function (req, res, next) {
+        let token = req.query.token;
+        try {
+            //Mở token ra kiểm tra id user
+            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
+                let userId = payload.payload.userId;
+                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+                client.connect(function (err, client) {
+                    console.log("Connected correctly to server");
+                    const db = client.db(DbName);
+                    const col = db.collection('NguoiDung');
+                    //Query những nhân viên thuộc quyền quản lý của chủ nhân viên
+                    col.find({_id: ObjectId(userId)}).next(function (err, docs) {
+                        client.close(() => {
+                            if (err) {
+                                res.status(500).json({
+                                    status: 'fail',
+                                    message: err.toString()
+                                });
+                            } else {
+                                res.status(200).json(docs);
+                            }
+                        });
+                    });
+                });
+            });
+
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
+            });
+        }
+    },
+
     ThemUser: function (req, res, next) {
         try {
             let token = req.query.token;
@@ -162,24 +126,21 @@ module.exports = {
                 managersId = payload.payload.userId;
                 bcrypt.genSalt(5, function (err, salt) {
                     bcrypt.hash(req.body.password, salt, function (err, hash) {
-                        const client = new MongoClient(paramsObj.url, {
+                        const client = new MongoClient(DbUrl, {
                             useNewUrlParser: true,
                             useUnifiedTopology: true
                         });
                         client.connect(function (err, client) {
                             console.log("Connected correctly to server");
-                            const db = client.db(paramsObj.name);
+                            const db = client.db(DbName);
                             const col = db.collection('NguoiDung');
                             let user = {
                                 email: req.body.email,
                                 password: hash,
                                 hoTen: req.body.hoTen,
+                                lowerCase: hamHoTro.BoDau(req.body.hoTen.toLowerCase()),
                                 gioiTinh: req.body.gioiTinh,
-                                ngaySinh: {
-                                    ngay: parseInt(req.body.ngay),
-                                    thang: parseInt(req.body.thang),
-                                    nam: parseInt(req.body.nam)
-                                },
+                                ngaySinh: new Date(req.body.ngaySinh),
                                 diaChi: req.body.diaChi,
                                 sdt: req.body.sdt,
                                 hinhAnh: req.body.hinhAnh,
@@ -225,15 +186,15 @@ module.exports = {
             var token = req.query.token;
             jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
                 const managerId = ObjectId(payload.payload.userId);
-                const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
                 client.connect(function (err, client) {
                     console.log("Connected correctly to server");
-                    const db = client.db(paramsObj.name);
+                    const db = client.db(DbName);
                     const col = db.collection('NguoiDung');
                     let user = {
                         id: ObjectId(req.body.id),
                         email: req.body.email,
-                        password: req.body.password == undefined || req.body.password == null ?'':req.body.password,
+                        password: req.body.password == undefined || req.body.password == null ? '' : req.body.password,
                         hoTen: req.body.hoTen,
                         gioiTinh: req.body.gioiTinh.toLowerCase() == 'true' ? true : false,
                         ngaySinh: {
@@ -243,15 +204,15 @@ module.exports = {
                         },
                         diaChi: req.body.diaChi,
                         sdt: req.body.sdt,
-                        hinhAnh: req.body.hinhAnh == undefined || req.body.hinhAnh == null ? null:req.body.hinhAnh,
+                        hinhAnh: req.body.hinhAnh == undefined || req.body.hinhAnh == null ? null : req.body.hinhAnh,
 
                     }
                     // Cập nhật user
-                    col.updateOne({_id: user.id,idManager:managerId}, {
+                    col.updateOne({_id: user.id, idManager: managerId}, {
                         $set: {
                             hoTen: user.hoTen,
                             gioiTinh: user.gioiTinh,
-                            ngaySinh:user.ngaySinh,
+                            ngaySinh: user.ngaySinh,
                             diaChi: user.diaChi,
                             sdt: user.sdt,
                             hinhAnh: user.hinhAnh,
@@ -261,20 +222,20 @@ module.exports = {
                             if (err) {
                                 res.status(500).json({
                                     status: 'fail',
-                                    message:err.toString()
+                                    message: err.toString()
                                 });
                             } else {
-                                if(r.result.nModified == 0){
+                                if (r.result.ok != 1) {
                                     res.status(200).json({
                                         status: 'ok',
                                         message: 'Bạn không có quyền tương tác với tài khoản này !',
-                                        r:r
+                                        r: r
                                     });
-                                }else {
+                                } else {
                                     res.status(200).json({
                                         status: 'ok',
                                         message: 'Cập nhật thành công !',
-                                        r:r
+                                        r: r
                                     });
                                 }
                             }
@@ -295,17 +256,17 @@ module.exports = {
             var token = req.query.token;
             jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
                 const managerId = ObjectId(payload.payload.userId);
-                const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
                 client.connect(function (err, client) {
                     console.log("Connected correctly to server");
-                    const db = client.db(paramsObj.name);
+                    const db = client.db(DbName);
                     const col = db.collection('NguoiDung');
                     // var boolValue = req.query.gioiTinh.toLowerCase() == 'true' ? true : false;
                     let user = {
                         id: ObjectId(req.body.id),
                     }
                     // Cập nhật manager
-                    col.updateOne({_id: user.id,idManager:managerId}, {
+                    col.updateOne({_id: user.id, idManager: managerId}, {
                         $set: {
                             trangThaiKhoa: true,
                         }
@@ -317,12 +278,12 @@ module.exports = {
                                     message: 'Lỗi ' + err
                                 });
                             } else {
-                                if(r.result.nModified == 0){
+                                if (r.result.ok != 1) {
                                     res.status(200).json({
                                         status: 'ok',
                                         message: 'Bạn không có quyền tương tác với tài khoản này !'
                                     });
-                                }else {
+                                } else {
                                     res.status(200).json({
                                         status: 'ok',
                                         message: 'Khóa tài khoản thành công !'
@@ -347,17 +308,17 @@ module.exports = {
             var token = req.query.token;
             jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
                 const managerId = ObjectId(payload.payload.userId);
-                const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
                 client.connect(function (err, client) {
                     console.log("Connected correctly to server");
-                    const db = client.db(paramsObj.name);
+                    const db = client.db(DbName);
                     const col = db.collection('NguoiDung');
                     // var boolValue = req.query.gioiTinh.toLowerCase() == 'true' ? true : false;
                     let user = {
                         id: ObjectId(req.body.id),
                     }
                     // Cập nhật manager
-                    col.updateOne({_id: user.id,idManager:managerId}, {
+                    col.updateOne({_id: user.id, idManager: managerId}, {
                         $set: {
                             trangThaiKhoa: false,
                         }
@@ -369,12 +330,12 @@ module.exports = {
                                     message: 'Lỗi ' + err
                                 });
                             } else {
-                                if(r.result.nModified == 0){
+                                if (r.result.ok != 1) {
                                     res.status(200).json({
                                         status: 'ok',
                                         message: 'Bạn không có quyền tương tác với tài khoản này !'
                                     });
-                                }else {
+                                } else {
                                     res.status(200).json({
                                         status: 'ok',
                                         message: 'Khóa tài khoản thành công !'
@@ -399,10 +360,10 @@ module.exports = {
             var token = req.query.token;
             jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
                 const managerId = ObjectId(payload.payload.userId);
-                const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
                 client.connect(function (err, client) {
                     console.log("Connected correctly to server");
-                    const db = client.db(paramsObj.name);
+                    const db = client.db(DbName);
                     const col = db.collection('NguoiDung');
                     const colHopDong = db.collection('HopDong');
                     // var boolValue = req.query.gioiTinh.toLowerCase() == 'true' ? true : false;
@@ -415,15 +376,14 @@ module.exports = {
                                 status: 'fail',
                                 message: 'Lỗi ' + err
                             });
-                        }
-                        else if(docs.length != 0){
+                        } else if (docs.length != 0) {
                             res.status(400).json({
                                 status: 'fail',
                                 message: 'Không thể xóa do người dùng đã tạo hợp đồng !'
                             });
-                        }else if(docs.length == 0){
+                        } else if (docs.length == 0) {
                             // Xóa manager
-                            col.deleteOne({_id: user.id,idManager:managerId}, function(err, r) {
+                            col.deleteOne({_id: user.id, idManager: managerId}, function (err, r) {
                                 client.close(() => {
                                     if (err) {
                                         res.status(500).json({
@@ -431,12 +391,12 @@ module.exports = {
                                             message: 'Lỗi ' + err
                                         });
                                     } else {
-                                        if(r.result.nModified == 0){
+                                        if (r.result.ok != 1) {
                                             res.status(200).json({
                                                 status: 'ok',
                                                 message: 'Bạn không có quyền tương tác với tài khoản này !'
                                             });
-                                        }else {
+                                        } else {
                                             res.status(200).json({
                                                 status: 'ok',
                                                 message: 'Xóa thành công !'
@@ -458,64 +418,286 @@ module.exports = {
         }
     },
 
+    //Thực hiện bởi chủ cho vay
+    LayUserTheoTrang: function (req, res, next) {
+        const page = req.params.page;
+        let token = req.query.token;
+        let managerId;
+        try {
+            //Mở token ra kiểm tra id quản lý
+            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
+                //Lấy userId trong token để lọc ra những user thuộc từng quản lý
+                managerId = payload.payload.userId;
+                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+                client.connect(function (err, client) {
+                    console.log("Connected correctly to server");
+                    const db = client.db(DbName);
+                    const col = db.collection('NguoiDung');
+                    //Query những nhân viên thuộc quyền quản lý của chủ nhân viên
+                    col.find({
+                        vaiTro: 2,
+                        idManager: ObjectId(managerId)
+                    }).sort({_id: -1}).limit(soItemMoiPage).skip(soItemMoiPage * page).toArray(function (err, docs) {
+                        client.close(() => {
+                            if (err) {
+                                res.status(500).json({
+                                    status: 'fail',
+                                    message: err.toString()
+                                });
+                            } else {
+                                res.status(200).json(docs);
+                            }
+                        });
+                    });
+                });
+            });
+
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
+            });
+        }
+    },
+
+    TimKiemUserTheoId: function (req, res, next) {
+        let token = req.query.token;
+        let userId =ObjectId (req.query.id);
+        try {
+            //Mở token ra kiểm tra id quản lý
+            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
+                //Lấy userId trong token để lọc ra những user thuộc từng quản lý
+                let managerId = ObjectId(payload.payload.userId);
+                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+                client.connect(function (err, client) {
+                    console.log("Connected correctly to server");
+                    const db = client.db(DbName);
+                    const col = db.collection('NguoiDung');
+                    //Query những nhân viên thuộc quyền quản lý của chủ nhân viên
+                    col.find({
+                        vaiTro: 2,
+                        idManager: managerId,
+                        _id:userId
+                    }).toArray(function (err, docs) {
+                        client.close(() => {
+                            if (err) {
+                                res.status(500).json({
+                                    status: 'fail',
+                                    message: err.toString()
+                                });
+                            } else {
+                                res.status(200).json(docs);
+                            }
+                        });
+                    });
+                });
+            });
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
+            });
+        }
+    },
+
+    LayUserTheoId: function (req, res, next) {
+        let token = req.query.token;
+        let userId =ObjectId (req.query.id);
+        try {
+            //Mở token ra kiểm tra id quản lý
+            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
+                //Lấy userId trong token để lọc ra những user thuộc từng quản lý
+                let managerId = ObjectId(payload.payload.userId);
+                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+                client.connect(function (err, client) {
+                    console.log("Connected correctly to server");
+                    const db = client.db(DbName);
+                    const col = db.collection('NguoiDung');
+                    //Query những nhân viên thuộc quyền quản lý của chủ nhân viên
+                    col.find({
+                        vaiTro: 2,
+                        idManager: managerId,
+                        _id:userId
+                    }).toArray(function (err, docs) {
+                        client.close(() => {
+                            if (err) {
+                                res.status(500).json({
+                                    status: 'fail',
+                                    message: err.toString()
+                                });
+                            } else {
+                                res.status(200).json(docs);
+                            }
+                        });
+                    });
+                });
+            });
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
+            });
+        }
+    },
+
+    TimKiemUser: function (req, res, next) {
+        let token = req.query.token;
+        let tuKhoaTimKiem = req.query.ten.toLowerCase();
+        try {
+            //Mở token ra kiểm tra id quản lý
+            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
+                //Lấy userId trong token để lọc ra những user thuộc từng quản lý
+                let managerId = ObjectId(payload.payload.userId);
+                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+                client.connect(function (err, client) {
+                    console.log("Connected correctly to server");
+                    const db = client.db(DbName);
+                    const col = db.collection('NguoiDung');
+                    //Query những nhân viên thuộc quyền quản lý của chủ nhân viên
+                    col.find({
+                        '$or':[
+                            {
+                                vaiTro: 2,
+                                idManager:managerId,
+                                lowerCase:{'$regex': tuKhoaTimKiem,'$options':'$i'}
+                            },
+                            {
+                                vaiTro: 2,
+                                idManager:managerId,
+                                email:{'$regex': tuKhoaTimKiem,'$options':'$i'}
+                            },
+                            {
+                                vaiTro: 2,
+                                idManager:managerId,
+                                sdt:{'$regex': tuKhoaTimKiem,'$options':'$i'}
+                            }
+                        ]
+                    }).sort({_id:-1}).limit(15).toArray(function (err, docs) {
+                        client.close(() => {
+                            if (err) {
+                                res.status(500).json({
+                                    status: 'fail',
+                                    message: err.toString()
+                                });
+                            } else {
+                                res.status(200).json(docs);
+                            }
+                        });
+                    });
+                });
+            });
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
+            });
+        }
+    },
+
+    //Thực hiện bởi mọi user
     CapNhatBanThanUser: function (req, res, next) {
         try {
             var token = req.query.token;
             jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
                 const userId = ObjectId(payload.payload.userId);
-                const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
                 client.connect(function (err, client) {
                     console.log("Connected correctly to server");
-                    const db = client.db(paramsObj.name);
+                    const db = client.db(DbName);
                     const col = db.collection('NguoiDung');
-                    let user = {
-                        email: req.body.email,
-                        password: req.body.password == undefined || req.body.password == null ?'':req.body.password,
-                        hoTen: req.body.hoTen,
-                        gioiTinh: req.body.gioiTinh.toLowerCase() == 'true' ? true : false,
-                        ngaySinh: {
-                            ngay: parseInt(req.body.ngay),
-                            thang: parseInt(req.body.thang),
-                            nam: parseInt(req.body.nam)
-                        },
-                        diaChi: req.body.diaChi,
-                        sdt: req.body.sdt,
-                        hinhAnh: req.body.hinhAnh == undefined || req.body.hinhAnh == null ? null:req.body.hinhAnh,
 
-                    }
                     // Cập nhật admin
                     col.updateOne({_id: userId}, {
                         $set: {
-                            hoTen: user.hoTen,
-                            gioiTinh: user.gioiTinh,
-                            ngaySinh:user.ngaySinh,
-                            diaChi: user.diaChi,
-                            sdt: user.sdt,
-                            hinhAnh: user.hinhAnh,
+                            hoTen: req.body.hoTen,
+                            lowerCase:hamHoTro.BoDau(req.body.hoTen.toLowerCase()),
+                            gioiTinh: req.body.gioiTinh,
+                            ngaySinh: new Date(req.body.ngaySinh) ,
+                            diaChi: req.body.diaChi,
+                            sdt: req.body.sdt,
                         }
                     }, function (err, r) {
                         client.close(() => {
                             if (err) {
                                 res.status(500).json({
                                     status: 'fail',
-                                    message:err.toString()
+                                    message: err.toString()
                                 });
                             } else {
-                                if(r.result.nModified == 0){
+                                console.log(r);
+                                if (r.result.ok != 1) {
                                     res.status(200).json({
                                         status: 'ok',
                                         message: 'Bạn không có quyền tương tác với tài khoản này !',
-                                        r:r
+                                        r: r
                                     });
-                                }else {
+                                } else {
                                     res.status(200).json({
                                         status: 'ok',
                                         message: 'Cập nhật thành công !',
-                                        r:r
+                                        r: r
                                     });
                                 }
                             }
                         });
+                    });
+                });
+            });
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
+            });
+        }
+    },
+
+    KiemTraMatKhau: function (req, res, next) {
+        try {
+            const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+            //Tạo biến user và pass
+            let username = req.body.username;
+            let password = req.body.passwordCu;
+            //Kết nối db
+            client.connect(function (err, client) {
+                console.log("Connected correctly to server");
+                const db = client.db(DbName);
+                const col = db.collection('NguoiDung');
+                //Tìm user
+                col.find({email: username}).toArray(function (err, docs) {
+                    client.close(() => {
+                        if (err) {
+                            res.status(500).json({
+                                status: 'fail',
+                                message: 'Lỗi ' + err
+                            });
+                        } else {
+                            //Kiểm tra mảng user có rỗng không và kiểm tra mật khẩu
+                            if (docs.length !== 0) {
+                                if (docs[0].trangThaiKhoa == true) {
+                                    res.status(400).json({
+                                        status: "fail",
+                                        message: "Tài khoản đã bị khóa, xin vui lòng liên hệ chủ tài khoản để mở lại !",
+                                    });
+                                } else {
+                                    bcrypt.compare(password, docs[0].password, function (err, result) {
+                                        // result == true
+                                        if (result) {
+                                            next();
+                                        } else {
+                                            res.status(400).json({
+                                                status: "fail",
+                                                message: "Mật khẩu cũ không chính xác !",
+                                            });
+                                        }
+                                    });
+                                }
+                            } else {
+                                res.status(400).json({
+                                    status: "fail",
+                                    message: "Tài khoản hoặc mật khẩu không chính xác !",
+                                });
+                            }
+                        }
                     });
                 });
             });
@@ -534,10 +716,12 @@ module.exports = {
                 const userId = ObjectId(payload.payload.userId);
                 bcrypt.genSalt(5, function (err, salt) {
                     bcrypt.hash(req.body.password, salt, function (err, hash) {
-                        const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+                        const client = new MongoClient(DbUrl, {
+                            useNewUrlParser: true,
+                            useUnifiedTopology: true
+                        });
                         client.connect(function (err, client) {
-                            console.log("Connected correctly to server");
-                            const db = client.db(paramsObj.name);
+                            const db = client.db(DbName);
                             const col = db.collection('NguoiDung');
 
                             //Đổi mật khẩu
@@ -550,20 +734,20 @@ module.exports = {
                                     if (err) {
                                         res.status(500).json({
                                             status: 'fail',
-                                            message:err.toString()
+                                            message: err.toString()
                                         });
                                     } else {
-                                        if(r.result.nModified == 0){
-                                            res.status(200).json({
-                                                status: 'ok',
+                                        if (r.result.ok != 1) {
+                                            res.status(400).json({
+                                                status: 'fail',
                                                 message: 'Bạn không có quyền tương tác với tài khoản này !',
-                                                r:r
+                                                r: r
                                             });
-                                        }else {
+                                        } else {
                                             res.status(200).json({
                                                 status: 'ok',
-                                                message: 'Cập nhật thành công !',
-                                                r:r
+                                                message: 'Đổi mật khẩu thành công !',
+                                                r: r
                                             });
                                         }
                                     }
@@ -580,5 +764,5 @@ module.exports = {
                 message: 'Token không hợp lệ !'
             });
         }
-    },
+    }
 }

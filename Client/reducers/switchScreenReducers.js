@@ -21,10 +21,7 @@ const switchScreenReducers =(state='login',action)=>{
 
 async function resetToken(){
     let a = await AsyncStorage.setItem('token','none');
-    let b = await AsyncStorage.setItem('role','none');
     return a;
 }
-
-
 
 export default switchScreenReducers;

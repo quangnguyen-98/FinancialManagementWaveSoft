@@ -7,11 +7,9 @@ const authContronller = require('../controllers/auth.Controller');
 
 router.post('/', authContronller.KiemTraDangNhap);
 
-// router.get('/admin', authContronller.KiemTraTokenAdmin);
-//
-// router.get('/manager', authContronller.KiemTraTokenManager);
-//
-// router.get('/user', authContronller.KiemTraTokenUser);
+router.get('/checklogined', authContronller.CheckLogined);
+
+
 
 
 

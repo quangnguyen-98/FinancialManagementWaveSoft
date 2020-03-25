@@ -1,12 +1,14 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import NutThem from "../../component/controlButton/NutThem";
-import QuanLyNhanVienScreen from "../../screens/managers/QuanLyNhanVienScreen";
-import ThemNhanVienScreen from "../../screens/managers/ThemNhanVienScreen";
+import {NutKhoa, NutThem} from "../../component";
+import {QuanLyNhanVienScreen, ThemNhanVienScreen,ChiTietNhanVienScreen} from "../../screens";
 const Stack = createStackNavigator();
-import {useNavigation} from "@react-navigation/core";
+import {useNavigation} from "@react-navigation/native";
 import {TouchableOpacity} from "react-native";
+import {useSelector,useDispatch} from "react-redux";
 export default function StackQuanLyChuChoVay() {
+    const chuChoVayDuocChonReducers = useSelector(state=>state.chuChoVayDuocChonReducers);
+    const dispatch = useDispatch();
     const navigation = useNavigation();
     return (
         <Stack.Navigator screenOptions={{
@@ -21,6 +23,22 @@ export default function StackQuanLyChuChoVay() {
                 }
             }}></Stack.Screen>
             <Stack.Screen name="Thêm nhân viên" component={ThemNhanVienScreen}/>
+            <Stack.Screen name="Chi tiết nhân viên"
+                          component={ChiTietNhanVienScreen}
+                          options={{
+                              title: '',
+                              headerRight: () => (
+                                  <TouchableOpacity
+                                      onPress={() =>{
+                                          dispatch({type:'OPEN_DIALOG'});
+                                      }}>
+
+                                      <NutKhoa trangThaiKhoa={chuChoVayDuocChonReducers.trangThaiKhoa==true}/>
+                                  </TouchableOpacity>
+
+                              ),
+                          }}
+            />
         </Stack.Navigator>
 
     );

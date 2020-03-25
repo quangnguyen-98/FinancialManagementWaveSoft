@@ -1,17 +1,17 @@
 const jwt = require('jsonwebtoken')
-const paramsObj = require('../config/staticVariable.Config');
+const {DbUrl,DbName} = require('../config/constant');
 const MongoClient = require('mongodb').MongoClient;
 const bcrypt = require('bcrypt');
 module.exports = {
     KiemTraDangNhap: function (req, res, next) {
-        const client = new MongoClient(paramsObj.url, {useNewUrlParser: true, useUnifiedTopology: true});
+        const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
         //Tạo biến user và pass
         let username = req.body.username;
         let password = req.body.password;
         //Kết nối db
         client.connect(function (err, client) {
             console.log("Connected correctly to server");
-            const db = client.db(paramsObj.name);
+            const db = client.db(DbName);
             const col = db.collection('NguoiDung');
             //Tìm user
             col.find({email: username}).toArray(function (err, docs) {
@@ -48,6 +48,7 @@ module.exports = {
                                         res.status(200).json({
                                             status: "ok",
                                             message: "Đăng nhập thành công !",
+                                            userName:docs[0].email,
                                             userId: docs[0]._id,
                                             role:docs[0].vaiTro,
                                             token: token
@@ -76,7 +77,29 @@ module.exports = {
             });
         });
     },
-
+    CheckLogined: function (req, res, next) {
+        try {
+            var token = req.query.token;
+            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
+                if (payload) {
+                    res.status(400).json({
+                        status: "ok",
+                        role:payload.payload.role ,
+                    });
+                } else {
+                    res.status(400).json({
+                        status: "fail",
+                        message: 'Token không hợp lệ !',
+                    });
+                }
+            });
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
+            });
+        }
+    },
     KiemTraTokenAdmin: function (req, res, next) {
         try {
             var token = req.query.token;
@@ -90,7 +113,6 @@ module.exports = {
                         status: "fail",
                         message: 'Token không hợp lệ !',
                     });
-                    return;
                 }
             });
         } catch (err) {
@@ -115,7 +137,6 @@ module.exports = {
                         status: "fail",
                         message: 'Token không hợp lệ !',
                     });
-                    return;
                 }
             });
         } catch (err) {

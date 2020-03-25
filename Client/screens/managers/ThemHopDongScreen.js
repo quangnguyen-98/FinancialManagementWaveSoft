@@ -1,154 +1,56 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Text, View, StyleSheet, ScrollView, AsyncStorage, Button, Alert, TextInput, Dimensions, Image, TouchableOpacity } from 'react-native';
 import RadioForm, { RadioButton, RadioButtonLabel, RadioButtonInput } from 'react-native-simple-radio-button';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DatePicker from 'react-native-datepicker';
 import {apiLink} from "../../config/constant";
+import DateTimePicker from '@react-native-community/datetimepicker';
+const {width,height } = Dimensions.get('window');
+const toDay = new Date();
+export default function ThemHopDongScreen({ navigation }) {
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-
-function ThemHopDongScreen({ navigation }) {
-
-    const [dateNgaySinh, setDateNgaySinh] = useState(new Date().getDate());
-    const [dateNgayVay, setDateNgayVay] = useState(new Date().getDate());
-    const [dateNgayTraGoc, setDateNgayTraGoc] = useState(new Date().getDate());
-    // const [source,setSource] = useState(null);
-
-    // const selectImage = async()=>{
-    //     ImagePicker.showImagePicker({noData:true,mediaType:'photo'},(response) => {
-    //         console.log('Response = ', response);
-
-    //         if (response.didCancel) {
-    //           console.log('User cancelled image picker');
-    //         } else if (response.error) {
-    //           console.log('ImagePicker Error: ', response.error);
-    //         } else if (response.customButton) {
-    //           console.log('User tapped custom button: ', response.customButton);
-    //         } else {
-
-    //           // You can also display the image using data:
-    //           // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-    //           setSource(response.uri);
-    //         }
-    //       });
-
-
-    // }
-    const [value, setValue] = useState(0);
-
-    var theloaivay = [
-        { label: 'Ngày', value: 0 },
-        { label: 'Tháng', value: 1 },
-    ];
-
-
-
-    function _onPress(value) {
-        setValue(value);
-    }
-
-    function _onDateChange(value) {
-        setDateNgayTraGoc(value);
-    }
-
-
-
-    const [infoHD, setInfoHD] = useState({
+    const [dateNgayTraGoc, setDateNgayTraGoc] = useState(null);
+    const [cachTinhLai, setCachTinhLai] = useState(0);
+    const [kieuDongLai, setKieuDongLai] = useState(0);
+    const [inforHD, setInforHD] = useState({
         tenKhachHang: '',
+        sdt: '',
+        email:'',
         diaChi: '',
         thongTinCMT: {
             idCMT: '',
             noiCap: ''
         },
-        ngaySinh: {
-            ngay: '',
-            thang: '',
-            nam: ''
-        },
-        sdt: '',
+        ngaySinh: new Date(),
         thongTinHopDong: {
-            ngayVay: {
-                ngay: '',
-                thang: '',
-                nam: ''
-            },
+            ngayVay: new Date(),
             tongTienVay: '',
-            kyDongLai: '',
-            soLanTra: '',
-            tinChap: ''
+            soKyDongLai: null,
+            cachTinhLai:'',
+            giaTriLaiSuat:'',
+            soLanTra: null,
+            kieuDongLai:'',
+            tinChap: '',
+            ghiChu:''
         }
+    });
 
-
-    })
-
-    function _onDateChangeNgaySinh(date) {
-        setDateNgaySinh(date);
-        setInfoHD({
-            tenKhachHang: infoHD.tenKhachHang,
-            diaChi: infoHD.diaChi,
-            thongTinCMT: {
-                idCMT: infoHD.thongTinCMT.idCMT.toString(),
-                noiCap: infoHD.thongTinCMT.noiCap
-            },
-            ngaySinh: {
-                ngay: new Date(dateNgaySinh).getDay(),
-                thang: new Date(dateNgaySinh).getMonth()+1,
-                nam: new Date(dateNgaySinh).getFullYear()
-            },
-            sdt: infoHD.sdt,
-            thongTinHopDong: {
-                ngayVay: {
-                    ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                    thang: infoHD.thongTinHopDong.ngayVay.thang,
-                    nam: infoHD.thongTinHopDong.ngayVay.nam
-                },
-                tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                soLanTra: infoHD.thongTinHopDong.soLanTra,
-                tinChap: infoHD.thongTinHopDong.tinChap
+    useEffect(()=>{
+        setInforHD({
+            ...inforHD,
+            thongTinHopDong:{
+                ...inforHD.thongTinHopDong,
+                cachTinhLai:0
             }
-
-        })
-    }
-
-    function _onDateChangeNgayVay(date) {
-        setDateNgayVay(date);
-        setInfoHD({
-            tenKhachHang: infoHD.tenKhachHang,
-            diaChi: infoHD.diaChi,
-            thongTinCMT: {
-                idCMT: infoHD.thongTinCMT.idCMT,
-                noiCap: infoHD.thongTinCMT.noiCap
-            },
-            ngaySinh: {
-                ngay: infoHD.ngaySinh.ngay,
-                thang: infoHD.ngaySinh.thang,
-                nam: infoHD.ngaySinh.nam
-            },
-            sdt: infoHD.sdt,
-            thongTinHopDong: {
-                ngayVay: {
-                    ngay: new Date(dateNgayVay).getDay(),
-                    thang: new Date(dateNgayVay).getMonth()+1,
-                    nam: new Date(dateNgayVay).getFullYear()
-                },
-                tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                soLanTra: infoHD.thongTinHopDong.soLanTra,
-                tinChap: infoHD.thongTinHopDong.tinChap
-            }
-
-        })
-    }
-
-
+        });
+    },[]);
+    useEffect(()=>{
+        tinhNgayTraGoc(inforHD.thongTinHopDong.ngayVay,inforHD.thongTinHopDong.soKyDongLai,inforHD.thongTinHopDong.cachTinhLai,inforHD.thongTinHopDong.soLanTra);
+    },[inforHD.thongTinHopDong]);
 
     return (
-        <KeyboardAwareScrollView style={{ flex: 1, flexDirection: 'column', marginTop: windowHeight / 15 }}>
-            <View style={styles.containerKH}>
+        <KeyboardAwareScrollView style={{ flex: 1, flexDirection: 'column', paddingTop: height / 15 }}>
+            <View>
 
                 <Text style={{ fontSize: 24, fontWeight: 'bold', marginHorizontal: 8 }}>Thông Tin Khách Hàng Vay</Text>
                 <View
@@ -160,183 +62,104 @@ function ThemHopDongScreen({ navigation }) {
                 />
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Họ Tên: </Text>
-                    <TextInput placeholder="Nhập họ tên khách hàng" style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}
-                        onChangeText={(text) => {
-                            setInfoHD({
-                                tenKhachHang: text,
-                                diaChi: infoHD.diaChi,
-                                thongTinCMT: {
-                                    idCMT: infoHD.thongTinCMT.idCMT,
-                                    noiCap: infoHD.thongTinCMT.noiCap
-                                },
-                                ngaySinh: {
-                                    ngay: infoHD.ngaySinh.ngay,
-                                    thang: infoHD.ngaySinh.thang,
-                                    nam: infoHD.ngaySinh.nam
-                                },
-                                sdt: infoHD.sdt,
-                                thongTinHopDong: {
-                                    ngayVay: {
-                                        ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                                        thang: infoHD.thongTinHopDong.ngayVay.thang,
-                                        nam: infoHD.thongTinHopDong.ngayVay.nam
-                                    },
-                                    tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                                    kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                                    soLanTra: infoHD.thongTinHopDong.soLanTra,
-                                    tinChap: infoHD.thongTinHopDong.tinChap
-                                }
+                    <TextInput placeholder="Nhập họ tên khách hàng" style={styles.textInput}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                       ...inforHD,
+                                       tenKhachHang: text
+                                   })
 
-                            })
-
-                        }}></TextInput>
+                               }}></TextInput>
+                </View>
+                <View style={styles.thongTin}>
+                    <Text style={styles.input}>Số điện thoại: </Text>
+                    <TextInput placeholder="Nhập số điện thoại" keyboardType={"number-pad"} style={styles.textInput}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                        ...inforHD,
+                                       sdt: text
+                                   })
+                               }}></TextInput>
+                </View>
+                <View style={styles.thongTin}>
+                    <Text style={styles.input}>Email: </Text>
+                    <TextInput placeholder="Nhập email" keyboardType={"default"} style={styles.textInput}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                       ...inforHD,
+                                       email:text
+                                   })
+                               }}></TextInput>
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Địa Chỉ: </Text>
-                    <TextInput placeholder="Nhập địa chỉ" style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}
-                        onChangeText={(text) => {
-                            setInfoHD({
-                                tenKhachHang: infoHD.tenKhachHang,
-                                diaChi: text,
-                                thongTinCMT: {
-                                    idCMT: infoHD.thongTinCMT.idCMT,
-                                    noiCap: infoHD.thongTinCMT.noiCap
-                                },
-                                ngaySinh: {
-                                    ngay: infoHD.ngaySinh.ngay,
-                                    thang: infoHD.ngaySinh.thang,
-                                    nam: infoHD.ngaySinh.nam
-                                },
-                                sdt: infoHD.sdt,
-                                thongTinHopDong: {
-                                    ngayVay: {
-                                        ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                                        thang: infoHD.thongTinHopDong.ngayVay.thang,
-                                        nam: infoHD.thongTinHopDong.ngayVay.nam
-                                    },
-                                    tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                                    kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                                    soLanTra: infoHD.thongTinHopDong.soLanTra,
-                                    tinChap: infoHD.thongTinHopDong.tinChap
-                                }
-
-                            })
-                        }}></TextInput>
+                    <TextInput placeholder="Nhập địa chỉ" style={styles.richTextInput}
+                               multiline={true}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                       ...inforHD,
+                                       diaChi: text
+                                   })
+                               }}></TextInput>
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Số CMT: </Text>
-                    <TextInput placeholder="Nhập số chứng minh thư" keyboardType={"number-pad"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}
-                        onChangeText={(text) => {
-                            setInfoHD({
-                                tenKhachHang: infoHD.tenKhachHang,
-                                diaChi: infoHD.diaChi,
-                                thongTinCMT: {
-                                    idCMT: text,
-                                    noiCap: infoHD.thongTinCMT.noiCap
-                                },
-                                ngaySinh: {
-                                    ngay: infoHD.ngaySinh.ngay,
-                                    thang: infoHD.ngaySinh.thang,
-                                    nam: infoHD.ngaySinh.nam
-                                },
-                                sdt: infoHD.sdt,
-                                thongTinHopDong: {
-                                    ngayVay: {
-                                        ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                                        thang: infoHD.thongTinHopDong.ngayVay.thang,
-                                        nam: infoHD.thongTinHopDong.ngayVay.nam
-                                    },
-                                    tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                                    kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                                    soLanTra: infoHD.thongTinHopDong.soLanTra,
-                                    tinChap: infoHD.thongTinHopDong.tinChap
-                                }
-
-                            })
-                        }}></TextInput>
+                    <TextInput placeholder="Nhập số chứng minh thư" keyboardType={"number-pad"} style={styles.textInput}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                       ...inforHD,
+                                       thongTinCMT: {
+                                           ...inforHD.thongTinCMT,
+                                           idCMT: text
+                                       }
+                                   })
+                               }}></TextInput>
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Nơi Cấp: </Text>
-                    <TextInput placeholder="Nhập nơi cấp CMT" style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}
-                        onChangeText={(text) => {
-                            setInfoHD({
-                                tenKhachHang: infoHD.tenKhachHang,
-                                diaChi: infoHD.diaChi,
-                                thongTinCMT: {
-                                    idCMT: infoHD.thongTinCMT.idCMT,
-                                    noiCap: text
-                                },
-                                ngaySinh: {
-                                    ngay: infoHD.ngaySinh.ngay,
-                                    thang: infoHD.ngaySinh.thang,
-                                    nam: infoHD.ngaySinh.nam
-                                },
-                                sdt: infoHD.sdt,
-                                thongTinHopDong: {
-                                    ngayVay: {
-                                        ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                                        thang: infoHD.thongTinHopDong.ngayVay.thang,
-                                        nam: infoHD.thongTinHopDong.ngayVay.nam
-                                    },
-                                    tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                                    kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                                    soLanTra: infoHD.thongTinHopDong.soLanTra,
-                                    tinChap: infoHD.thongTinHopDong.tinChap
-                                }
-
-                            })
-                        }}></TextInput>
+                    <TextInput placeholder="Nhập nơi cấp CMT" style={styles.textInput}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                       ...inforHD,
+                                       thongTinCMT: {
+                                           ...inforHD.thongTinCMT,
+                                           noiCap: text
+                                       }
+                                   })
+                               }}></TextInput>
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Ngày Sinh: </Text>
-                    <DatePicker style={styles.datepicker}
-                        date={dateNgaySinh}
-                        mode="date"
-                        placeholder="select date"
-                        format="DD-MM-YYYY"
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        onDateChange={(date) => { _onDateChangeNgaySinh(date) }}
+                    <DatePicker style={{width: '100%'}}
+                                date={inforHD.ngaySinh}
+                                mode="date"
+                                placeholder="Chọn ngày"
+                                format="YYYY-MM-DD"
+                                confirmBtnText="Xác nhận"
+                                cancelBtnText="Trở lại"
+                                customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: 4,
+                                        marginLeft: 0
+                                    },
+                                    dateInput: {
+                                        marginLeft: 36
+                                    }
+                                }}
+                                onDateChange={(date) => {
+                                    setInforHD({
+                                        ...inforHD,
+                                        ngaySinh: date
+                                    })
+                                }}
                     ></DatePicker>
                 </View>
-
-                <View style={styles.thongTin}>
-                    <Text style={styles.input}>Số điện thoại: </Text>
-                    <TextInput placeholder="Nhập số điện thoại" keyboardType={"number-pad"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}
-                        onChangeText={(text) => {
-                            setInfoHD({
-                                tenKhachHang: infoHD.tenKhachHang,
-                                diaChi: infoHD.diaChi,
-                                thongTinCMT: {
-                                    idCMT: infoHD.thongTinCMT.idCMT,
-                                    noiCap: infoHD.thongTinCMT.noiCap
-                                },
-                                ngaySinh: {
-                                    ngay: infoHD.ngaySinh.ngay,
-                                    thang: infoHD.ngaySinh.thang,
-                                    nam: infoHD.ngaySinh.nam
-                                },
-                                sdt: text,
-                                thongTinHopDong: {
-                                    ngayVay: {
-                                        ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                                        thang: infoHD.thongTinHopDong.ngayVay.thang,
-                                        nam: infoHD.thongTinHopDong.ngayVay.nam
-                                    },
-                                    tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                                    kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                                    soLanTra: infoHD.thongTinHopDong.soLanTra,
-                                    tinChap: infoHD.thongTinHopDong.tinChap
-                                }
-
-                            })
-                        }}></TextInput>
-                </View>
-
 
             </View>
             <View style={styles.containerHD}>
@@ -350,196 +173,274 @@ function ThemHopDongScreen({ navigation }) {
                 />
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Ngày Vay: </Text>
-                    <DatePicker style={styles.datepicker}
-                        date={dateNgayVay}
-                        mode="date"
-                        placeholder="select date"
-                        format="DD-MM-YYYY"
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        onDateChange={(date) => { _onDateChangeNgayVay(date) }}
+                    <DatePicker style={{width: '100%'}}
+                                date={inforHD.thongTinHopDong.ngayVay}
+                                mode="date"
+                                placeholder="Chọn ngày"
+                                format="YYYY-MM-DD"
+                                confirmBtnText="Xác nhận"
+                                cancelBtnText="Trở lại"
+                                customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: 4,
+                                        marginLeft: 0
+                                    },
+                                    dateInput: {
+                                        marginLeft: 36
+                                    }
+                                    // ... You can check the source to find the other keys.
+                                }}
+                                onDateChange={(date) => {
+                                    setInforHD({
+                                        ...inforHD,
+                                        thongTinHopDong: {
+                                            ...inforHD.thongTinHopDong,
+                                            ngayVay: date
+                                        }
+                                    })
+                                }}
                     ></DatePicker>
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Tổng Tiền Vay: </Text>
-                    <TextInput placeholder="Nhập số tiền vay" keyboardType={"number-pad"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}
-                        onChangeText={(text) => {
-                            setInfoHD({
-                                tenKhachHang: infoHD.tenKhachHang,
-                                diaChi: infoHD.diaChi,
-                                thongTinCMT: {
-                                    idCMT: infoHD.thongTinCMT.idCMT,
-                                    noiCap: infoHD.thongTinCMT.noiCap
-                                },
-                                ngaySinh: {
-                                    ngay: infoHD.ngaySinh.ngay,
-                                    thang: infoHD.ngaySinh.thang,
-                                    nam: infoHD.ngaySinh.nam
-                                },
-                                sdt: infoHD.sdt,
-                                thongTinHopDong: {
-                                    ngayVay: {
-                                        ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                                        thang: infoHD.thongTinHopDong.ngayVay.thang,
-                                        nam: infoHD.thongTinHopDong.ngayVay.nam
-                                    },
-                                    tongTienVay: text,
-                                    kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                                    soLanTra: infoHD.thongTinHopDong.soLanTra,
-                                    tinChap: infoHD.thongTinHopDong.tinChap
-                                }
+                    <TextInput placeholder="Nhập số tiền vay" keyboardType={"number-pad"} style={styles.textInput}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                       ...inforHD,
+                                       thongTinHopDong: {
+                                           ...inforHD.thongTinHopDong,
+                                           tongTienVay: parseInt(text)
+                                       }
+                                   });
 
-                            })
-                        }}></TextInput>
-                </View>
-
-                <View style={styles.thongTin}>
-                    <Text style={styles.input}>Hình thức đóng lãi: </Text>
-                    <RadioForm radio_props={theloaivay}
-                        animation={true}
-                        initial={0}
-                        onPress={(value) => { _onPress(value) }}
-                        formHorizontal={true}>
-                    </RadioForm>
-                </View>
-
-                <View style={{ flexDirection: 'column', marginHorizontal: 8, display: value === 0 ? '' : 'none' }}>
-                    <Text style={styles.input}>Lãi triệu/ngày: </Text>
-                    <TextInput placeholder="Nhập tiền lãi trên 1 triệu/1 ngày" keyboardType={"number-pad"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}></TextInput>
-                </View>
-
-                <View style={{ flexDirection: 'column', marginHorizontal: 8, display: value === 1 ? '' : 'none' }}>
-                    <Text style={styles.input}>Lãi %/tháng: </Text>
-                    <TextInput placeholder="Nhập % lãi trên 1 tháng" keyboardType={"number-pad"} style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}></TextInput>
+                               }}
+                    />
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Kỳ đóng lãi: </Text>
-                    <TextInput keyboardType={"number-pad"} placeholder="Nhập số ngày hoặc tháng nộp lãi 1 lần" style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}
-                        onChangeText={(text) => {
-                            setInfoHD({
-                                tenKhachHang: infoHD.tenKhachHang,
-                                diaChi: infoHD.diaChi,
-                                thongTinCMT: {
-                                    idCMT: infoHD.thongTinCMT.idCMT,
-                                    noiCap: infoHD.thongTinCMT.noiCap
-                                },
-                                ngaySinh: {
-                                    ngay: infoHD.ngaySinh.ngay,
-                                    thang: infoHD.ngaySinh.thang,
-                                    nam: infoHD.ngaySinh.nam
-                                },
-                                sdt: infoHD.sdt,
-                                thongTinHopDong: {
-                                    ngayVay: {
-                                        ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                                        thang: infoHD.thongTinHopDong.ngayVay.thang,
-                                        nam: infoHD.thongTinHopDong.ngayVay.nam
-                                    },
-                                    tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                                    kyDongLai: text,
-                                    soLanTra: infoHD.thongTinHopDong.soLanTra,
-                                    tinChap: infoHD.thongTinHopDong.tinChap
-                                }
+                    <TextInput keyboardType={"number-pad"} placeholder="Nhập số ngày hoặc tháng nộp lãi 1 lần" style={styles.textInput}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                       ...inforHD,
+                                       thongTinHopDong: {
+                                           ...inforHD.thongTinHopDong,
+                                           soKyDongLai: parseInt(text)
+                                       }
+                                   });
 
-                            })
-                        }}></TextInput>
+                               }}></TextInput>
                 </View>
+
+                <View style={styles.thongTin}>
+                    <Text style={styles.input}>Cách tính lãi: </Text>
+                    <RadioForm radio_props={[
+                        { label: 'Ngày', value: 0 },
+                        { label: 'Tháng', value: 1 },
+                    ]}
+                               // animation={true}
+                               initial={0}
+                               formHorizontal={true}
+                               onPress={(value) => {
+                                   switch (value) {
+                                       case 0:{
+                                           setCachTinhLai(value);
+                                           setInforHD({
+                                               ...inforHD,
+                                               thongTinHopDong:{
+                                                   ...inforHD.thongTinHopDong,
+                                                   cachTinhLai:0,
+                                                   giaTriLaiSuat:0
+                                               }
+                                           });
+                                           break;
+                                       }
+                                       case 1:{
+                                           setCachTinhLai(value);
+                                           setInforHD({
+                                               ...inforHD,
+                                               thongTinHopDong:{
+                                                   ...inforHD.thongTinHopDong,
+                                                   cachTinhLai:1,
+                                                   giaTriLaiSuat:0
+                                               }
+                                           });
+                                           break;
+                                       }
+                                   }
+                               }}
+                    />
+                </View>
+                {
+                    cachTinhLai == 0 &&(
+                        <View style={styles.thongTin}>
+                            <Text style={styles.input}>Lãi/triệu/ngày: </Text>
+                            <TextInput placeholder="Nhập tiền lãi /triệu/ngày" keyboardType={"number-pad"} style={styles.textInput}
+
+                                       onChangeText={(text)=>{
+                                           setInforHD({
+                                               ...inforHD,
+                                               thongTinHopDong:{
+                                                   ...inforHD.thongTinHopDong,
+                                                   giaTriLaiSuat:parseInt(text)
+                                               }
+                                           })
+                                       }}
+                            />
+                        </View>
+                    )
+                }
+                {
+                    cachTinhLai == 1 &&(
+                        <View style={styles.thongTin}>
+                            <Text style={styles.input}>Lãi %/tháng: </Text>
+                            <TextInput placeholder="Nhập % lãi trên 1 tháng" keyboardType={"number-pad"} style={styles.textInput}
+
+                                        onChangeText={(text)=>{
+                                            setInforHD({
+                                                ...inforHD,
+                                                thongTinHopDong:{
+                                                    ...inforHD.thongTinHopDong,
+                                                    giaTriLaiSuat:parseInt(text)
+                                                }
+                                            })
+                                        }}
+                            />
+                        </View>
+                    )
+                }
+
+
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Số lần trả: </Text>
-                    <TextInput keyboardType={"number-pad"} placeholder="Nhập số lần trả lãi khách muốn vay" style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}
-                        onChangeText={(text) => {
-                            setInfoHD({
-                                tenKhachHang: infoHD.tenKhachHang,
-                                diaChi: infoHD.diaChi,
-                                thongTinCMT: {
-                                    idCMT: infoHD.thongTinCMT.idCMT,
-                                    noiCap: infoHD.thongTinCMT.noiCap
-                                },
-                                ngaySinh: {
-                                    ngay: infoHD.ngaySinh.ngay,
-                                    thang: infoHD.ngaySinh.thang,
-                                    nam: infoHD.ngaySinh.nam
-                                },
-                                sdt: infoHD.sdt,
-                                thongTinHopDong: {
-                                    ngayVay: {
-                                        ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                                        thang: infoHD.thongTinHopDong.ngayVay.thang,
-                                        nam: infoHD.thongTinHopDong.ngayVay.nam
-                                    },
-                                    tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                                    kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                                    soLanTra: text,
-                                    tinChap: infoHD.thongTinHopDong.tinChap
-                                }
+                    <TextInput keyboardType={"number-pad"} placeholder="Nhập số lần trả lãi" style={styles.textInput}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                       ...inforHD,
+                                       thongTinHopDong: {
+                                           ...inforHD.thongTinHopDong,
+                                           soLanTra: parseInt(text)
+                                       }
+                                   });
 
-                            })
-                        }}></TextInput>
-                </View>
-
-                <View style={styles.thongTin}>
-                    <Text style={styles.input}>Tín chấp: </Text>
-                    <TextInput placeholder="Nhập tài sản thế chấp" style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1 }}
-                        onChangeText={(text) => {
-                            setInfoHD({
-                                tenKhachHang: infoHD.tenKhachHang,
-                                diaChi: infoHD.diaChi,
-                                thongTinCMT: {
-                                    idCMT: infoHD.thongTinCMT.idCMT,
-                                    noiCap: infoHD.thongTinCMT.noiCap
-                                },
-                                ngaySinh: {
-                                    ngay: infoHD.ngaySinh.ngay,
-                                    thang: infoHD.ngaySinh.thang,
-                                    nam: infoHD.ngaySinh.nam
-                                },
-                                sdt: infoHD.sdt,
-                                thongTinHopDong: {
-                                    ngayVay: {
-                                        ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                                        thang: infoHD.thongTinHopDong.ngayVay.thang,
-                                        nam: infoHD.thongTinHopDong.ngayVay.nam
-                                    },
-                                    tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                                    kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                                    soLanTra: infoHD.thongTinHopDong.soLanTra,
-                                    tinChap: text
-                                }
-
-                            })
-                        }}></TextInput>
+                               }}></TextInput>
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Ngày trả gốc: </Text>
-                    <DatePicker style={styles.datepicker}
+                    <DatePicker
                         date={dateNgayTraGoc}
                         mode="date"
-                        placeholder="select date"
-                        format="DD-MM-YYYY"
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        onDateChange={(date) => { _onDateChange(date) }}
+                        onDateChange={(date) => {
+                            setDateNgayTraGoc(date)
+                        }}
+                        style={{width: '100%'}}
+                        placeholder="Chọn ngày"
+                        format="YYYY-MM-DD"
+                        confirmBtnText="Xác nhận"
+                        cancelBtnText="Trở lại"
+                        customStyles={{
+                            dateIcon: {
+                                position: 'absolute',
+                                left: 0,
+                                top: 4,
+                                marginLeft: 0
+                            },
+                            dateInput: {
+                                marginLeft: 36
+                            }
+                        }}
                     ></DatePicker>
                 </View>
 
+                <View style={styles.thongTin}>
+                    <Text style={styles.input}>Kiểu đóng lãi: </Text>
+                    <RadioForm radio_props={[
+                        { label: 'Trước', value: 0 },
+                        { label: 'Sau', value: 1 },
+                    ]}
+                        // animation={true}
+                               initial={0}
+                               formHorizontal={true}
+                               onPress={(value) => {
+                                   switch (value) {
+                                       case 0:{
+                                           setKieuDongLai(value);
+                                           setInforHD({
+                                               ...inforHD,
+                                               thongTinHopDong:{
+                                                   ...inforHD.thongTinHopDong,
+                                                   kieuDongLai:0
+                                               }
+                                           });
+                                           break;
+                                       }
+                                       case 1:{
+                                           setCachTinhLai(value);
+                                           setInforHD({
+                                               ...inforHD,
+                                               thongTinHopDong:{
+                                                   ...inforHD.thongTinHopDong,
+                                                   kieuDongLai:1
+                                               }
+                                           });
+                                           break;
+                                       }
+                                   }
+                               }}
+                    />
+                </View>
+
+                <View style={styles.thongTin}>
+                    <Text style={styles.input}>Tín chấp: </Text>
+                    <TextInput placeholder="Nhập tài sản thế chấp" style={styles.textInput}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                       ...inforHD,
+                                       thongTinHopDong: {
+                                           ...inforHD.thongTinHopDong,
+                                           tinChap: text
+                                       }
+                                   })
+                               }}></TextInput>
+                </View>
+                <View style={styles.thongTin}>
+                    <Text style={styles.input}>Ghi chú: </Text>
+                    <TextInput placeholder="Nhập ghi chú nếu có" style={styles.textInput}
+                               onChangeText={(text) => {
+                                   setInforHD({
+                                       ...inforHD,
+                                       thongTinHopDong: {
+                                           ...inforHD.thongTinHopDong,
+                                           ghiChu: text
+                                       }
+                                   })
+                               }}></TextInput>
+                </View>
+
+
+
             </View>
 
-            <TouchableOpacity onPress={() => {
-                ThemHopDong2();
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                // Alert.alert(JSON.stringify(inforHD));
+                ThemHopDong();
             }}
-                title="Thêm" fontSize={1} >
-                <View style={styles.button} >
+                              title="Thêm" fontSize={1} >
+
                     <Text style={styles.loginName}>Thêm</Text>
-                </View>
+
             </TouchableOpacity>
         </KeyboardAwareScrollView>
     );
 
-    async function ThemHopDong2() {
+    async function ThemHopDong() {
         try {
             let token = await AsyncStorage.getItem('token');
             let response = await fetch(apiLink + 'managers/hopdongs?token=' + token, {
@@ -549,28 +450,25 @@ function ThemHopDongScreen({ navigation }) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    tenKhachHang: infoHD.tenKhachHang,
-                    diaChi: infoHD.diaChi,
+                    tenKhachHang: inforHD.tenKhachHang,
+                    sdt: inforHD.sdt,
+                    email:inforHD.email,
+                    diaChi: inforHD.diaChi,
                     thongTinCMT: {
-                        idCMT: infoHD.thongTinCMT.idCMT,
-                        noiCap: infoHD.thongTinCMT.noiCap
+                        idCMT: inforHD.thongTinCMT.idCMT,
+                        noiCap: inforHD.thongTinCMT.noiCap
                     },
-                    ngaySinh: {
-                        ngay: infoHD.ngaySinh.ngay,
-                        thang: infoHD.ngaySinh.thang,
-                        nam: infoHD.ngaySinh.nam
-                    },
-                    sdt: infoHD.sdt,
+                    ngaySinh: new Date(inforHD.ngaySinh),
                     thongTinHopDong: {
-                        ngayVay: {
-                            ngay: infoHD.thongTinHopDong.ngayVay.ngay,
-                            thang: infoHD.thongTinHopDong.ngayVay.thang,
-                            nam: infoHD.thongTinHopDong.ngayVay.nam
-                        },
-                        tongTienVay: infoHD.thongTinHopDong.tongTienVay,
-                        kyDongLai: infoHD.thongTinHopDong.kyDongLai,
-                        soLanTra: infoHD.thongTinHopDong.soLanTra,
-                        tinChap: infoHD.thongTinHopDong.tinChap
+                        ngayVay: new Date(inforHD.thongTinHopDong.ngayVay),
+                        tongTienVay: inforHD.thongTinHopDong.tongTienVay,
+                        soKyDongLai: inforHD.thongTinHopDong.soKyDongLai,
+                        cachTinhLai:inforHD.thongTinHopDong.cachTinhLai,
+                        giaTriLaiSuat:inforHD.thongTinHopDong.giaTriLaiSuat,
+                        soLanTra: inforHD.thongTinHopDong.soLanTra,
+                        kieuDongLai: inforHD.thongTinHopDong.kieuDongLai,
+                        tinChap: inforHD.thongTinHopDong.tinChap,
+                        ghiChu: inforHD.thongTinHopDong.ghiChu,
                     }
 
                 })
@@ -588,20 +486,47 @@ function ThemHopDongScreen({ navigation }) {
             await Alert.alert(e.toString());
         }
     }
+
+    function tinhNgayTraGoc(ngayVay, soKyDongLai, cachTinhLai,  soLanTra) {
+        // console.log(soLanTra);
+        // setDateNgayTraGoc(null);
+        if(ngayVay.length == 0 || Number.isNaN(soKyDongLai) || Number.isNaN(cachTinhLai) || Number.isNaN(soLanTra)){
+          setDateNgayTraGoc(null);
+        }
+        else  {
+            if (cachTinhLai == 0) {       //cachTinhLai: ngay
+                var ngay = new Date(ngayVay);
+                ngay.setDate(ngay.getDate()-1);
+                for(let i=0; i<soLanTra;i++){
+                    ngay.setDate(ngay.getDate()+parseInt(soKyDongLai));
+
+                    if(i==soLanTra-1){
+                        setDateNgayTraGoc(new Date(ngay.getFullYear(),ngay.getMonth(),ngay.getDate()));
+                    }
+                }
+            }
+            else if(cachTinhLai == 1){      //cachTinhLai: thang
+                var ngay = new Date(ngayVay);
+                for (let i = 0; i < soLanTra ; i++) {
+                    ngay.setMonth(ngay.getMonth() + parseInt(soKyDongLai));
+
+                    if(i==soLanTra-1){
+                        setDateNgayTraGoc(new Date(ngay.getFullYear(),ngay.getMonth(),ngay.getDate()));
+                    }
+                }
+
+            }
+        }
+
+    }
 }
 
-export default ThemHopDongScreen;
+
 
 
 const styles = StyleSheet.create({
-    container: {
-
-    },
-    containerKH: {
-
-    },
     containerHD: {
-        marginTop: windowHeight / 30,
+        marginTop: height / 30,
     },
     thongTin: {
         flexDirection: 'column',
@@ -611,20 +536,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingTop: 8
     },
-    datepicker: {
-        width: windowWidth,
-    },
-    button: {
-        borderWidth: 1,
-        marginTop: windowHeight / 80,
+    button:{
+        marginTop: height / 40,
         borderRadius: 5,
-        height: windowHeight / 15,
-        width: windowWidth / 2,
-        backgroundColor: '#FF0000',
+        height: height / 10,
+        width: width / 2,
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: windowWidth / 4,
-        marginBottom: windowHeight / 10
+        marginLeft: width / 4,
+        marginBottom: height / 10,
+        backgroundColor: 'green'
     },
     loginName: {
         alignItems: 'center',
@@ -634,6 +555,19 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: 'white'
     },
-
+    textInput: {
+        borderWidth: 1,
+        height: 32,
+        paddingLeft: 5,
+        fontWeight: "700",
+        backgroundColor: "#FFFFFF"
+    },
+    richTextInput: {
+        borderWidth: 1,
+        height: 60,
+        paddingLeft: 5,
+        fontWeight: "700",
+        backgroundColor: "#FFFFFF"
+    },
 });
 

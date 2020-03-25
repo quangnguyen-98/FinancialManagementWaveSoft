@@ -1,13 +1,13 @@
 import React from 'react';
 import {View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
-import Icon from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/Foundation";
 const {width,height} = Dimensions.get('window');
 export default function NutXacNhanThem() {
 
     // const navigation = useNavigation();
     return (
         <View style={styles.container} >
-            <Icon name={'md-add-circle-outline'} color={'black'} size={40}/>
+            <Icon name={'page-add'} color={'black'} size={40}/>
         </View>
     );
 
