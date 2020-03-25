@@ -13,6 +13,7 @@ import {
 import {apiLink} from '../../config/constant';
 import {useSelector, useDispatch} from 'react-redux';
 import switchScreenActions from "../../actions/switchScreenActions";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {useNavigation} from "@react-navigation/native";
 
 export default function DangNhapScreen(props) {
@@ -23,81 +24,77 @@ export default function DangNhapScreen(props) {
     const [khoaNutLogin, setKhoaNutLogin] = useState(false);
     return (
         <ImageBackground source={require('../../assets/logowavesoft.jpg')} style={styles.backgroundstyle}>
-
-            <View style={{alignItems: 'center'}}>
-                <ScrollView>
-                    <View style={styles.container}>
-                        <Text style={styles.title}>Wavesoft FM</Text>
-                        <View style={{flexDirection: 'row', paddingBottom: 16}}>
-                            {/*<TextInput style={styles.input} placeholder="Username" onChangeText={(text)=> this.setState({username:text})}></TextInput>*/}
-                            <TextInput style={styles.input}
-                                       placeholder="Username"
-                                       onChangeText={(text) => setAccount({
-                                           username: text,
-                                           password: account.password
-                                       })}
-                                       keyboardType={'email-address'}
-                                       returnKeyType={'next'}
-                                       autoFocus={true}
-                            ></TextInput>
-                        </View>
-
-                        <View style={{flexDirection: 'row'}}>
-                            {/*<TextInput style={styles.input} secureTextEntry placeholder="Password" onChangeText={(text)=> this.setState({password:text})}></TextInput>*/}
-                            <TextInput style={styles.input}
-                                       secureTextEntry
-                                       placeholder="Password"
-                                       keyboardType={'default'}
-                                       returnKeyType={'done'}
-                                       onChangeText={(text) => setAccount({
-                                           username: account.username,
-                                           password: text
-                                       })}
-                            ></TextInput>
-
-                        </View>
-                        <Text>{account.username}</Text>
-                        <Text>{account.password}</Text>
-                        {/*<Text>{screen}</Text>*/}
-                        {/*<TouchableOpacity onPress={async () => {*/}
-                        {/*    let b = await AsyncStorage.getItem('token');*/}
-                        {/*    await Alert.alert(b);*/}
-                        {/*}}>*/}
-                        {/*    <Text>Token</Text>*/}
-                        {/*</TouchableOpacity>*/}
-                        {/*<TouchableOpacity onPress={async () => {*/}
-
-                        {/*    let b = await AsyncStorage.getItem('role');*/}
-                        {/*    await Alert.alert(b);*/}
-                        {/*}}>*/}
-                        {/*    <Text>Role</Text>*/}
-                        {/*</TouchableOpacity>*/}
-
-                        <TouchableOpacity onPress={() => {
-                            if (khoaNutLogin == false) {
-                                setKhoaNutLogin(true);
-                                XuLyDangNhap();
-                            }
-                        }}>
-                            <View style={styles.button}>
-                                <Text style={styles.loginName}>Đăng nhập</Text>
+            <KeyboardAwareScrollView contentContainerStyle={{flex:1,alignItems:'center',justifyContent:'center'} }>
+                        <View style={styles.container}>
+                            <Text style={styles.title}>Wavesoft FM</Text>
+                            <View style={{flexDirection: 'row', paddingBottom: 16}}>
+                                {/*<TextInput style={styles.input} placeholder="Username" onChangeText={(text)=> this.setState({username:text})}></TextInput>*/}
+                                <TextInput style={styles.input}
+                                           placeholder="Username"
+                                           onChangeText={(text) => setAccount({
+                                               username: text,
+                                               password: account.password
+                                           })}
+                                           keyboardType={'email-address'}
+                                           returnKeyType={'next'}
+                                           autoFocus={true}
+                                ></TextInput>
                             </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{marginTop: 10}} onPress={() => {
-                            navigation.navigate('Quên mật khẩu');
-                        }}>
-                            <Text style={{
-                                textDecorationLine: 'underline',
-                                color: '#c0c0c0',
-                                fontWeight: 'bold',
-                                fontSize: 18
-                            }}>Quên mật khẩu</Text>
-                        </TouchableOpacity>
 
+                            <View style={{flexDirection: 'row'}}>
+                                {/*<TextInput style={styles.input} secureTextEntry placeholder="Password" onChangeText={(text)=> this.setState({password:text})}></TextInput>*/}
+                                <TextInput style={styles.input}
+                                           secureTextEntry
+                                           placeholder="Password"
+                                           keyboardType={'default'}
+                                           returnKeyType={'done'}
+                                           onChangeText={(text) => setAccount({
+                                               username: account.username,
+                                               password: text
+                                           })}
+                                ></TextInput>
 
-                    </View>
-                </ScrollView>
-            </View>
+                            </View>
+                            <Text>{account.username}</Text>
+                            <Text>{account.password}</Text>
+                            {/*<Text>{screen}</Text>*/}
+                            {/*<TouchableOpacity onPress={async () => {*/}
+                            {/*    let b = await AsyncStorage.getItem('token');*/}
+                            {/*    await Alert.alert(b);*/}
+                            {/*}}>*/}
+                            {/*    <Text>Token</Text>*/}
+                            {/*</TouchableOpacity>*/}
+                            {/*<TouchableOpacity onPress={async () => {*/}
+
+                            {/*    let b = await AsyncStorage.getItem('role');*/}
+                            {/*    await Alert.alert(b);*/}
+                            {/*}}>*/}
+                            {/*    <Text>Role</Text>*/}
+                            {/*</TouchableOpacity>*/}
+
+                            <TouchableOpacity onPress={() => {
+                                if (khoaNutLogin == false) {
+                                    setKhoaNutLogin(true);
+                                    XuLyDangNhap();
+                                }
+                            }}>
+                                <View style={styles.button}>
+                                    <Text style={styles.loginName}>Đăng nhập</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{marginTop: 10}} onPress={() => {
+                                navigation.navigate('Quên mật khẩu');
+                            }}>
+                                <Text style={{
+                                    textDecorationLine: 'underline',
+                                    color: '#c0c0c0',
+                                    fontWeight: 'bold',
+                                    fontSize: 18
+                                }}>Quên mật khẩu</Text>
+                            </TouchableOpacity>
+                        </View>
+            </KeyboardAwareScrollView>
+
         </ImageBackground>
     );
 
@@ -179,7 +176,6 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     backgroundstyle: {
-        flex: 1,
-        justifyContent: 'center',
+        flex: 1
     }
 });
