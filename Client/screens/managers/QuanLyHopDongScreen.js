@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     StyleSheet,
@@ -10,50 +10,42 @@ import {
     Alert,
     Dimensions
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {apiLink} from '../../config/constant';
-import {useSelector, useDispatch} from "react-redux";
-import {SearchBar} from 'react-native-elements';
-import {ItemHopDong} from "../../component/";
+import { useNavigation } from '@react-navigation/native';
+import { apiLink } from '../../config/constant';
+import { useSelector, useDispatch } from "react-redux";
+import { SearchBar } from 'react-native-elements';
+import { ItemHopDong } from "../../component/";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-const {width,height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 export default function QuanLyHopDongScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    //const {status} = route.params;
 
     const trangThaiDialog = useSelector(state => state.diaglogKhoaUserReducers);
+    const hopDongDuocChon = useSelector(state => state.hopDongDuocChonReducers);
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
     const [searchText, setSearchText] = useState('');
     // const [refresh,setRefresh] = useState(route.params?.refresh);
-    const RightActions = ({ progress, dragX, onPress }) => {
-        const scale = dragX.interpolate({
-            inputRange: [-100, 0],
-            outputRange: [1, 0],
-            extrapolate: 'clamp'
-        })
-        return (
-            <TouchableOpacity onPress={onPress}>
-                <View style={styles.rightActions}>
-                    <Animated.Text style={[styles.actionText, { transform: [{ scale }] }]}>Xóa</Animated.Text>
-                </View>
-            </TouchableOpacity>
 
-        )
-    }
-
-    const onSwipeFromLeft = () => {
-        Alert.alert("Hello Huy");
-    }
-
-    const onRightPress = () => {
-        Alert.alert("Hello Quang");
+    function _onLongPress(id) {
+        Alert.alert("Thông báo xóa", "Bạn có muốn xóa hợp đồng này ?",
+            [
+                {
+                    text: 'Yes', onPress: () => {
+                        xoaHopDong(id);
+                    }
+                },
+                { text: 'No', onPress: () => console.log("No"), style: 'cancel' }
+            ],
+            { cancelable: false });
     }
 
 
     useEffect(() => {
-        initData();
+        initData();        
     }, []);
 
     useEffect(() => {
@@ -88,26 +80,29 @@ export default function QuanLyHopDongScreen() {
                 }}
             />
             <FlatList
-                style={{flex: 3}}
+                style={{ flex: 3 }}
                 data={data}
-                renderItem={({item}) => (
-                    <TouchableOpacity onPress={() => {
-                        // dispatch({type: 'SETTHONGTINCHUCHOVAY', id: item._id, trangThaiKhoa: item.trangThaiKhoa});
-                        // navigation.navigate('Chi tiết chủ cho vay');
-                    }}>
-                        <Swipeable
-                            onSwipeableLeftOpen={onSwipeFromLeft}
-                            renderRightActions={(progress, dragX) => <RightActions progress={progress} dragX={dragX}
-                                                                                   onPress={onRightPress}></RightActions>}
-                        >
-                            <ItemHopDong id={item._id}
-                                         hinhAnh={item.hinhAnh}
-                                         maHopDong={item.maHopDong}
-                                         tenKhachHang={item.tenKhachHang}
-                                         ngayVay={item.thongTinHopDong.ngayVay}
-                                         trangThaiHopDong={item.trangThaiHopDong}
-                            />
-                        </Swipeable>
+                renderItem={({ item, index }) => (
+                    <TouchableOpacity
+                        onLongPress={() => {
+                            //dispatch({type: 'SETTHONGTINHOPDONG', id:item.maHopDong, trangThaiXoa: item.trangThaiXoa});
+                            //setXoaState(false);
+                            _onLongPress(item._id);
+                            // dispatch({type: 'SETTHONGTINCHUCHOVAY', id: item._id, trangThaiKhoa: item.trangThaiKhoa});
+                            // navigation.navigate('Chi tiết chủ cho vay');
+                        }}
+                        onPress={() => {
+                            navigation.navigate('Chi tiết hợp đồng',{id:item._id});
+                            refreshData();
+                        }}>
+                        <ItemHopDong id={item._id}
+                            hinhAnh={item.hinhAnh}
+                            maHopDong={item.maHopDong}
+                            tenKhachHang={item.tenKhachHang}
+                            ngayVay={item.thongTinHopDong.ngayVay}
+                            trangThaiHopDong={item.trangThaiHopDong}
+                            //trangThaiThayDoitrangThaiHopDong={status}
+                        />
                     </TouchableOpacity>
                 )}
                 extraData={data}
@@ -186,6 +181,39 @@ export default function QuanLyHopDongScreen() {
             console.log(e);
         }
     }
+
+    async function xoaHopDong(idHopDong) {
+        try {
+            let token = await AsyncStorage.getItem('token');
+            let response = await fetch(apiLink + 'managers/deletehopdongs?token=' + token, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    // username:this.state.username,
+                    // password:this.state.password
+                    id: idHopDong
+                })
+            });
+
+            let responseJson = await response.json();
+            // Alert.alert(JSON.stringify(responseJson));
+
+
+            if (responseJson.status == 'ok') {
+                Alert.alert('Xóa thành công');
+                refreshData();
+                //setXoaState(true);
+            } else {
+                Alert.alert('Xóa không thành công !');
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
 
 
@@ -217,8 +245,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#FF00FF',
         marginBottom: 2,
         height: height / 7,
-        marginRight:4,
-        borderRadius:3
+        marginRight: 4,
+        borderRadius: 3
     },
 
 });

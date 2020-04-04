@@ -6,6 +6,7 @@ const managersController = require('../controllers/managers.Controller');
 const usersController = require('../controllers/users.Controller');
 const usersValidate = require('../validator/users.Validate');
 const hopdongsController = require('../controllers/hopDongs.Controller');
+const chitiethopdongsController = require('../controllers/chiTietHopDongs.Controller');
 //Endpoint:localhost:3000/api/v1/managers/
 
 /*Chức năng CRUD nhân viên------------------------------------------------*/
@@ -42,5 +43,32 @@ router.delete('/users', authController.KiemTraTokenManager,usersValidate.Validat
 
 //Thêm hợp đồng bởi chủ cho vay
 router.post('/hopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_ThemHopDong );
+
+//Xóa hợp đồng bởi chủ cho vay
+router.put('/deletehopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_XoaMotHopDong);
+
+//Tất toán hợp đồng bởi chủ cho vay
+router.put('/tattoanhopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_TatToanHopDong);
+
+//Đóng lãi hợp đồng bởi chủ cho vay
+router.put('/donglaihopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_DongLaiHopDong);
+
+//Gia hạn kỳ hợp đồng bởi chủ cho vay
+router.put('/giahanhopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_GiaHanHopDong);
+
+//Trả bớt gốc hợp đồng bởi chủ cho vay
+router.put('/trabotgochopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_TraBotGocHopDong);
+
+//Vay thêm hợp đồng bởi chủ cho vay
+router.put('/vaythemhopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_VayThemHopDong);
+
+//Lấy hợp đồng theo id
+router.get('/hopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_LayHopDongTheoId);
+
+//Thêm chi tiết hợp đồng
+router.post('/chitiethopdongs',authController.KiemTraTokenManager,chitiethopdongsController.Manager_ThemChiTietHopDong);
+
+ //Lấy danh sách chi tiết hợp đồng theo id hợp đồng
+ router.get('/chitiethopdongs',authController.KiemTraTokenManager,chitiethopdongsController.Manager_LayTatCaChiTietHopDong_TheoIdHopDong);
 
 module.exports = router;

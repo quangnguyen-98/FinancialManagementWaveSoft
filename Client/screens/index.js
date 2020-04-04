@@ -13,6 +13,8 @@ import ThemHopDongScreen from "./managers/ThemHopDongScreen";
 import HopDongChoDuyet from "./managers/HopDongChoDuyet";
 import ThayDoiThongTinUserScreen from "./dungChung/ThayDoiThongTinUserScreen";
 import QuenMatKhauScreen from "./dungChung/QuenMatKhauScreen";
+import ChiTietHopDongScreen from './managers/ChiTietHopDongScreen';
+import LichSuHopDongScreen from './managers/LichSuHopDongScreen';
 export {
     DangNhapScreen,
     DoiMatKhauScreen,
@@ -28,6 +30,8 @@ export {
     ThemHopDongScreen,
     HopDongChoDuyet,
     ThayDoiThongTinUserScreen,
-    QuenMatKhauScreen
+    QuenMatKhauScreen,
+    ChiTietHopDongScreen,
+    LichSuHopDongScreen
 
 };

@@ -49,7 +49,6 @@ export default function QuanLyNhanVienScreen() {
                 onChangeText={timKiem}
                 value={searchText}
                 lightTheme={true}
-
                 inputContainerStyle={{
                     backgroundColor: '#ffffff'
                 }}

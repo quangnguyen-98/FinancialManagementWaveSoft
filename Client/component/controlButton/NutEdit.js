@@ -7,7 +7,7 @@ export default function NutEdit() {
     // const navigation = useNavigation();
     return (
         <View style={styles.container} >
-            <Icon name={'edit'} color={'black'} size={20}/>
+            <Icon name={'edit'} color={'black'} size={30}/>
         </View>
     );
 }

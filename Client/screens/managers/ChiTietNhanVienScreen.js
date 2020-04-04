@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     StyleSheet,
@@ -6,13 +6,13 @@ import {
     AsyncStorage,
     ScrollView
 } from 'react-native';
-import {apiLink} from "../../config/constant";
-import {ThongTinUserTheoDong, TieuDeUser} from "../../component";
-import {useSelector, useDispatch} from "react-redux";
+import { apiLink } from "../../config/constant";
+import { ThongTinUserTheoDong, TieuDeUser } from "../../component";
+import { useSelector, useDispatch } from "react-redux";
 import Dialog from "react-native-dialog";
-import {useNavigation} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
-export default function ChiTietNhanVienScreen({navigation, route}) {
+export default function ChiTietNhanVienScreen({ navigation, route }) {
     const nhanVienDuocChonReducers = useSelector(state => state.nhanVienDuocChonReducers);
     const dialogKhoaUser = useSelector(state => state.diaglogKhoaUserReducers);
     const dispatch = useDispatch();
@@ -27,8 +27,9 @@ export default function ChiTietNhanVienScreen({navigation, route}) {
         vaiTro: '',
         trangThaiKhoa: false,
     });
+
     useEffect(() => {
-        dispatch({type: 'CLOSE_DIALOG'});
+        dispatch({ type: 'CLOSE_DIALOG' });
         getInforNhanVien(nhanVienDuocChonReducers.id).then((result) => {
             setInfor({
                 email: result.email,
@@ -50,17 +51,17 @@ export default function ChiTietNhanVienScreen({navigation, route}) {
     return (
 
         <View style={styles.container}>
-            <TieuDeUser hoTen={infor.hoTen} email={infor.email} hinhAnh={infor.hinhAnh} nutSua={false}/>
+            <TieuDeUser hoTen={infor.hoTen} email={infor.email} hinhAnh={infor.hinhAnh} nutSua={false} />
             <View style={styles.thongTin}>
-                <ScrollView style={{width: '100%'}}>
-                    <ThongTinUserTheoDong tieuDe={'Họ tên:'} giaTri={infor.hoTen}/>
-                    <ThongTinUserTheoDong tieuDe={'Giới tính:'} giaTri={infor.gioiTinh == true ? 'Nam' : 'Nữ'}/>
+                <ScrollView style={{ width: '100%' }}>
+                    <ThongTinUserTheoDong tieuDe={'Họ tên:'} giaTri={infor.hoTen} />
+                    <ThongTinUserTheoDong tieuDe={'Giới tính:'} giaTri={infor.gioiTinh == true ? 'Nam' : 'Nữ'} />
                     <ThongTinUserTheoDong tieuDe={'Ngày sinh:'}
-                                          giaTri={new Date(infor.ngaySinh).getDate() + '/' + (new Date(infor.ngaySinh).getMonth()+1) + '/' + new Date(infor.ngaySinh).getFullYear()}
+                        giaTri={new Date(infor.ngaySinh).getDate() + '/' + (new Date(infor.ngaySinh).getMonth() + 1) + '/' + new Date(infor.ngaySinh).getFullYear()}
                     />
-                    <ThongTinUserTheoDong tieuDe={'Địa chỉ:'} giaTri={infor.diaChi}/>
-                    <ThongTinUserTheoDong tieuDe={'SĐT:'} giaTri={infor.sdt}/>
-                    <ThongTinUserTheoDong tieuDe={'Quyền:'} giaTri={infor.vaiTro}/>
+                    <ThongTinUserTheoDong tieuDe={'Địa chỉ:'} giaTri={infor.diaChi} />
+                    <ThongTinUserTheoDong tieuDe={'SĐT:'} giaTri={infor.sdt} />
+                    <ThongTinUserTheoDong tieuDe={'Quyền:'} giaTri={infor.vaiTro} />
                 </ScrollView>
             </View>
             <View>
@@ -82,7 +83,7 @@ export default function ChiTietNhanVienScreen({navigation, route}) {
                     <Dialog.Button
                         label="Hủy"
                         onPress={() => {
-                            dispatch({type: 'CLOSE_DIALOG'});
+                            dispatch({ type: 'CLOSE_DIALOG' });
                         }}
                     />
 
@@ -116,10 +117,10 @@ export default function ChiTietNhanVienScreen({navigation, route}) {
             });
             if (responseJson.status == 'ok') {
                 Alert.alert('Khóa thành công !');
-                dispatch({type: 'CLOSE_DIALOG'});
+                dispatch({ type: 'CLOSE_DIALOG' });
             } else {
                 Alert.alert('Lỗi');
-                dispatch({type: 'CLOSE_DIALOG'});
+                dispatch({ type: 'CLOSE_DIALOG' });
             }
 
         } catch (e) {
@@ -149,11 +150,11 @@ export default function ChiTietNhanVienScreen({navigation, route}) {
                 refresh: true
             });
             if (responseJson.status == 'ok') {
-                Alert.alert('Mỏ khóa thành công !');
-                dispatch({type: 'CLOSE_DIALOG'});
+                Alert.alert('Mở khóa thành công !');
+                dispatch({ type: 'CLOSE_DIALOG' });
             } else {
                 Alert.alert('Lỗi');
-                dispatch({type: 'CLOSE_DIALOG'});
+                dispatch({ type: 'CLOSE_DIALOG' });
             }
         } catch (e) {
             console.log(e);
