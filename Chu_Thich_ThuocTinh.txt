@@ -1,0 +1,27 @@
+Chú thích trangThaiHopDong bảng hợp đồng:
+0: Đủ lãi
+1: Nợ lãi
+2: Quá han
+3: Đã đóng
+4: Chờ duyệt
+
+Chú thích type bảng chi tiết hợp đồng:
+0: Chưa đóng lãi
+1: Đã đóng lãi
+3: Ngày trả gốc
+
+
+Chú thích type bảng lịch sử
+0:thêm phiếu thu (đóng lãi)
+1:xóa phiếu thu
+2:gia hạn
+3:trả bớt gốc
+4:vay thêm
+
+Chú thích hợp đồng
+Cách tính lãi:
+	0:Lãi ngày
+	1:Lãi tháng
+Kiểu đóng lãi:
+	0:Trả sau
+	1:Trả trước
