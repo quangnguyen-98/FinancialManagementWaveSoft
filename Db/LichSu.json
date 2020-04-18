@@ -1,0 +1,1 @@
+{"_id":{"$oid":"5e9b383c71ad311d508dcd31"},"ngayVayThem":{"$date":{"$numberLong":"1603560361000"}},"tienVayThem":{"$numberInt":"2000000"},"ghiChu":"Vay thêm","type":{"$numberInt":"4"},"ngayThucHien":{"$date":{"$numberLong":"1587230780316"}},"idHopDong":{"$oid":"5e9b352a8cd5b6007803f1c6"},"idNguoiThucHien":{"$oid":"5e5aa274f876850320336ffe"}}
