@@ -8,7 +8,7 @@ export default function TieuDeUser(props) {
         <View style={styles.wraper}>
             <View style={styles.KH_image} >
                 {/*<Icon  name='face-outline' color='black' size={110}/>*/}
-                <Image source={{url: props.hinhAnh.toString()}} style={{width: '100%', height: '100%'}} />
+                <Image source={props.hinhAnh?{uri: props.hinhAnh}:null} style={{width: '100%', height: '100%'}} />
             </View>
             <View style={styles.KH_info}>
                 <View style={styles.KH_info}>

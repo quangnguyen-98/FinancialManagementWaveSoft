@@ -13,45 +13,47 @@ import {useSelector, useDispatch} from "react-redux";
 import {SearchBar} from 'react-native-elements';
 import {ItemThongTinUser} from "../../component/";
 
-export default function QuanLyChuChoVayScreen() {
+export default function QuanLyChuChoVayScreen({route}) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    const trangThaiDialog = useSelector(state=>state.diaglogKhoaUserReducers);
+    const refresReducers = useSelector(state=>state.refreshReducers);
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
     const [searchText, setSearchText] = useState('');
-     // const [refresh,setRefresh] = useState(route.params?.refresh);
 
     useEffect(()=>{
+        if(!refresReducers) return;
         initData();
-    }, []);
+        dispatch({type:'RESET_REFRESH'});
+    },[refresReducers]);
 
     useEffect(() => {
-            initData();
-    }, [trangThaiDialog]);
-
-    useEffect(() => {
-        if(searchText.length>0){
-            timKiemDataChuChoVay(searchText).then((result) => {
-                setData(result);
-            }).catch((err) => {
-                console.log(err);
-            })
-        }else {
-            initData();
+        let timer = setTimeout(()=> {
+            if (searchText.length > 0) {
+                timKiemDataChuChoVay(searchText).then((result) => {
+                    setData(result);
+                }).catch((e) => {
+                    console.log(JSON.stringify(e));
+                })
+            } else {
+                initData();
+            }
+        },700);
+        return () => {
+            clearTimeout(timer);
         }
-
-
     }, [searchText]);
+
+
 
     return (
 
         <View style={styles.thongTin}>
             <SearchBar
                 placeholder="Tìm kiếm..."
-                onChangeText={timKiem}
+                onChangeText={(search)=>{setSearchText(search)}}
                 value={searchText}
                 lightTheme={true}
 
@@ -79,7 +81,7 @@ export default function QuanLyChuChoVayScreen() {
                 keyExtractor={(item) => `${item._id}`}
                 refreshControl={<RefreshControl
                     refreshing={refreshing}
-                    onRefresh={refreshData}
+                    onRefresh={initData}
                 />}
                 onEndReached={addMoreData}
                 EndReachedThreshold={0.2}
@@ -87,22 +89,22 @@ export default function QuanLyChuChoVayScreen() {
         </View>
     );
 
-    async function timKiem(search) {
-        setSearchText(search);
-    }
-
 
     function initData() {
+        setRefreshing(true);
         getDataChuChoVay(0).then((result) => {
             // dispatch({type:'REFRESH',page:0,newData:result});
+            setData([]);
             setData(result);
             setPage(0);
-        }).catch((err) => {
-            console.log(err);
+            setRefreshing(false);
+        }).catch((e) => {
+            setRefreshing(false);
+            console.log(JSON.stringify(e));
         });
     }
 
-    function refreshData() {
+   /* function refreshData() {
         setRefreshing(true);
         getDataChuChoVay(0).then((result) => {
             if (result != data) {
@@ -111,10 +113,10 @@ export default function QuanLyChuChoVayScreen() {
                 setRefreshing(false);
             }
             setRefreshing(false);
-        }).catch((err) => {
+        }).catch((e) => {
             setRefreshing(false);
         });
-    }
+    }*/
 
     async function addMoreData() {
         let newPage = page + 1;
@@ -125,7 +127,7 @@ export default function QuanLyChuChoVayScreen() {
                 ]);
                 setPage(page + 1);
             }
-        }).catch((err) => {
+        }).catch((e) => {
             setRefreshing(false);
         });
     }
@@ -137,7 +139,7 @@ export default function QuanLyChuChoVayScreen() {
             let responseJson = await response.json();
             return responseJson;
         } catch (e) {
-            console.log(e);
+            console.log(JSON.stringify(e));
         }
     }
 
@@ -148,7 +150,7 @@ export default function QuanLyChuChoVayScreen() {
             let responseJson = await response.json();
             return responseJson;
         } catch (e) {
-            console.log(e);
+            console.log(JSON.stringify(e));
         }
     }
 }

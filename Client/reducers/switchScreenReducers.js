@@ -1,5 +1,5 @@
 import {AsyncStorage } from 'react-native';
-
+// Lưu tên các màn hình phục vụ cho việc login logout
 const switchScreenReducers =(state='login',action)=>{
     switch (action.type) {
         case 'LOGIN':{
@@ -21,6 +21,7 @@ const switchScreenReducers =(state='login',action)=>{
 
 async function resetToken(){
     let a = await AsyncStorage.setItem('token','none');
+    let b = await AsyncStorage.setItem('role','none');
     return a;
 }
 

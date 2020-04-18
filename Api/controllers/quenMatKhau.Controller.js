@@ -30,7 +30,7 @@ module.exports = {
                             var payload = {
                                 userId: doc._id
                             };
-                            var token = jwt.sign({payload}, SecretKey, {expiresIn: 60 * 1}); //Hết hạn trong 1 giờ
+                            var token = jwt.sign({payload}, SecretKey, {expiresIn: 60 * 10}); //Hết hạn trong 10p
                             col.updateOne({_id: doc._id}, {
                                 $set: {
                                     forgotPassToken: token

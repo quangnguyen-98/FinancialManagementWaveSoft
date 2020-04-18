@@ -9,6 +9,8 @@ router.post('/', authContronller.KiemTraDangNhap);
 
 router.get('/checklogined', authContronller.CheckLogined);
 
+router.get('/checkpasstruockhixoa', authContronller.KiemTraPassTruocKhiXoa);
+
 
 
 

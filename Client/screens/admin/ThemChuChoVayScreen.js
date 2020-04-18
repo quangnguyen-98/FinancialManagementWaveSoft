@@ -10,18 +10,16 @@ import {
     AsyncStorage,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
-import DatePicker from "react-native-datepicker";
+import RadioForm from 'react-native-simple-radio-button';
 import {apiLink} from "../../config/constant";
 import {useSelector,useDispatch} from "react-redux";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-const {width, height} = Dimensions.get('window');
-const toDay = new Date();
 
 export default function ThemChuChoVayScreen({navigation}) {
-    const trangThaiDialog = useSelector(state => state.diaglogKhoaUserReducers);
     const dispatch = useDispatch();
     const [khoaNutThem,setKhoaNutThem ]= useState(false);
+    const [hienThiPickerNgaySinh, setHienThiPickerNgaySinh] = useState(false);
     const [infor, setInfor] = useState({
         email: '',
         sdt: '',
@@ -38,7 +36,7 @@ export default function ThemChuChoVayScreen({navigation}) {
     },[]);
     return (
         <KeyboardAwareScrollView
-            style={styles.container}
+            style={styles.container}   enableResetScrollToCoords={false}
         >
             <Text style={styles.inputTieuDe}>Thông tin tài khoản</Text>
 
@@ -98,7 +96,6 @@ export default function ThemChuChoVayScreen({navigation}) {
                 formHorizontal={true}
                 labelHorizontal={true}
                 buttonColor={'#2196f3'}
-                animation={true}
                 radio_props={[
                     {label: 'Nam', value: 0},
                     {label: 'Nữ', value: 1}
@@ -112,40 +109,34 @@ export default function ThemChuChoVayScreen({navigation}) {
             />
             <Text style={styles.text}>Ngày sinh</Text>
 
-            <DatePicker
-                style={{width: '100%'}}
-                date={infor.ngaySinh}
-                mode="date"
-                placeholder="Chọn ngày"
-                format="YYYY-MM-DD"
-                confirmBtnText="Xác nhận"
-                cancelBtnText="Trở lại"
-                customStyles={{
-                    dateIcon: {
-                        position: 'absolute',
-                        left: 0,
-                        top: 4,
-                        marginLeft: 0
-                    },
-                    dateInput: {
-                        marginLeft: 36
-                    }
-                    // ... You can check the source to find the other keys.
-                }}
-                onDateChange={async (date) => {
-                    // let objDate = new Date(date);
-                    // let ngaySinh ={
-                    //     ngay:objDate.getDate(),
-                    //     thang:objDate.getMonth(),
-                    //     nam:objDate.getFullYear()
-                    // }
-                    setInfor({
-                        ...infor,
-                        ngaySinh: date
+            <DateTimePickerModal isVisible={hienThiPickerNgaySinh}
+                                 headerTextIOS={'Chọn ngày sinh'}
+                                 confirmTextIOS={'Xác nhận'}
+                                 mode={'date'}
+                                 date={new Date(infor.ngaySinh)}
+                                 onConfirm={(selectedDate) => {
+                                     setHienThiPickerNgaySinh(false);
+                                     setInfor({
+                                         ...infor,
+                                         ngaySinh: new Date(selectedDate)
+                                     })
 
-                    })
-                }}
-            />
+                                 }}
+                                 onCancel={() => {
+                                     setHienThiPickerNgaySinh(false);
+                                 }}>
+
+            </DateTimePickerModal>
+            <TouchableOpacity
+                onPress={()=> setHienThiPickerNgaySinh(true)}
+            >
+                <TextInput placeholder="Chọn ngày vay"
+                           value={` ${infor.ngaySinh.getDate()}-${(infor.ngaySinh.getMonth() + 1)}-${infor.ngaySinh.getFullYear()}`}
+                           editable={false} style={styles.textInput}
+                           onTouchStart={() => {
+                               setHienThiPickerNgaySinh(true);
+                           }}></TextInput>
+            </TouchableOpacity>
 
             <Text style={styles.text}>Địa chỉ</Text>
             <TextInput style={styles.richInput}
@@ -235,14 +226,16 @@ const styles = StyleSheet.create({
         height: 32,
         paddingLeft: 5,
         fontWeight: "700",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3
     },
     richInput: {
         borderWidth: 1,
         height: 100,
         paddingLeft: 5,
         fontWeight: "700",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3
     },
     text: {
         fontSize: 20
@@ -258,7 +251,15 @@ const styles = StyleSheet.create({
     textXacNhan: {
         color: '#ffffff',
         fontSize: 30,
-    }
+    },
+    textInput: {
+        borderWidth: 1,
+        height: 32,
+        paddingLeft: 5,
+        fontWeight: "700",
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3
+    },
 
 });
 

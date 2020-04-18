@@ -10,6 +10,5 @@ export default function StackThongBaoHeThong() {
         }} initialRouteName="Thông báo hệ thống">
             <Stack.Screen name="Thông báo hệ thống" component={ThongBaoHeThongScreen}></Stack.Screen>
         </Stack.Navigator>
-
     );
 }

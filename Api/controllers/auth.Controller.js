@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const {DbUrl,DbName} = require('../config/constant');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 module.exports = {
     KiemTraDangNhap: function (req, res, next) {
@@ -51,6 +52,7 @@ module.exports = {
                                             userName:docs[0].email,
                                             userId: docs[0]._id,
                                             role:docs[0].vaiTro,
+
                                             token: token
                                         });
                                     }else {
@@ -77,22 +79,77 @@ module.exports = {
             });
         });
     },
-    CheckLogined: function (req, res, next) {
+    CheckLogined: async function (req, res, next) {
+        const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
         try {
             var token = req.query.token;
-            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
-                if (payload) {
+            let tokenResult = await jwt.verify(token, process.env.SECRET_KEY);
+
+            if (tokenResult) {
+                const userId = ObjectId(tokenResult.payload.userId);
+                await client.connect();
+                const db = client.db(DbName);
+                const col = db.collection('NguoiDung');
+                let result = await col.find({_id:userId,trangThaiKhoa:false}).sort({_id:-1}).limit(15).toArray();
+                client.close();
+                if(result.length >0){
                     res.status(400).json({
                         status: "ok",
-                        role:payload.payload.role ,
-                    });
-                } else {
-                    res.status(400).json({
-                        status: "fail",
-                        message: 'Token không hợp lệ !',
+                        role:tokenResult.payload.role
                     });
                 }
+            } else {
+                res.status(400).json({
+                    status: "fail",
+                    message: 'Token không hợp lệ !'
+                });
+            }
+
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Token không hợp lệ !'
             });
+        }
+    },
+
+    KiemTraPassTruocKhiXoa: async function (req, res, next) {
+        const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+        try {
+            var token = req.query.token;
+            var password = req.query.password;
+            let tokenResult = await jwt.verify(token, process.env.SECRET_KEY);
+            if (tokenResult) {
+                const userId = ObjectId(tokenResult.payload.userId);
+                await client.connect();
+                const db = client.db(DbName);
+                const col = db.collection('NguoiDung');
+                let resultNguoiDung = await col.find({_id:userId,trangThaiKhoa:false}).sort({_id:-1}).limit(15).next();
+                client.close();
+                if(resultNguoiDung){
+                    let compare = bcrypt.compareSync(password, resultNguoiDung.password);
+                    if(compare){
+                        res.status(200).json({
+                            status: "ok",
+
+                        });
+                    }
+                    else {
+                        res.status(400).json({
+                            status: "fail",
+                            message:'Mật khẩu không chính xác !'
+                        });
+                    }
+                }
+
+
+            } else {
+                res.status(400).json({
+                    status: "fail",
+                    message: 'Token không hợp lệ !'
+                });
+            }
+
         } catch (err) {
             res.status(400).json({
                 status: "fail",

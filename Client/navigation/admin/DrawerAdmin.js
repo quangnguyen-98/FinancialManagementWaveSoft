@@ -22,7 +22,7 @@ export default function DrawerAdmin() {
             >
                 <Drawer.Screen name="Thông tin" component={StackQuanLyThongTin}/>
                 <Drawer.Screen name="Quản lý chủ cho vay" component={StackQuanLyChuChoVay}/>
-                <Drawer.Screen name="Thông báo hệ thống" component={StackThongBaoHeThong}/>
+                {/*<Drawer.Screen name="Thông báo hệ thống" component={StackThongBaoHeThong}/>*/}
                 <Drawer.Screen name="Đổi mật khẩu" component={DoiMatKhauScreen}/>
                 <Drawer.Screen name="Đăng xuất" component={DangXuat}/>
             </Drawer.Navigator>

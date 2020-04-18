@@ -24,7 +24,7 @@ export default function ThongBaoHeThongScreen() {
     });
     return (
         <KeyboardAwareScrollView
-            style={styles.container}
+            style={styles.container}   enableResetScrollToCoords={false}
         >
 
             <Text style={styles.text}>Tiêu đề</Text>

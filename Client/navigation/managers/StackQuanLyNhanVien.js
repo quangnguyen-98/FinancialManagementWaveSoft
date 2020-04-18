@@ -18,9 +18,7 @@ export default function StackQuanLyChuChoVay() {
                     <TouchableOpacity onPress={()=> navigation.navigate('Thêm nhân viên')}>
                     <NutThem />
                     </TouchableOpacity>
-                ),
-                headerStyle: {
-                }
+                )
             }}></Stack.Screen>
             <Stack.Screen name="Thêm nhân viên" component={ThemNhanVienScreen}/>
             <Stack.Screen name="Chi tiết nhân viên"

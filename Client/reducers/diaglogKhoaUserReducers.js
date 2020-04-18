@@ -1,3 +1,5 @@
+// Lưu lại trạng thái phujuc vụ việc bật tắt nút khóa users
+
 const defaultState = false;
 const diaglogKhoaUserReducers = (state = defaultState, action) => {
     switch (action.type) {

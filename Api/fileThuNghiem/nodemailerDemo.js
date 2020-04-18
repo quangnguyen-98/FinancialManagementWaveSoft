@@ -14,7 +14,7 @@ async function main(token) {
         secure: true, // true for 465, false for other ports
         auth: {
             user: 'quangnguyen.tester@gmail.com', // generated ethereal user
-            pass: 'Baobinh_2004' // generated ethereal password
+            pass: 'quangdeptrai01' // generated ethereal password
         },
         tls: {
             // do not fail on invalid certs

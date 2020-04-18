@@ -1,3 +1,4 @@
+const moment = require('moment');
 //cachTinhLai: 0=ngay, 1=thang
 function tinhLai(ngayVay, tongTienVay, soKyDongLai, cachTinhLai, giaTriLaiXuat, soLanTra, kieuDongLai) {
     if (cachTinhLai == 0) {       //cachTinhLai: ngay
@@ -5,17 +6,15 @@ function tinhLai(ngayVay, tongTienVay, soKyDongLai, cachTinhLai, giaTriLaiXuat, 
         //kieuDongLai: 0= Trả sau, 1 = Trả trước
         if(kieuDongLai == 0){            //Trả sau
             var arLichTraNo = [];
-            var ngay = new Date(ngayVay.nam,ngayVay.thang,ngayVay.ngay);
-            console.log(ngay);
-            ngay.setDate(ngay.getDate()-1);
-            console.log(ngay);
+            ngayVay.setDate(ngayVay.getDate()-1);
+            console.log(ngayVay);
             for(let i=0; i<soLanTra;i++){
-                ngay.setDate(ngay.getDate()+parseInt(soKyDongLai));
+                ngayVay = moment(ngayVay).add(soKyDongLai , "days").toDate();
                 let row = {
                     thoiGian:{
-                        ngay:ngay.getDate(),
-                        thang:ngay.getMonth(),
-                        nam:ngay.getFullYear()
+                        ngay:ngayVay.getDate(),
+                        thang:ngayVay.getMonth(),
+                        nam:ngayVay.getFullYear()
                     },
                     lai:mucLaiNgay
                 };
@@ -26,28 +25,25 @@ function tinhLai(ngayVay, tongTienVay, soKyDongLai, cachTinhLai, giaTriLaiXuat, 
         }
         else if (kieuDongLai === 1){       //Trả trước
             var arLichTraNo = [];
-            var ngay = new Date(ngayVay.nam,ngayVay.thang,ngayVay.ngay);
-            var ngayMoi = ngay;
-            console.log(ngay);
             for(let i=0; i<soLanTra-1;i++){
                 if(i == 0){
-                    ngay.setDate(ngay.getDate());
                     let row = {
                         thoiGian:{
-                            ngay:ngay.getDate(),
-                            thang:ngay.getMonth(),
-                            nam:ngay.getFullYear()
+                            ngay:ngayVay.getDate(),
+                            thang:ngayVay.getMonth(),
+                            nam:ngayVay.getFullYear()
                         },
                         lai:mucLaiNgay
                     };
                     arLichTraNo.push(row);
                 }
-                ngay.setDate(ngay.getDate()+parseInt(soKyDongLai));
+                ngayVay = moment(ngayVay).add(soKyDongLai , "days").toDate();
+                // ngayVay.setDate(ngayVay.getDate()+parseInt(soKyDongLai));
                 let row = {
                     thoiGian:{
-                        ngay:ngay.getDate(),
-                        thang:ngay.getMonth(),
-                        nam:ngay.getFullYear()
+                        ngay:ngayVay.getDate(),
+                        thang:ngayVay.getMonth(),
+                        nam:ngayVay.getFullYear()
                     },
                     lai:mucLaiNgay
                 };
@@ -61,16 +57,14 @@ function tinhLai(ngayVay, tongTienVay, soKyDongLai, cachTinhLai, giaTriLaiXuat, 
         //kieuDongLai: 0= Trả sau, 1 = Trả trước
         if (kieuDongLai === 0) {            //Trả sau
             var arLichTraNo = [];
-            var ngay = new Date(ngayVay.nam, ngayVay.thang, ngayVay.ngay);
-            // ngay.setDate(ngay.getDate() - 1);
-            console.log(ngay);
             for (let i = 0; i < soLanTra ; i++) {
-                ngay.setMonth(ngay.getMonth() + parseInt(soKyDongLai));
+                ngayVay = moment(ngayVay).add(soKyDongLai , "months").toDate();
+                // ngayVay.setMonth(ngayVay.getMonth() + parseInt(soKyDongLai));
                 let row = {
                     thoiGian: {
-                        ngay: ngay.getDate(),
-                        thang: ngay.getMonth(),
-                        nam: ngay.getFullYear()
+                        ngay: ngayVay.getDate(),
+                        thang: ngayVay.getMonth(),
+                        nam: ngayVay.getFullYear()
                     },
                     lai: mucLaiThang
                 };
@@ -80,34 +74,31 @@ function tinhLai(ngayVay, tongTienVay, soKyDongLai, cachTinhLai, giaTriLaiXuat, 
         }
         else if(kieuDongLai === 1){            //Trả trước
             var arLichTraNo = [];
-            var ngay = new Date(ngayVay.nam,ngayVay.thang,ngayVay.ngay);
-            // ngay.setMonth(ngay.getMonth() - 1);
-            console.log(ngay);
+            console.log(ngayVay);
             for(let i=0; i<soLanTra;i++){
-                if(i==0){
-                    // ngay.setMonth(ngay.getMonth()+parseInt(soKyDongLai));
+                if(i === 0){
                     let row = {
                         thoiGian:{
-                            ngay:ngay.getDate(),
-                            thang:ngay.getMonth(),
-                            nam:ngay.getFullYear()
+                            ngay:ngayVay.getDate(),
+                            thang:ngayVay.getMonth(),
+                            nam:ngayVay.getFullYear()
                         },
                         lai:mucLaiThang
                     };
                     arLichTraNo.push(row);
-                }else if(i!=0){
-                    ngay.setMonth(ngay.getMonth()+parseInt(soKyDongLai));
+                }else if(i !== 0){
+                    ngayVay = moment(ngayVay).add(soKyDongLai , "months").toDate();
+                    // ngayVay.setMonth(ngayVay.getMonth()+parseInt(soKyDongLai));
                     let row = {
                         thoiGian:{
-                            ngay:ngay.getDate(),
-                            thang:ngay.getMonth(),
-                            nam:ngay.getFullYear()
+                            ngay:ngayVay.getDate(),
+                            thang:ngayVay.getMonth(),
+                            nam:ngayVay.getFullYear()
                         },
                         lai:mucLaiThang
                     };
                     arLichTraNo.push(row);
                 }
-
             }
             console.log(arLichTraNo);
         }
@@ -170,15 +161,18 @@ function tinhNgayTraGoc(ngayVay, soKyDongLai, cachTinhLai,  soLanTra) {
 // }
 //
 //
-// var ngayvay = {
-//     ngay:28,
-//     thang:4, //tháng 0-11
-//     nam:2017
-// }
-//  tinhLai(ngayvay,10000000,1,1,10,3,0);
+// console.log(new Date('2020-4-11'));
+// console.log("date")
+var ngayvay1 = new Date('2020-4-11');
+var ngayvay = {
+    ngay:11,
+    thang:3, //tháng 0-11
+    nam:2020
+}
+ tinhLai(ngayvay1,10000000,3,1,10000,5,0);
 
-const a =new Date(1998,1,4);
-console.log(a);
-console.log(a.getDate());
-console.log(a.getMonth());
-console.log(a.getFullYear());
+// const a =new Date(1998,1,4);
+// console.log(a);
+// console.log(a.getDate());
+// console.log(a.getMonth());
+// console.log(a.getFullYear());

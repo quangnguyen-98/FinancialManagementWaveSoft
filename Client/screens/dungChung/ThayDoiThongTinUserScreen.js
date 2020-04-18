@@ -1,34 +1,27 @@
-import React, {useState, useEffect} from 'react';
-import {
-    Text,
-    View,
-    StyleSheet,
-    Alert,
-    TextInput,
-    Dimensions,
-    TouchableOpacity,
-    AsyncStorage,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Alert, AsyncStorage, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 import {apiLink} from "../../config/constant";
+import {useNavigation} from "@react-navigation/native";
+import RadioForm from "react-native-simple-radio-button";
 
 const {width, height} = Dimensions.get('window');
 const toDay = new Date();
-import {useNavigation} from "@react-navigation/native";
-import RadioForm from "react-native-simple-radio-button";
-import DatePicker from "react-native-datepicker";
 
 export default function ThayDoiThongTinUserScreen({route}) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const thongTinUser = route.params.thongTinUser;
-    const [khoaNutThem,setKhoaNutThem ]= useState(false);
-    const [trangThaiGioiTinh, setTrangThaiGioiTinh] = useState(thongTinUser.gioiTinh?0:1)
+    const [khoaNutThem, setKhoaNutThem] = useState(false);
+    const [trangThaiGioiTinh, setTrangThaiGioiTinh] = useState(thongTinUser.gioiTinh ? 0 : 1)
+    const [hienThiPickerNgaySinh, setHienThiPickerNgaySinh] = useState(false);
+
     const [infor, setInfor] = useState({
         hoTen: '',
         gioiTinh: '',
-        ngaySinh: '',
+        ngaySinh: new Date(),
         sdt: '',
         diaChi: '',
     });
@@ -42,15 +35,15 @@ export default function ThayDoiThongTinUserScreen({route}) {
             diaChi: thongTinUser.diaChi,
         })
         setTrangThaiGioiTinh(infor.gioiTinh ? 0 : 1);
-        dispatch({type:'OPEN_DIALOG'});
+        dispatch({type: 'OPEN_DIALOG'});
     }, [])
 
     return (
         <KeyboardAwareScrollView
-            style={styles.container}
+            style={styles.container} enableResetScrollToCoords={false}
         >
             <Text style={styles.text}>Họ tên</Text>
-            <TextInput style={styles.input}
+            <TextInput style={styles.textInput}
                        value={infor.hoTen}
                        placeholder="Họ tên"
                        onChangeText={(text) => setInfor({
@@ -78,37 +71,31 @@ export default function ThayDoiThongTinUserScreen({route}) {
             />
             <Text style={styles.text}>Ngày sinh</Text>
 
-            <DatePicker
-                style={{width: '100%'}}
-                date={infor.ngaySinh}
-                mode="date"
-                placeholder="Chọn ngày"
-                format="YYYY-MM-DD"
-                confirmBtnText="Xác nhận"
-                cancelBtnText="Trở lại"
-                customStyles={{
-                    dateIcon: {
-                        position: 'absolute',
-                        left: 0,
-                        top: 4,
-                        marginLeft: 0
-                    },
-                    dateInput: {
-                        marginLeft: 36
-                    }
-                    // ... You can check the source to find the other keys.
-                }}
-                onDateChange={async (date) => {
-                    setInfor({
-                        ...infor,
-                        ngaySinh: new Date(date)
+            <DateTimePickerModal isVisible={hienThiPickerNgaySinh}
+                                 headerTextIOS={'Chọn ngày sinh'}
+                                 confirmTextIOS={'Xác nhận'}
+                                 mode={'date'}
+                                 date={new Date(infor.ngaySinh)}
+                                 onConfirm={(selectedDate) => {
+                                     setHienThiPickerNgaySinh(false);
+                                     setInfor({
+                                         ...infor,
+                                         ngaySinh: new Date(selectedDate)
+                                     })
 
-                    })
-                }}
-            />
+                                 }}
+                                 onCancel={() => {
+                                     setHienThiPickerNgaySinh(false);
+                                 }}>
+
+            </DateTimePickerModal>
+            <TouchableOpacity onPress={() => setHienThiPickerNgaySinh(true)}>
+                <Text
+                    style={styles.datePickerInput}>{` ${infor.ngaySinh.getDate()}-${(infor.ngaySinh.getMonth() + 1)}-${infor.ngaySinh.getFullYear()}`}</Text>
+            </TouchableOpacity>
 
             <Text style={styles.text}>Số điện thoại</Text>
-            <TextInput style={styles.input}
+            <TextInput style={styles.textInput}
                        value={infor.sdt}
                        placeholder="Số điện thoại"
                        onChangeText={(text) => setInfor({
@@ -118,7 +105,7 @@ export default function ThayDoiThongTinUserScreen({route}) {
                        })}
             ></TextInput>
             <Text style={styles.text}>Địa chỉ</Text>
-            <TextInput style={styles.richInput}
+            <TextInput style={styles.richTextInput}
                        value={infor.diaChi}
                        multiline={true}
                        placeholder="Địa chỉ"
@@ -130,10 +117,14 @@ export default function ThayDoiThongTinUserScreen({route}) {
 
 
             <TouchableOpacity style={{alignItems: 'center'}} onPress={() => {
-              if(khoaNutThem == false){
-                  setKhoaNutThem(true);
-                  DoiMatKhau();
-              }
+                if (khoaNutThem === false) {
+                    setKhoaNutThem(true);
+                    SuaThongTinUser().then(() => {
+                        navigation.goBack();
+                        dispatch({type: 'CLOSE_DIALOG'});
+                        dispatch({type: 'REFRESH'});
+                    })
+                }
 
             }}>
                 <View style={styles.buttonXacNhan}>
@@ -144,7 +135,7 @@ export default function ThayDoiThongTinUserScreen({route}) {
         </KeyboardAwareScrollView>
     );
 
-    async function DoiMatKhau() {
+    async function SuaThongTinUser() {
         try {
             let token = await AsyncStorage.getItem('token');
             // let userName = await AsyncStorage.getItem('userName');
@@ -166,14 +157,10 @@ export default function ThayDoiThongTinUserScreen({route}) {
             let responseJson = await response.json();
             if (responseJson.status == 'ok') {
                 Alert.alert(responseJson.message);
-                navigation.goBack();
-                dispatch({type:'CLOSE_DIALOG'});
                 // dispatch({type: 'LOGIN'});
             } else if (responseJson.status == 'fail') {
                 Alert.alert(responseJson.message);
-                // navigation.goBack();
             }
-
         } catch (e) {
             await Alert.alert(e.toString());
         }
@@ -188,24 +175,15 @@ const styles = StyleSheet.create({
         paddingTop: height / 20,
         paddingHorizontal: height / 30
     },
-    inputTieuDe: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#356bed'
-    },
-    input: {
+
+
+    richTextInput: {
         borderWidth: 1,
-        height: 32,
+        height: 80,
         paddingLeft: 5,
         fontWeight: "700",
-        backgroundColor: "#FFFFFF"
-    },
-    richInput: {
-        borderWidth: 1,
-        height: 100,
-        paddingLeft: 5,
-        fontWeight: "700",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3
     },
     text: {
         fontSize: 20
@@ -221,7 +199,24 @@ const styles = StyleSheet.create({
     textXacNhan: {
         color: '#ffffff',
         fontSize: 30,
-    }
+    },
+    textInput: {
+        borderWidth: 1,
+        height: 32,
+        paddingLeft: 5,
+        fontWeight: "700",
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3
+    },
+    datePickerInput: {
+        borderWidth: 1,
+        height: 32,
+        paddingLeft: 5,
+        fontWeight: "700",
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3,
+        paddingTop: 7,
+    },
 
 });
 

@@ -3,7 +3,7 @@ const {DbUrl,DbName,soItemMoiPage} = require('../config/constant');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
-const hamHoTro = require('../utils/hamHoTro');
+const {BoDau} = require('../utils/hamHoTro');
 module.exports = {
     //Thao tác CRUD quản lý của admin
     LayTatCaManager: function (req, res, next) {
@@ -71,8 +71,9 @@ module.exports = {
         }
     },
 
+
     TimKiemManager: function (req, res, next) {
-        const ten = hamHoTro.BoDau(req.query.ten.toLowerCase());
+        const ten = BoDau(req.query.ten);
         try {
             const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
             client.connect(function (err, client) {
@@ -130,7 +131,7 @@ module.exports = {
                             email: req.body.email.toLowerCase(),
                             password: hash,
                             hoTen: req.body.hoTen,
-                            lowerCase: hamHoTro.BoDau(req.body.hoTen.toLowerCase()),
+                            lowerCase: BoDau(req.body.hoTen.toLowerCase()),
                             gioiTinh: req.body.gioiTinh,
                             ngaySinh: new Date(req.body.ngaySinh),
                             diaChi: req.body.diaChi,

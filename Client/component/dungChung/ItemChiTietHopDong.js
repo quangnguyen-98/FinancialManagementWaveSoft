@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Image, Dimensions, TouchableOpacity, AsyncStorage } from 'react-native';
-import { useSelector, useDispatch } from "react-redux";
-const date = new Date()
+import { Text, View, StyleSheet,Dimensions} from 'react-native';
 const { width, height } = Dimensions.get('window');
 export default function ItemChiTietHopDong(props) {
     const [trangThaiCTHD, setTrangThaiCTHD] = useState('');
-    const [ngayVay, setNgayVay] = useState('');
 
     useEffect(() => {
         switch (props.loai) {

@@ -1,2 +1,8 @@
 Client/node_modules
+/Client/.git
+/Client/.gitignore
+
+
 Api/node_modules
+/Api/.git
+/Api/.gitignore

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Image, Dimensions, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Text, View, StyleSheet, Image, Dimensions} from 'react-native';
 import { useSelector, useDispatch } from "react-redux";
 const date = new Date()
 const { width, height } = Dimensions.get('window');
 export default function ItemHopDong(props) {
     const [trangThaiHD, setTrangThaiHD] = useState('');
     const [style, setStyle] = useState('');
-    const [ngayVay, setNgayVay] = useState('');
 
     useEffect(() => {
         switch (props.trangThaiHopDong) {
@@ -26,16 +25,11 @@ export default function ItemHopDong(props) {
                 break;
             }
             case 3: {
-                setTrangThaiHD('Hoàn thành');
+                setTrangThaiHD('Đã đóng');
                 setStyle('hoanThanh');
                 break;
             }
             case 4: {
-                setTrangThaiHD('Hủy');
-                setStyle('huy');
-                break;
-            }
-            case 5: {
                 setTrangThaiHD('Chờ duyệt');
                 setStyle('choDuyet');
                 break;
@@ -49,7 +43,7 @@ export default function ItemHopDong(props) {
             {
                 style == 'duLai' && (
                     <View style={styles.containerDuLai}>
-                        <Image style={styles.hinhAnh} source={{ url: props.hinhAnh }} />
+                        <Image style={styles.hinhAnh} source={{ uri: props.hinhAnh }} />
                         <View style={styles.thongTin}>
                             <View style={styles.ten}>
                                 <Text style={styles.textMaHopDong}>{props.maHopDong}</Text>
@@ -74,7 +68,7 @@ export default function ItemHopDong(props) {
             {
                 style == 'noLai' && (
                     <View style={styles.containerNoLai}>
-                        <Image style={styles.hinhAnh} source={{ url: props.hinhAnh }} />
+                        <Image style={styles.hinhAnh} source={{ uri: props.hinhAnh }} />
                         <View style={styles.thongTin}>
                             <View style={styles.ten}>
                                 <Text style={styles.textMaHopDong}>{props.maHopDong}</Text>
@@ -98,7 +92,7 @@ export default function ItemHopDong(props) {
             {
                 style == 'quaHan' && (
                     <View style={styles.containerQuaHan}>
-                        <Image style={styles.hinhAnh} source={{ url: props.hinhAnh }} />
+                        <Image style={styles.hinhAnh} source={{ uri: props.hinhAnh }} />
                         <View style={styles.thongTin}>
                             <View style={styles.ten}>
                                 <Text style={styles.textMaHopDong}>{props.maHopDong}</Text>
@@ -122,7 +116,7 @@ export default function ItemHopDong(props) {
             {
                 style == 'hoanThanh' && (
                     <View style={styles.containerHoanThanh}>
-                        <Image style={styles.hinhAnh} source={{ url: props.hinhAnh }} />
+                        <Image style={styles.hinhAnh} source={{ uri: props.hinhAnh }} />
                         <View style={styles.thongTin}>
                             <View style={styles.ten}>
                                 <Text style={styles.textMaHopDong}>{props.maHopDong}</Text>
@@ -143,21 +137,53 @@ export default function ItemHopDong(props) {
                     </View>
                 )
             }
-
+            {
+                style == 'choDuyet' && (
+                    <View style={styles.containerChoDuyet}>
+                        <Image style={styles.hinhAnh} source={{ uri: props.hinhAnh }} />
+                        <View style={styles.thongTin}>
+                            <View style={styles.ten}>
+                                <Text style={styles.textMaHopDong}>{props.maHopDong}</Text>
+                            </View>
+                            <View style={styles.dongItem}>
+                                <Text style={styles.textThongTin}>{props.tenKhachHang}</Text>
+                            </View>
+                            <View style={styles.dongItem}>
+                                <Text style={styles.textThongTin}>Ngày vay: {new Date(props.ngayVay).getDate() + "/" + (new Date(props.ngayVay).getMonth() + 1) + "/" + new Date(props.ngayVay).getFullYear()}</Text>
+                            </View>
+                        </View>
+                        <View style={styles.trangThai}>
+                            <View style={styles.dongItem}>
+                                <Text style={styles.textTrangThai}>{trangThaiHD}</Text>
+                            </View>
+                        </View>
+                    </View>
+                )
+            }
         </View>
-
-
     );
 }
 
 
 const styles = StyleSheet.create({
+    containerBinhThuong: {
+        padding:5,
+        height: height/7,
+        flexDirection: 'row',
+        marginBottom:5,
+        backgroundColor:'#ffffff',
+        borderRadius:3,
+        shadowColor:'#000000',
+        shadowOpacity:0.3,
+        shadowRadius:5,
+        shadowOffset:{width:0,height:0}
+    },
     containerDuLai: {
         padding: 5,
         height: height / 7,
         flexDirection: 'row',
         marginBottom: 5,
-        backgroundColor: '#228b22',
+        backgroundColor: '#52c41a',
         borderRadius: 3,
         shadowColor: '#000000',
         shadowOpacity: 0.3,
@@ -169,7 +195,7 @@ const styles = StyleSheet.create({
         height: height / 7,
         flexDirection: 'row',
         marginBottom: 5,
-        backgroundColor: '#ff8300',
+        backgroundColor: '#faad14',
         borderRadius: 3,
         shadowColor: '#000000',
         shadowOpacity: 0.3,
@@ -193,7 +219,19 @@ const styles = StyleSheet.create({
         height: height / 7,
         flexDirection: 'row',
         marginBottom: 5,
-        backgroundColor: '#0000FF',
+        backgroundColor: '#1890ff',
+        borderRadius: 3,
+        shadowColor: '#000000',
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        shadowOffset: { width: 0, height: 0 }
+    },
+    containerChoDuyet: {
+        padding: 5,
+        height: height / 7,
+        flexDirection: 'row',
+        marginBottom: 5,
+        backgroundColor: '#13c2c2',
         borderRadius: 3,
         shadowColor: '#000000',
         shadowOpacity: 0.3,
@@ -211,7 +249,7 @@ const styles = StyleSheet.create({
     trangThai: {
         borderLeftWidth: 1,
         borderColor: 'white',
-        flex: 0.7,
+        flex: 1,
         justifyContent: 'center'
     },
     ten: {

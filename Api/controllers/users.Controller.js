@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken');
 const {DbUrl,DbName,soItemMoiPage} = require('../config/constant');
 const MongoClient = require('mongodb').MongoClient;
 const bcrypt = require('bcrypt');
+const nodemailer = require("nodemailer");
 const ObjectId = require('mongodb').ObjectId;
 const hamHoTro = require('../utils/hamHoTro');
 module.exports = {
-
     //Thực hiện bởi admin hoặc chủ cho vay
     KiemTraUserTonTai_KhiThem: function (req, res, next) {
         try {
@@ -460,46 +460,6 @@ module.exports = {
         }
     },
 
-    TimKiemUserTheoId: function (req, res, next) {
-        let token = req.query.token;
-        let userId =ObjectId (req.query.id);
-        try {
-            //Mở token ra kiểm tra id quản lý
-            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
-                //Lấy userId trong token để lọc ra những user thuộc từng quản lý
-                let managerId = ObjectId(payload.payload.userId);
-                const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
-                client.connect(function (err, client) {
-                    console.log("Connected correctly to server");
-                    const db = client.db(DbName);
-                    const col = db.collection('NguoiDung');
-                    //Query những nhân viên thuộc quyền quản lý của chủ nhân viên
-                    col.find({
-                        vaiTro: 2,
-                        idManager: managerId,
-                        _id:userId
-                    }).toArray(function (err, docs) {
-                        client.close(() => {
-                            if (err) {
-                                res.status(500).json({
-                                    status: 'fail',
-                                    message: err.toString()
-                                });
-                            } else {
-                                res.status(200).json(docs);
-                            }
-                        });
-                    });
-                });
-            });
-        } catch (err) {
-            res.status(400).json({
-                status: "fail",
-                message: 'Token không hợp lệ !'
-            });
-        }
-    },
-
     LayUserTheoId: function (req, res, next) {
         let token = req.query.token;
         let userId =ObjectId (req.query.id);
@@ -709,60 +669,98 @@ module.exports = {
         }
     },
 
-    DoiMatKhau: function (req, res, next) {
+    DoiMatKhau: async function (req, res, next) {
+        const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+        var token = req.query.token;
         try {
-            var token = req.query.token;
-            jwt.verify(token, process.env.SECRET_KEY, function (err, payload) {
-                const userId = ObjectId(payload.payload.userId);
-                bcrypt.genSalt(5, function (err, salt) {
-                    bcrypt.hash(req.body.password, salt, function (err, hash) {
-                        const client = new MongoClient(DbUrl, {
-                            useNewUrlParser: true,
-                            useUnifiedTopology: true
-                        });
-                        client.connect(function (err, client) {
-                            const db = client.db(DbName);
-                            const col = db.collection('NguoiDung');
-
-                            //Đổi mật khẩu
-                            col.updateOne({_id: userId}, {
-                                $set: {
-                                    password: hash
-                                }
-                            }, function (err, r) {
-                                client.close(() => {
-                                    if (err) {
-                                        res.status(500).json({
-                                            status: 'fail',
-                                            message: err.toString()
-                                        });
-                                    } else {
-                                        if (r.result.ok != 1) {
-                                            res.status(400).json({
-                                                status: 'fail',
-                                                message: 'Bạn không có quyền tương tác với tài khoản này !',
-                                                r: r
-                                            });
-                                        } else {
-                                            res.status(200).json({
-                                                status: 'ok',
-                                                message: 'Đổi mật khẩu thành công !',
-                                                r: r
-                                            });
-                                        }
-                                    }
-                                });
-                            });
-                        });
-                    });
+            let tokenResult = await jwt.verify(token, process.env.SECRET_KEY);
+            const userId = ObjectId(tokenResult.payload.userId);
+            await client.connect();
+            const db = client.db(DbName);
+            const col = db.collection('NguoiDung');
+            //Kiểm tra mật khẩu cũ có đúng không
+            let nguoiDung = await col.find({_id: userId}).next();
+            console.log(nguoiDung);
+            console.log(req.body.passwordcu);
+            let kqSoSanh = bcrypt.compareSync(req.body.passwordcu,nguoiDung.password);
+            if(!kqSoSanh){
+                res.status(400).json({
+                    status: "fail",
+                    message: 'Mật khẩu cũ không đúng, vui lòng nhập lại !'
                 });
+                return ;
+            }
+            let salt = bcrypt.genSaltSync(5);
+            let hash = bcrypt.hashSync(req.body.password, salt);
 
+
+            //Đổi mật khẩu
+            let doiPassResult = await col.updateOne({_id: userId}, {
+                $set: {
+                    password: hash
+                }
             });
+            client.close();
+            if (doiPassResult.result.ok != 1) {
+                res.status(400).json({
+                    status: 'fail',
+                    message: 'Bạn không có quyền tương tác với tài khoản này !'
+                });
+            } else {
+                res.status(200).json({
+                    status: 'ok',
+                    message: 'Đổi mật khẩu thành công !'
+                });
+            }
         } catch (err) {
             res.status(400).json({
                 status: "fail",
-                message: 'Token không hợp lệ !'
+                message: 'Token không hợp lệ !'+err
             });
         }
+    },
+
+    GuiMailKhachHang:async function (req,res,next) {
+        try {
+            let email = req.body.email;
+            let tieuDe = req.body.tieuDe;
+            let noiDung = req.body.noiDung;
+            console.log(email)
+            console.log(tieuDe)
+            console.log(noiDung)
+            let transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 465,
+                secure: true, // true for 465, false for other ports
+                auth: {
+                    user: 'quangnguyen.tester@gmail.com', // generated ethereal user
+                    pass: 'quangdeptrai01' // generated ethereal password
+                },
+                tls: {
+                    // do not fail on invalid certs
+                    rejectUnauthorized: false
+                }
+            });
+            // send mail with defined transport object
+            let info = await transporter.sendMail({
+                from: '"Wavesoft FM"<foo@example.com>', // sender address
+                to: email, // list of receivers
+                subject: tieuDe, // Subject line
+                text: "Chang pass ?", // plain text body
+                html: "<p>"+noiDung+"</p>" // html body
+            });
+
+            res.status(200).json({
+                status: 'ok',
+                message: 'Gủi mail thành công !',
+            });
+        }catch (e) {
+            console.log(e)
+            res.status(400).json({
+                status: "fail",
+                message: 'Vui lòng nhập đủ thông tin !'
+            });
+        }
+
     }
 }

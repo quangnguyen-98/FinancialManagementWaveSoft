@@ -17,19 +17,21 @@ export default function QuanLyNhanVienScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    const trangThaiDialog = useSelector(state=>state.diaglogKhoaUserReducers);
+    const refresReducers = useSelector(state=>state.refreshReducers);
     const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
     const [searchText, setSearchText] = useState('');
 
-    useEffect(initData, []);
-
-    useEffect(() => {
+    useEffect(()=>{
+        if(!refresReducers) return;
         initData();
-    }, [trangThaiDialog]);
+        dispatch({type:'RESET_REFRESH'});
+    },[refresReducers]);
+
 
     useEffect( () => {
+        let timer = setTimeout(()=>{
         if(searchText.length>0){
             timKiemDataNhanVien(searchText).then((result) => {
                 setData(result);
@@ -38,6 +40,10 @@ export default function QuanLyNhanVienScreen() {
             })
         }else {
             initData();
+        }
+        },700);
+        return () => {
+            clearTimeout(timer);
         }
 
     }, [searchText]);
@@ -75,7 +81,7 @@ export default function QuanLyNhanVienScreen() {
                 keyExtractor={(item) => `${item._id}`}
                 refreshControl={<RefreshControl
                     refreshing={refreshing}
-                    onRefresh={refreshData}
+                    onRefresh={initData}
                 />}
                 onEndReached={addMoreData}
                 EndReachedThreshold={0.2}
@@ -88,16 +94,20 @@ export default function QuanLyNhanVienScreen() {
     }
 
     function initData() {
+        setRefreshing(true);
         getDataNhanVien(0).then((result) => {
             // dispatch({type:'REFRESH',page:0,newData:result});
+            setData([]);
             setData(result);
             setPage(0);
+            setRefreshing(false);
         }).catch((err) => {
+            setRefreshing(false);
             console.log(err);
         });
     }
 
-    function refreshData() {
+   /* function refreshData() {
         setRefreshing(true);
         getDataNhanVien(0).then((result) => {
             if (result != data) {
@@ -109,7 +119,7 @@ export default function QuanLyNhanVienScreen() {
         }).catch((err) => {
             setRefreshing(false);
         });
-    }
+    }*/
 
     async function addMoreData() {
         let newPage = page + 1;
@@ -132,7 +142,7 @@ export default function QuanLyNhanVienScreen() {
             let responseJson = await response.json();
             return responseJson;
         } catch (e) {
-            console.log(e);
+            console.log(JSON.stringify(e));
         }
     }
 
@@ -143,7 +153,7 @@ export default function QuanLyNhanVienScreen() {
             let responseJson = await response.json();
             return responseJson;
         } catch (e) {
-            console.log(e);
+            console.log(JSON.stringify(e));
         }
     }
 }

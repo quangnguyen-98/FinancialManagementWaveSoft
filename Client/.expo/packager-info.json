@@ -1,9 +1,9 @@
 {
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 5356,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "packagerPid": 8508,
+  "expoServerNgrokUrl": "https://aa-cau.anonymous.client.exp.direct",
+  "packagerNgrokUrl": "https://packager.aa-cau.anonymous.client.exp.direct",
+  "ngrokPid": 4904,
   "devToolsPort": 19002
 }

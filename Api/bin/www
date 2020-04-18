@@ -7,6 +7,12 @@
 var app = require('../app');
 var debug = require('debug')('api:server');
 var http = require('http');
+var fs = require('fs');
+
+// var privateKey  = fs.readFileSync(__dirname+'\\server.key', 'utf8');
+// var certificate = fs.readFileSync(__dirname+'\\server.cert', 'utf8');
+
+//var credentials = {key: privateKey, cert: certificate};
 
 /**
  * Get port from environment and store in Express.

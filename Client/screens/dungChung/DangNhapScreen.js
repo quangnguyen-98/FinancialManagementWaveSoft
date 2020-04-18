@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
     StyleSheet,
     Text,
@@ -7,92 +7,98 @@ import {
     TextInput,
     TouchableOpacity,
     Alert,
-    ScrollView,
     AsyncStorage
 } from 'react-native';
 import {apiLink} from '../../config/constant';
 import {useSelector, useDispatch} from 'react-redux';
 import switchScreenActions from "../../actions/switchScreenActions";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useNavigation} from "@react-navigation/native";
 
 export default function DangNhapScreen(props) {
     const navigation = useNavigation();
-    const screen = useSelector(state => state.switchScreenReducers);
     const dispatch = useDispatch();
     const [account, setAccount] = useState({username: 'manager1@gmail.com', password: '123456'});
     const [khoaNutLogin, setKhoaNutLogin] = useState(false);
+    const ref_input2 = useRef();
     return (
         <ImageBackground source={require('../../assets/logowavesoft.jpg')} style={styles.backgroundstyle}>
-            <KeyboardAwareScrollView contentContainerStyle={{flex:1,alignItems:'center',justifyContent:'center'} }>
-                        <View style={styles.container}>
-                            <Text style={styles.title}>Wavesoft FM</Text>
-                            <View style={{flexDirection: 'row', paddingBottom: 16}}>
-                                {/*<TextInput style={styles.input} placeholder="Username" onChangeText={(text)=> this.setState({username:text})}></TextInput>*/}
-                                <TextInput style={styles.input}
-                                           placeholder="Username"
-                                           onChangeText={(text) => setAccount({
-                                               username: text,
-                                               password: account.password
-                                           })}
-                                           keyboardType={'email-address'}
-                                           returnKeyType={'next'}
-                                           autoFocus={true}
-                                ></TextInput>
-                            </View>
+            <KeyboardAwareScrollView contentContainerStyle={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
+                                     enableResetScrollToCoords={false}
+            >
+                <View style={styles.container}>
+                    <Text style={styles.title}>Wavesoft FM</Text>
+                    <View style={{flexDirection: 'row', paddingBottom: 16}}>
+                        {/*<TextInput style={styles.input} placeholder="Username" onChangeText={(text)=> this.setState({username:text})}></TextInput>*/}
+                        <TextInput style={styles.input}
+                                   placeholder="Username"
+                                   onChangeText={(text) => setAccount({
+                                       username: text,
+                                       password: account.password
+                                   })}
+                                   keyboardType={'email-address'}
+                                   returnKeyType={'next'}
+                                   autoFocus={true}
+                                   onSubmitEditing={() => ref_input2.current.focus()}
+                        ></TextInput>
+                    </View>
 
-                            <View style={{flexDirection: 'row'}}>
-                                {/*<TextInput style={styles.input} secureTextEntry placeholder="Password" onChangeText={(text)=> this.setState({password:text})}></TextInput>*/}
-                                <TextInput style={styles.input}
-                                           secureTextEntry
-                                           placeholder="Password"
-                                           keyboardType={'default'}
-                                           returnKeyType={'done'}
-                                           onChangeText={(text) => setAccount({
-                                               username: account.username,
-                                               password: text
-                                           })}
-                                ></TextInput>
-
-                            </View>
-                            <Text>{account.username}</Text>
-                            <Text>{account.password}</Text>
-                            {/*<Text>{screen}</Text>*/}
-                            {/*<TouchableOpacity onPress={async () => {*/}
-                            {/*    let b = await AsyncStorage.getItem('token');*/}
-                            {/*    await Alert.alert(b);*/}
-                            {/*}}>*/}
-                            {/*    <Text>Token</Text>*/}
-                            {/*</TouchableOpacity>*/}
-                            {/*<TouchableOpacity onPress={async () => {*/}
-
-                            {/*    let b = await AsyncStorage.getItem('role');*/}
-                            {/*    await Alert.alert(b);*/}
-                            {/*}}>*/}
-                            {/*    <Text>Role</Text>*/}
-                            {/*</TouchableOpacity>*/}
-
-                            <TouchableOpacity onPress={() => {
-                                if (khoaNutLogin == false) {
-                                    setKhoaNutLogin(true);
+                    <View style={{flexDirection: 'row'}}>
+                        {/*<TextInput style={styles.input} secureTextEntry placeholder="Password" onChangeText={(text)=> this.setState({password:text})}></TextInput>*/}
+                        <TextInput style={styles.input}
+                                   secureTextEntry
+                                   placeholder="Password"
+                                   keyboardType={'default'}
+                                   returnKeyType={'done'}
+                                   onChangeText={(text) => setAccount({
+                                       username: account.username,
+                                       password: text
+                                   })}
+                                   onSubmitEditing={() => {
                                     XuLyDangNhap();
-                                }
-                            }}>
-                                <View style={styles.button}>
-                                    <Text style={styles.loginName}>Đăng nhập</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{marginTop: 10}} onPress={() => {
-                                navigation.navigate('Quên mật khẩu');
-                            }}>
-                                <Text style={{
-                                    textDecorationLine: 'underline',
-                                    color: '#c0c0c0',
-                                    fontWeight: 'bold',
-                                    fontSize: 18
-                                }}>Quên mật khẩu</Text>
-                            </TouchableOpacity>
+                                   }}
+                                   ref={ref_input2}
+                        ></TextInput>
+
+                    </View>
+                    <Text>{account.username}</Text>
+                    <Text>{account.password}</Text>
+                    {/*<Text>{screen}</Text>*/}
+                    {/*<TouchableOpacity onPress={async () => {*/}
+                    {/*    let b = await AsyncStorage.getItem('token');*/}
+                    {/*    await Alert.alert(b);*/}
+                    {/*}}>*/}
+                    {/*    <Text>Token</Text>*/}
+                    {/*</TouchableOpacity>*/}
+                    {/*<TouchableOpacity onPress={async () => {*/}
+
+                    {/*    let b = await AsyncStorage.getItem('role');*/}
+                    {/*    await Alert.alert(b);*/}
+                    {/*}}>*/}
+                    {/*    <Text>Role</Text>*/}
+                    {/*</TouchableOpacity>*/}
+
+                    <TouchableOpacity onPress={() => {
+                        if (khoaNutLogin == false) {
+                            setKhoaNutLogin(true);
+                            XuLyDangNhap();
+                        }
+                    }}>
+                        <View style={styles.button}>
+                            <Text style={styles.loginName}>Đăng nhập</Text>
                         </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{marginTop: 10}} onPress={() => {
+                        navigation.navigate('Quên mật khẩu');
+                    }}>
+                        <Text style={{
+                            textDecorationLine: 'underline',
+                            color: '#c0c0c0',
+                            fontWeight: 'bold',
+                            fontSize: 18
+                        }}>Quên mật khẩu</Text>
+                    </TouchableOpacity>
+                </View>
             </KeyboardAwareScrollView>
 
         </ImageBackground>
@@ -114,12 +120,12 @@ export default function DangNhapScreen(props) {
                 })
             });
             let responseJson = await response.json();
-            if (responseJson.status == 'ok') {
+            if (responseJson.status === 'ok') {
                 await AsyncStorage.setItem('token', responseJson.token.toString());
-                await AsyncStorage.setItem('userName', responseJson.userName.toString());
+                await AsyncStorage.setItem('role', responseJson.role.toString());
                 await dispatch(switchScreenActions.admin());
 
-            } else if (responseJson.status == 'fail') {
+            } else if (responseJson.status === 'fail') {
                 Alert.alert(responseJson.message);
                 setKhoaNutLogin(false);
             }

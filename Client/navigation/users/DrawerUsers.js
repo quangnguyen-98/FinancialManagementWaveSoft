@@ -4,7 +4,8 @@ import {createDrawerNavigator, DrawerContentScrollView, DrawerItemList} from '@r
 import {NavigationContainer} from '@react-navigation/native';
 import DangXuat from "../../component/dungChung/DangXuat";
 import StackQuanLyThongTin from "../StackQuanLyThongTin"
-import StackQuanLyHopDong from "./StackQuanLyHopDong";
+import StackHopDongDangVay from "../managers/StackHopDongDangVay";
+import StackHopDongChoDuyet from "../managers/StackHopDongChoDuyet";
 import {DoiMatKhauScreen} from "../../screens";
 
 const Drawer = createDrawerNavigator();
@@ -20,7 +21,8 @@ export default function DrawerUsers() {
                               initialRouteName="Thông tin"
             >
                 <Drawer.Screen name="Thông tin" component={StackQuanLyThongTin}/>
-                <Drawer.Screen name="Quản lý hợp đồng" component={StackQuanLyHopDong}/>
+                <Drawer.Screen name="Hợp đồng đang vay" component={StackHopDongDangVay}/>
+                <Drawer.Screen name="Hợp đồng chờ duyệt" component={StackHopDongChoDuyet}/>
                 <Drawer.Screen name="Đổi mật khẩu" component={DoiMatKhauScreen}/>
                 <Drawer.Screen name="Đăng xuất" component={DangXuat}/>
             </Drawer.Navigator>

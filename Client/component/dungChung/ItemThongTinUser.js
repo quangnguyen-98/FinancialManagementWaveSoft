@@ -6,7 +6,7 @@ const {width,height} = Dimensions.get('window');
 export default function ItemThongTinUser(props) {
         return (
                 <View style={!props.trangThaiKhoa?styles.wrapItemUnlock:styles.wrapItemlock}>
-                    <Image style={styles.hinhAnh} source={{url:props.hinhAnh}}/>
+                    <Image style={styles.hinhAnh} source={{uri:props.hinhAnh}}/>
                     <View style={styles.thongTin}>
                         <View style={styles.ten}>
                             <Text style={styles.textTen}>{props.hoTen}</Text>
@@ -18,8 +18,6 @@ export default function ItemThongTinUser(props) {
                 </View>
         );
 }
-
-
 
 const styles = StyleSheet.create({
     wrapItemUnlock: {

@@ -1,30 +1,20 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Dimensions,Text} from 'react-native';
-import Icon from "react-native-vector-icons/FontAwesome";
+import {View, StyleSheet, Dimensions} from 'react-native';
+import Icon from "react-native-vector-icons/Ionicons";
 const {width,height} = Dimensions.get('window');
-
 export default function NutDongLai() {
-
     // const navigation = useNavigation();
     return (
         <View style={styles.container} >
-            <Icon name={'money'} color={'black'} size={30}/>
-            <Text style={{fontSize:20, paddingLeft:8}}>Đóng Lãi</Text>
+            <Icon name={'ios-cash'} color={'black'} size={40}/>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container:{
-        flexDirection:'row',
-        width:width/2.2,
-        height:height/20,
-        borderRadius:5,
-        justifyContent:'center',
-        alignItems:'center',
-        borderWidth:1,
-        marginRight:16,
-        marginTop:8
+        width:width/8,
+        height:height/14
     }
 
 });

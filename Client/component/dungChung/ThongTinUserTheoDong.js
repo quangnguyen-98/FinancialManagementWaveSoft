@@ -1,11 +1,31 @@
-import React, {useState} from 'react';
-import {Text, View, StyleSheet, } from 'react-native';
+import React, {useState,Fragment} from 'react';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import call from 'react-native-phone-call';
 export default function ThongTinUserTheoDong(props) {
+    const args = {
+        number: props.giaTri,
+        prompt: true
+    }
     return (
-        <View style={styles.wrapItem}>
-            <Text style={styles.itemLeft} >{props.tieuDe}</Text>
-            <Text style={styles.itemRight}>{props.giaTri}</Text>
-        </View>
+        <Fragment>
+            {
+                props.type === 'bt'&&(
+                    <View style={styles.wrapItem}>
+                        <Text style={styles.itemLeft} >{props.tieuDe}</Text>
+                        <Text style={styles.itemRight}>{props.giaTri}</Text>
+                    </View>
+                )
+            }
+            {
+                props.type === 'sdt'&&(
+                    <View style={styles.wrapItem}>
+                        <Text style={styles.itemLeft} >{props.tieuDe}</Text>
+                        <Text style={styles.itemRight} onPress={()=>{call(args).catch(console.error)}}>{props.giaTri}</Text>
+                    </View>
+                )
+            }
+        </Fragment>
+
     );
 }
 const styles = StyleSheet.create({

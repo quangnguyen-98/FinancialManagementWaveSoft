@@ -8,13 +8,18 @@ import ThongBaoHeThongScreen from "./admin/ThongBaoHeThongScreen";
 import QuanLyNhanVienScreen from "./managers/QuanLyNhanVienScreen";
 import ChiTietNhanVienScreen from "./managers/ChiTietNhanVienScreen";
 import ThemNhanVienScreen from "./managers/ThemNhanVienScreen";
-import QuanLyHopDongScreen from "./managers/QuanLyHopDongScreen";
-import ThemHopDongScreen from "./managers/ThemHopDongScreen";
-import HopDongChoDuyet from "./managers/HopDongChoDuyet";
+import HopDongDangVay from "./hopDong/HopDongDangVay";
+import ThemHopDongScreen from "./hopDong/ThemHopDongScreen";
+import HopDongChoDuyet from "./hopDong/HopDongChoDuyet";
+import HopDongDaDong from "./hopDong/HopDongDaDong";
 import ThayDoiThongTinUserScreen from "./dungChung/ThayDoiThongTinUserScreen";
 import QuenMatKhauScreen from "./dungChung/QuenMatKhauScreen";
-import ChiTietHopDongScreen from './managers/ChiTietHopDongScreen';
-import LichSuHopDongScreen from './managers/LichSuHopDongScreen';
+import ChiTietHopDongScreen from "./hopDong/ChiTietHopDongScreen";
+import LichSuHoatDongScreen from "./hopDong/LichSuHoatDongScreen";
+import DongLaiScreen from "./hopDong/DongLaiScreen";
+import PhieuThuScreen from "./hopDong/PhieuThuScreen";
+import TatToanScreen from "./hopDong/TatToanScreen";
+import ChiTietLichSuScreen from "./hopDong/ChiTietLichSuScreen";
 export {
     DangNhapScreen,
     DoiMatKhauScreen,
@@ -26,12 +31,17 @@ export {
     QuanLyNhanVienScreen,
     ChiTietNhanVienScreen,
     ThemNhanVienScreen,
-    QuanLyHopDongScreen,
+    HopDongDangVay,
     ThemHopDongScreen,
     HopDongChoDuyet,
+    HopDongDaDong,
     ThayDoiThongTinUserScreen,
     QuenMatKhauScreen,
     ChiTietHopDongScreen,
-    LichSuHopDongScreen
+    LichSuHoatDongScreen,
+    DongLaiScreen,
+    PhieuThuScreen,
+    TatToanScreen,
+    ChiTietLichSuScreen
 
 };

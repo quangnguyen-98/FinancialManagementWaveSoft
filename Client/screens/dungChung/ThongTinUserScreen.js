@@ -2,13 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {Text, View, StyleSheet, ScrollView, AsyncStorage, Dimensions} from 'react-native';
 import {TieuDeUser, ThongTinUserTheoDong} from "../../component";
 import {apiLink} from '../../config/constant';
-import {useSelector} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
 
-const {width, height} = Dimensions.get('window');
 export default function ThongTinUserScreen() {
-
-    var isMounted = false;
-    const trangThaiDialog = useSelector(state=>state.diaglogKhoaUserReducers);
+    const dispatch = useDispatch();
+    const refreshReducers = useSelector(state=>state.refreshReducers);
     const [infor, setInfor] = useState({
         email: '',
         hoTen: '',
@@ -19,62 +17,43 @@ export default function ThongTinUserScreen() {
         hinhAnh: '',
         vaiTro: '',
     });
-    // const [isMounted, setIsMounted ]= useState(true);
-
-    useEffect(() => {
-        isMounted = true;
-       initData();
-    }, []);
-
-    useEffect(() => {
-        initData();
-    }, [trangThaiDialog]);
-    return (
-        <View style={styles.container}>
-            <TieuDeUser hoTen={infor.hoTen} email={infor.email} hinhAnh={infor.hinhAnh} gioiTinh={infor.gioiTinh} ngaySinh={infor.ngaySinh} sdt={infor.sdt} diaChi={infor.diaChi} nutSua={true}/>
-            <View style={styles.thongTin}>
-                <ScrollView style={{width: '100%'}}>
-                    <ThongTinUserTheoDong tieuDe={'Họ tên:'} giaTri={infor.hoTen}/>
-                    <ThongTinUserTheoDong tieuDe={'Giới tính:'} giaTri={infor.gioiTinh == true ? 'Nam' : 'Nữ'}/>
-                    <ThongTinUserTheoDong tieuDe={'Ngày sinh:'}
-                                          giaTri={new Date(infor.ngaySinh).getDate() + '/' + (new Date(infor.ngaySinh).getMonth()+1) + '/' + new Date(infor.ngaySinh).getFullYear()}
-                    />
-                    <ThongTinUserTheoDong tieuDe={'SĐT:'} giaTri={infor.sdt}/>
-                    <ThongTinUserTheoDong tieuDe={'Địa chỉ:'} giaTri={infor.diaChi}/>
-                    <ThongTinUserTheoDong tieuDe={'Quyền:'} giaTri={infor.vaiTro}/>
-                </ScrollView>
-            </View>
-        </View>
-    );
     function initData() {
         getInfor().then((infor) => {
-            setInfor({
-                email: infor.email,
-                hoTen: infor.hoTen,
-                gioiTinh: infor.gioiTinh,
-                ngaySinh: infor.ngaySinh,
-                diaChi: infor.diaChi,
-                sdt: infor.sdt,
-                hinhAnh: infor.hinhAnh
-            })
             switch (infor.vaiTro) {
                 case 0: {
                     setInfor({
-                        ...infor,
+                        email: infor.email,
+                        hoTen: infor.hoTen,
+                        gioiTinh: infor.gioiTinh,
+                        ngaySinh: infor.ngaySinh,
+                        diaChi: infor.diaChi,
+                        sdt: infor.sdt,
+                        hinhAnh: infor.hinhAnh,
                         vaiTro: 'Admin'
                     });
                     break;
                 }
                 case 1: {
-                    setInfor({
-                        ...infor,
+                    setInfor({ email: infor.email,
+                        hoTen: infor.hoTen,
+                        gioiTinh: infor.gioiTinh,
+                        ngaySinh: infor.ngaySinh,
+                        diaChi: infor.diaChi,
+                        sdt: infor.sdt,
+                        hinhAnh: infor.hinhAnh,
                         vaiTro: 'Chủ cho vay'
                     })
                     break;
                 }
                 case 2: {
                     setInfor({
-                        ...infor,
+                        email: infor.email,
+                        hoTen: infor.hoTen,
+                        gioiTinh: infor.gioiTinh,
+                        ngaySinh: infor.ngaySinh,
+                        diaChi: infor.diaChi,
+                        sdt: infor.sdt,
+                        hinhAnh: infor.hinhAnh,
                         vaiTro: 'Nhân viên'
                     });
                     break;
@@ -83,10 +62,46 @@ export default function ThongTinUserScreen() {
         }).catch((err) => {
             console.log(err);
         });
-        return () => {
+    }
+    // useEffect(() => {
+    //     let isMounted = true;
+    //     if(isMounted){
+    //         initData();
+    //     }
+    //   return()=>{
+    //         isMounted = false;
+    //   }
+    //
+    // }, []);
+
+    useEffect(() => {
+        let isMounted = true;
+        if(isMounted){
+            initData();
+        }
+        return()=>{
             isMounted = false;
         }
-    }
+    }, [refreshReducers]);
+
+    return (
+        <View style={styles.container}>
+            <TieuDeUser hoTen={infor.hoTen} email={infor.email} hinhAnh={infor.hinhAnh} gioiTinh={infor.gioiTinh} ngaySinh={infor.ngaySinh} sdt={infor.sdt} diaChi={infor.diaChi} nutSua={true}/>
+            <View style={styles.thongTin}>
+                <ScrollView style={{width: '100%'}}>
+                    <ThongTinUserTheoDong type={'bt'} tieuDe={'Họ tên:'} giaTri={infor.hoTen}/>
+                    <ThongTinUserTheoDong type={'bt'} tieuDe={'Giới tính:'} giaTri={infor.gioiTinh == true ? 'Nam' : 'Nữ'}/>
+                    <ThongTinUserTheoDong type={'bt'} tieuDe={'Ngày sinh:'}
+                                          giaTri={new Date(infor.ngaySinh).getDate() + '/' + (new Date(infor.ngaySinh).getMonth()+1) + '/' + new Date(infor.ngaySinh).getFullYear()}
+                    />
+                    <ThongTinUserTheoDong type={'bt'} tieuDe={'SĐT:'} giaTri={infor.sdt}/>
+                    <ThongTinUserTheoDong type={'bt'} tieuDe={'Địa chỉ:'} giaTri={infor.diaChi}/>
+                    <ThongTinUserTheoDong type={'bt'} tieuDe={'Quyền:'} giaTri={infor.vaiTro}/>
+                </ScrollView>
+            </View>
+        </View>
+    );
+
 }
 
 async function getInfor() {
@@ -97,7 +112,7 @@ async function getInfor() {
         return responseJson;
 
     } catch (e) {
-        console.log(e);
+        console.log(JSON.stringify(e));
     }
 
 }

@@ -5,8 +5,10 @@ const authController =require('../controllers/auth.Controller');
 const managersController = require('../controllers/managers.Controller');
 const usersController = require('../controllers/users.Controller');
 const usersValidate = require('../validator/users.Validate');
+const hopdongsValidate = require('../validator/hopDongs.Validate');
 const hopdongsController = require('../controllers/hopDongs.Controller');
 const chitiethopdongsController = require('../controllers/chiTietHopDongs.Controller');
+const lichSuController = require('../controllers/lichSuController');
 //Endpoint:localhost:3000/api/v1/managers/
 
 /*Chức năng CRUD nhân viên------------------------------------------------*/
@@ -39,36 +41,66 @@ router.delete('/users', authController.KiemTraTokenManager,usersValidate.Validat
 /*Chức năng quản lý hợp đồng------------------------------------------------*/
 
 //Lấy danh sách hợp đồng của chủ cho vay theo trang
- router.get('/hopdongs/:page',authController.KiemTraTokenManager,hopdongsController.Manager_LayTatCaHopDong );
+ router.get('/hopdongs/:type/:page',authController.KiemTraTokenManager,hopdongsController.LayTatCaHopDongTheoTrang);
+
+//Lấy thông tin người tạo hợp đồng
+router.get('/nguoitaohopdongs',authController.KiemTraTokenManager,hopdongsController.LayThongTinNguoiTaoHopDongByIDHD);
+
+// Tìm kiếm hợp đồng của chủ cho vay
+router.get('/timhopdongs/:type',authController.KiemTraTokenManager,hopdongsController.TimKiemHopDong);
 
 //Thêm hợp đồng bởi chủ cho vay
-router.post('/hopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_ThemHopDong );
+router.post('/hopdongs',authController.KiemTraTokenManager,hopdongsValidate.Validate_HopDong_KhiThem,hopdongsController.ThemHopDong );
+
+//Sửa hợp đồng bởi chủ cho vay
+router.put('/hopdongs',authController.KiemTraTokenManager,hopdongsController.SuaHopDong);
 
 //Xóa hợp đồng bởi chủ cho vay
-router.put('/deletehopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_XoaMotHopDong);
+router.put('/xoahopdongs',authController.KiemTraTokenManager,hopdongsController.XoaHopDong);
+
+//Duyệt hợp đồng của nhân viên
+router.put('/duyethopdongs',authController.KiemTraTokenManager,hopdongsController.DuyetHopDong);
 
 //Tất toán hợp đồng bởi chủ cho vay
-router.put('/tattoanhopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_TatToanHopDong);
+router.put('/tattoanhopdongs',authController.KiemTraTokenManager,chitiethopdongsController.TatToanHopDong);
+
+//Tất toán hợp đồng bởi chủ cho vay
+router.put('/tinhtientattoan',authController.KiemTraTokenManager,chitiethopdongsController.TinhTienTatToan);
 
 //Đóng lãi hợp đồng bởi chủ cho vay
-router.put('/donglaihopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_DongLaiHopDong);
+router.put('/donglai',authController.KiemTraTokenManager,chitiethopdongsController.DongLaiHopDong);
+
+//Xóa phiếu thu (hủy đóng lãi) hợp đồng bởi chủ cho vay
+router.put('/xoaphieuthu',authController.KiemTraTokenManager,chitiethopdongsController.XoaPhieuThu);
 
 //Gia hạn kỳ hợp đồng bởi chủ cho vay
-router.put('/giahanhopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_GiaHanHopDong);
+router.put('/giahanhopdongs',authController.KiemTraTokenManager,hopdongsValidate.Validate_HopDong_Khi_GiaHan,chitiethopdongsController.GiaHanHopDong);
 
 //Trả bớt gốc hợp đồng bởi chủ cho vay
-router.put('/trabotgochopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_TraBotGocHopDong);
+//router.put('/trabotgochopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_TraBotGocHopDong);
 
 //Vay thêm hợp đồng bởi chủ cho vay
-router.put('/vaythemhopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_VayThemHopDong);
+router.put('/vaythemhopdongs',authController.KiemTraTokenManager,hopdongsValidate.Validate_HopDong_Khi_VayThem,chitiethopdongsController.VayThemHopDong);
 
 //Lấy hợp đồng theo id
 router.get('/hopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_LayHopDongTheoId);
 
 //Thêm chi tiết hợp đồng
-router.post('/chitiethopdongs',authController.KiemTraTokenManager,chitiethopdongsController.Manager_ThemChiTietHopDong);
+//router.post('/chitiethopdongs',authController.KiemTraTokenManager,chitiethopdongsController.Manager_ThemChiTietHopDong);
 
- //Lấy danh sách chi tiết hợp đồng theo id hợp đồng
- router.get('/chitiethopdongs',authController.KiemTraTokenManager,chitiethopdongsController.Manager_LayTatCaChiTietHopDong_TheoIdHopDong);
+//Lấy danh sách chi tiết hợp đồng theo id hợp đồng (lấy danh sách các cột lãi)
+router.get('/chitiethopdongs',authController.KiemTraTokenManager,chitiethopdongsController.LayDanhSachCTHD_TheoIdHD);
+
+//Lấy 1 chi tiết hợp đồng theo id hợp đồng
+router.get('/chitiethopdongs/:id',authController.KiemTraTokenManager,chitiethopdongsController.LayCTHD_TheoId);
+
+/*Chức năng quản lý  lịch sử hợp đồng------------------------------------------------*/
+
+//Lấy danh sách lịch sử của chủ cho vay theo trang
+router.get('/lichsus/:page',authController.KiemTraTokenManager,lichSuController.LayTatCaLichSu);
+
+
+
+
 
 module.exports = router;

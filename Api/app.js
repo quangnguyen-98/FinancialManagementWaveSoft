@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var hopDongController = require('./controllers/hopDongs.Controller');
 
 //Khai báo short-id
 var ids = require('short-id');
@@ -42,5 +43,15 @@ app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/managers', managersRouter);
 app.use('/api/v1/users', usersRouter);
 
+
+var CronJob = require('cron').CronJob;
+// var job = new CronJob('00 00 1 * * *', function() {
+//    hopDongController.CheckTrangThaiHopDongMoiNgay();
+// }, null, true, 'Asia/Ho_Chi_Minh');
+// job.start();
+var job2 = new CronJob('1 * * * * *', function() {
+    hopDongController.CheckTrangThaiHopDongMoiNgay();
+}, null, true, 'Asia/Ho_Chi_Minh');
+job2.start();
 
 module.exports = app;

@@ -10,16 +10,17 @@ import {
     AsyncStorage,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
-import DatePicker from "react-native-datepicker";
+import RadioForm from 'react-native-simple-radio-button';
 import {apiLink} from "../../config/constant";
 import {useSelector,useDispatch} from "react-redux";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 const {width, height} = Dimensions.get('window');
 
 export default function ThemNhanVienScreen({navigation}) {
-    const trangThaiDialog = useSelector(state => state.diaglogKhoaUserReducers);
+
     const dispatch = useDispatch();
     const [khoaNutThem,setKhoaNutThem ]= useState(false);
+    const [hienThiPickerNgaySinh, setHienThiPickerNgaySinh] = useState(false);
     const [infor, setInfor] = useState({
         email: '',
         sdt: '',
@@ -95,7 +96,7 @@ export default function ThemNhanVienScreen({navigation}) {
                 formHorizontal={true}
                 labelHorizontal={true}
                 buttonColor={'#2196f3'}
-                animation={true}
+                // animation={true}
                 radio_props={[
                     {label: 'Đực ', value: 0},
                     {label: 'Cái', value: 1}
@@ -109,35 +110,35 @@ export default function ThemNhanVienScreen({navigation}) {
             />
             <Text style={styles.text}>Ngày sinh</Text>
 
-            <DatePicker
-                style={{width: '100%'}}
-                date={infor.ngaySinh}
-                mode="date"
-                placeholder="Chọn ngày"
-                format="YYYY-MM-DD"
-                confirmBtnText="Xác nhận"
-                cancelBtnText="Trở lại"
-                customStyles={{
-                    dateIcon: {
-                        position: 'absolute',
-                        left: 0,
-                        top: 4,
-                        marginLeft: 0
-                    },
-                    dateInput: {
-                        marginLeft: 36
-                    }
-                    // ... You can check the source to find the other keys.
-                }}
-                onDateChange={(date) => {
+            <DateTimePickerModal isVisible={hienThiPickerNgaySinh}
+                                 headerTextIOS={'Chọn ngày sinh'}
+                                 confirmTextIOS={'Xác nhận'}
+                                 mode={'date'}
+                                 date={new Date(infor.ngaySinh)}
+                                 onConfirm={(selectedDate) => {
+                                     setHienThiPickerNgaySinh(false);
+                                     setInfor({
+                                         ...infor,
+                                         ngaySinh: new Date(selectedDate)
+                                     })
 
-                    setInfor({
-                        ...infor,
-                        ngaySinh: date
+                                 }}
+                                 onCancel={() => {
+                                     setHienThiPickerNgaySinh(false);
+                                 }}>
 
-                    })
-                }}
-            />
+            </DateTimePickerModal>
+            <TouchableOpacity
+                onPress={()=> setHienThiPickerNgaySinh(true)}
+            >
+                <TextInput placeholder="Chọn ngày vay"
+                           value={` ${infor.ngaySinh.getDate()}-${(infor.ngaySinh.getMonth() + 1)}-${infor.ngaySinh.getFullYear()}`}
+                           editable={false} style={styles.textInput}
+                           onTouchStart={() => {
+                               setHienThiPickerNgaySinh(true);
+                           }}></TextInput>
+            </TouchableOpacity>
+
 
             <Text style={styles.text}>Địa chỉ</Text>
             <TextInput style={styles.richInput}
@@ -155,7 +156,9 @@ export default function ThemNhanVienScreen({navigation}) {
                     if (infor.password == infor.password2) {
                                 if(khoaNutThem == false){
                                     setKhoaNutThem(true);
-                                    ThemChuChoVay();
+                                    ThemNhanVien().then(()=>{
+                                        setKhoaNutThem(false);
+                                    })
                                 }
 
                     } else {
@@ -167,7 +170,7 @@ export default function ThemNhanVienScreen({navigation}) {
             </View>
         </KeyboardAwareScrollView>
     );
-    async function ThemChuChoVay() {
+    async function ThemNhanVien() {
         try {
             let token = await AsyncStorage.getItem('token');
             let response = await fetch(apiLink + 'managers/users?token=' + token, {
@@ -191,7 +194,7 @@ export default function ThemNhanVienScreen({navigation}) {
             if (responseJson.status == 'ok') {
                 Alert.alert('Thêm thành công !');
                 navigation.navigate('Quản lý nhân viên');
-                dispatch({type:'CLOSE_DIALOG'});
+                dispatch({type: 'REFRESH'});
 
             } else if (responseJson.status == 'fail') {
                 Alert.alert(responseJson.message);
@@ -199,7 +202,7 @@ export default function ThemNhanVienScreen({navigation}) {
             }
 
         } catch (e) {
-           console.log(e);
+            console.log(JSON.stringify(e));
         }
     }
 
@@ -220,14 +223,17 @@ const styles = StyleSheet.create({
         height: 32,
         paddingLeft: 5,
         fontWeight: "700",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3
+
     },
     richInput: {
         borderWidth: 1,
         height: 100,
         paddingLeft: 5,
         fontWeight: "700",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3
     },
     text: {
         fontSize: 20
@@ -245,7 +251,15 @@ const styles = StyleSheet.create({
     textXacNhan: {
         color: '#ffffff',
         fontSize: 30,
-    }
+    },
+    textInput: {
+        borderWidth: 1,
+        height: 32,
+        paddingLeft: 5,
+        fontWeight: "700",
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3
+    },
 
 });
 

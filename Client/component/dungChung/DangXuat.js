@@ -11,12 +11,7 @@ export default function DangXuat() {
     // });
     let dispatch = useDispatch();
     dispatch({type: 'LOGIN'});
-    return (
-        <View>
-            <Text>logout</Text>
-        </View>
-
-    );
+    return null;
 }
 
 

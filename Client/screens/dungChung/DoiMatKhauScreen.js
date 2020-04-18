@@ -13,7 +13,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useSelector,useDispatch} from "react-redux";
 import {apiLink} from "../../config/constant";
 const {width, height} = Dimensions.get('window');
-const toDay = new Date();
+
 
 export default function DoiMatKhauScreen() {
     const dispatch = useDispatch();
@@ -24,7 +24,7 @@ export default function DoiMatKhauScreen() {
     });
     return (
         <KeyboardAwareScrollView
-            style={styles.container}
+            style={styles.container}   enableResetScrollToCoords={false}
 
         >
             <Text style={styles.text}>Mật khẩu cũ</Text>
@@ -90,7 +90,7 @@ export default function DoiMatKhauScreen() {
                 },
                 body: JSON.stringify({
                     username: userName,
-                    passwordCu: stateMatKhau.passwordCu,
+                    passwordcu: stateMatKhau.passwordCu,
                     password: stateMatKhau.password
                 })
             })
@@ -128,14 +128,8 @@ const styles = StyleSheet.create({
         height: 32,
         paddingLeft: 5,
         fontWeight: "700",
-        backgroundColor: "#FFFFFF"
-    },
-    richInput: {
-        borderWidth: 1,
-        height: 100,
-        paddingLeft: 5,
-        fontWeight: "700",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3
     },
     text: {
         fontSize: 20
