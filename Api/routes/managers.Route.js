@@ -82,6 +82,8 @@ router.put('/giahanhopdongs',authController.KiemTraTokenManager,hopdongsValidate
 //Vay thêm hợp đồng bởi chủ cho vay
 router.put('/vaythemhopdongs',authController.KiemTraTokenManager,hopdongsValidate.Validate_HopDong_Khi_VayThem,chitiethopdongsController.VayThemHopDong);
 
+router.put('/trabotgochopdongs',authController.KiemTraTokenManager,hopdongsValidate.Validate_HopDong_Khi_TraBotGoc,chitiethopdongsController.TraBotGocHopDong);
+
 //Lấy hợp đồng theo id
 router.get('/hopdongs',authController.KiemTraTokenManager,hopdongsController.Manager_LayHopDongTheoId);
 

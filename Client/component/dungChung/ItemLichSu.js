@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View, StyleSheet, Image, Dimensions} from 'react-native';
-import {formatCurrency} from '../../utils/hamHoTro';
+import React, { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, Image, Dimensions } from 'react-native';
+import { formatCurrency } from '../../utils/hamHoTro';
 const heightItem = '100%';
 const flexDirection = 'row';
 export default function ItemLichSu(props) {
@@ -31,23 +31,24 @@ export default function ItemLichSu(props) {
     }, []);
     let ngayThucHien = new Date(props.ngayThucHien);
     let ngayVayThem = new Date(props.ngayVayThem);
+    let ngayTraBotGoc = new Date(props.ngayTraBotGoc);
     let ngayTraLai = new Date(props.ngayTraLai);
-    let ngayDong = props.ngayDong ? new Date(props.ngayDong):null;
+    let ngayDong = props.ngayDong ? new Date(props.ngayDong) : null;
     return (
         <View>
             {
                 style === 'themPhieuThu' && (
                     <View style={styles.containerChuaDong}>
                         <View style={styles.leftContent}>
-                            <Text style={{fontWeight:'bold'}}>Ngày thực hiện:{`${ngayThucHien.getDate()}-${ngayThucHien.getMonth()+1}-${ngayThucHien.getFullYear()}`}</Text>
-                            <Text>Ngày trả lãi:{`${ngayTraLai.getDate()}-${ngayTraLai.getMonth()+1}-${ngayTraLai.getFullYear()}`}</Text>
+                            <Text style={{ fontWeight: 'bold' }}>Ngày thực hiện:{`${ngayThucHien.getDate()}-${ngayThucHien.getMonth() + 1}-${ngayThucHien.getFullYear()}`}</Text>
+                            <Text>Ngày trả lãi:{`${ngayTraLai.getDate()}-${ngayTraLai.getMonth() + 1}-${ngayTraLai.getFullYear()}`}</Text>
                             <Text>Người đóng: {props.nguoiDong}</Text>
-                            <Text>Ngày đóng:{`${ngayDong.getDate()}-${ngayDong.getMonth()+1}-${ngayDong.getFullYear()}`}</Text>
+                            <Text>Ngày đóng:{`${ngayDong.getDate()}-${ngayDong.getMonth() + 1}-${ngayDong.getFullYear()}`}</Text>
                             {
-                                props.phiKhac.length>0 && ( <Text>Phí khác:{props.phiKhac}</Text>)
+                                props.phiKhac.length > 0 && (<Text>Phí khác:{props.phiKhac}</Text>)
                             }
                             {
-                                props.ghiChu.length>0 && (<Text>Ghi chú:{props.ghiChu}</Text>)
+                                props.ghiChu.length > 0 && (<Text>Ghi chú:{props.ghiChu}</Text>)
                             }
 
                         </View>
@@ -61,15 +62,15 @@ export default function ItemLichSu(props) {
                 style === 'xoaPhieuThu' && (
                     <View style={styles.containerChuaDong}>
                         <View style={styles.leftContent}>
-                            <Text style={{fontWeight:'bold'}}>Ngày thực hiện:{`${ngayThucHien.getDate()}-${ngayThucHien.getMonth()+1}-${ngayThucHien.getFullYear()}`}</Text>
-                            <Text>Ngày trả lãi:{`${ngayTraLai.getDate()}-${ngayTraLai.getMonth()+1}-${ngayTraLai.getFullYear()}`}</Text>
+                            <Text style={{ fontWeight: 'bold' }}>Ngày thực hiện:{`${ngayThucHien.getDate()}-${ngayThucHien.getMonth() + 1}-${ngayThucHien.getFullYear()}`}</Text>
+                            <Text>Ngày trả lãi:{`${ngayTraLai.getDate()}-${ngayTraLai.getMonth() + 1}-${ngayTraLai.getFullYear()}`}</Text>
                             <Text>Người đóng: {props.nguoiDong}</Text>
-                            <Text>Ngày đóng:{`${ngayDong.getDate()}-${ngayDong.getMonth()+1}-${ngayDong.getFullYear()}`}</Text>
+                            <Text>Ngày đóng:{`${ngayDong.getDate()}-${ngayDong.getMonth() + 1}-${ngayDong.getFullYear()}`}</Text>
                             {
-                                props.phiKhac.length>0 && ( <Text>Phí khác:{props.phiKhac}</Text>)
+                                props.phiKhac.length > 0 && (<Text>Phí khác:{props.phiKhac}</Text>)
                             }
                             {
-                                props.ghiChu.length>0 && (<Text>Ghi chú:{props.ghiChu}</Text>)
+                                props.ghiChu.length > 0 && (<Text>Ghi chú:{props.ghiChu}</Text>)
                             }
 
                         </View>
@@ -83,10 +84,10 @@ export default function ItemLichSu(props) {
                 style === 'giaHan' && (
                     <View style={styles.containerChuaDong}>
                         <View style={styles.leftContent}>
-                            <Text style={{fontWeight:'bold'}}>Ngày thực hiện:{`${ngayThucHien.getDate()}-${ngayThucHien.getMonth()+1}-${ngayThucHien.getFullYear()}`}</Text>
+                            <Text style={{ fontWeight: 'bold' }}>Ngày thực hiện:{`${ngayThucHien.getDate()}-${ngayThucHien.getMonth() + 1}-${ngayThucHien.getFullYear()}`}</Text>
                             <Text>Số kỳ gia hạn: {props.soKyGiaHan}</Text>
                             {
-                                props.lyDo.length>0 && ( <Text>Lý do:{props.lyDo}</Text>)
+                                props.lyDo.length > 0 && (<Text>Lý do:{props.lyDo}</Text>)
                             }
                         </View>
                         <View style={styles.rightContent}>
@@ -97,16 +98,19 @@ export default function ItemLichSu(props) {
             }
             {
                 style === 'traBotGoc' && (
-                    <View style={styles.containerNgayTraGoc}>
+                    <View style={styles.containerChuaDong}>
                         <View style={styles.leftContent}>
-                            <Text>{`${ngayThucHien.getDate()}-${ngayThucHien.getMonth()+1}-${ngayThucHien.getFullYear()}`}</Text>
+                            <Text style={{ fontWeight: 'bold' }}>Ngày thực hiện:{`${ngayThucHien.getDate()}-${ngayThucHien.getMonth() + 1}-${ngayThucHien.getFullYear()}`}</Text>
+                            <Text>Ngày trả bớt gốc: {`${ngayTraBotGoc.getDate()}-${ngayTraBotGoc.getMonth() + 1}-${ngayTraBotGoc.getFullYear()}`}</Text>
+                            <Text>Tiền trả bớt gốc: {formatCurrency(props.tienTraBotGoc)}</Text>
+                            {
+                                props.ghiChu.length > 0 && (<Text>Ghi chú:{props.ghiChu}</Text>)
+                            }
                         </View>
-                        <View style={styles.leftContent}>
-                            <Text>{formatCurrency(props.tienLai)}</Text>
+                        <View style={styles.rightContent}>
+                            <Text>Trả bớt gốc</Text>
                         </View>
-                        <View style={styles.leftContent}>
-                            <Text>{formatCurrency(props.tienGoc)}</Text>
-                        </View>
+                        
                     </View>
                 )
             }
@@ -114,11 +118,11 @@ export default function ItemLichSu(props) {
                 style === 'vayThem' && (
                     <View style={styles.containerChuaDong}>
                         <View style={styles.leftContent}>
-                            <Text style={{fontWeight:'bold'}}>Ngày thực hiện:{`${ngayThucHien.getDate()}-${ngayThucHien.getMonth()+1}-${ngayThucHien.getFullYear()}`}</Text>
-                            <Text>Ngày vay thêm: {`${ngayVayThem.getDate()}-${ngayVayThem.getMonth()+1}-${ngayVayThem.getFullYear()}`}</Text>
+                            <Text style={{ fontWeight: 'bold' }}>Ngày thực hiện:{`${ngayThucHien.getDate()}-${ngayThucHien.getMonth() + 1}-${ngayThucHien.getFullYear()}`}</Text>
+                            <Text>Ngày vay thêm: {`${ngayVayThem.getDate()}-${ngayVayThem.getMonth() + 1}-${ngayVayThem.getFullYear()}`}</Text>
                             <Text>Tiền vay thêm: {formatCurrency(props.tienVayThem)}</Text>
                             {
-                                props.ghiChu.length>0 && ( <Text>Ghi chú:{props.ghiChu}</Text>)
+                                props.ghiChu.length > 0 && (<Text>Ghi chú:{props.ghiChu}</Text>)
                             }
                         </View>
                         <View style={styles.rightContent}>
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000000',
         shadowOpacity: 0.3,
         shadowRadius: 5,
-        shadowOffset: {width: 0, height: 0}
+        shadowOffset: { width: 0, height: 0 }
     },
     containerDaDong: {
         padding: 5,
@@ -154,7 +158,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000000',
         shadowOpacity: 0.3,
         shadowRadius: 5,
-        shadowOffset: {width: 0, height: 0}
+        shadowOffset: { width: 0, height: 0 }
     },
     containerHoatDong: {
         padding: 5,
@@ -166,7 +170,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000000',
         shadowOpacity: 0.3,
         shadowRadius: 5,
-        shadowOffset: {width: 0, height: 0}
+        shadowOffset: { width: 0, height: 0 }
     },
     containerNgayTraGoc: {
         padding: 5,
@@ -178,7 +182,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000000',
         shadowOpacity: 0.3,
         shadowRadius: 5,
-        shadowOffset: {width: 0, height: 0}
+        shadowOffset: { width: 0, height: 0 }
 
     },
     ngayDongLai: {
@@ -188,12 +192,12 @@ const styles = StyleSheet.create({
     leftContent: {
         flex: 3,
     },
-    rightContent:{
+    rightContent: {
         flex: 1,
         borderLeftWidth: 1,
         borderColor: 'black',
-        justifyContent:'center',
-        alignItems:'center'
+        justifyContent: 'center',
+        alignItems: 'center'
 
     },
     tienGoc: {

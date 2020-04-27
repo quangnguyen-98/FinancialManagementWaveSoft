@@ -49,7 +49,7 @@ var CronJob = require('cron').CronJob;
 //    hopDongController.CheckTrangThaiHopDongMoiNgay();
 // }, null, true, 'Asia/Ho_Chi_Minh');
 // job.start();
-var job2 = new CronJob('1 * * * * *', function() {
+var job2 = new CronJob('00 00 02 * * *', function() {
     hopDongController.CheckTrangThaiHopDongMoiNgay();
 }, null, true, 'Asia/Ho_Chi_Minh');
 job2.start();

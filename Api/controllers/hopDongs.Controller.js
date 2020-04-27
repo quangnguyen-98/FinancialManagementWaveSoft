@@ -283,7 +283,7 @@ module.exports = {
     XoaHopDong: async function (req, res, next) {
         const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
         try {
-            const idHopDong = ObjectId(req.body.id);
+            const idHopDong = ObjectId(req.body.idHopDong);
             await client.connect();
             const db = client.db(DbName);
             const colHD = db.collection('HopDong');

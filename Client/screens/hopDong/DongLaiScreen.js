@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Fragment} from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {
     View,
     StyleSheet,
@@ -9,19 +9,19 @@ import {
     Text,
     RefreshControl
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {apiLink} from '../../config/constant';
-import {useSelector, useDispatch} from "react-redux";
-import {ItemDongLai, Button} from "../../component";
-import {formatCurrency} from "../../utils/hamHoTro";
+import { useNavigation } from '@react-navigation/native';
+import { apiLink } from '../../config/constant';
+import { useSelector, useDispatch } from "react-redux";
+import { ItemDongLai, Button } from "../../component";
+import { formatCurrency } from "../../utils/hamHoTro";
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 export default function DongLaiScreen() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
     const hopDongDuocChonReducers = useSelector(state => state.hopDongDuocChonReducers);
-    const loaiHDDangChonReducers = useSelector(state => state. loaiHDDangChonReducers);
+    const loaiHDDangChonReducers = useSelector(state => state.loaiHDDangChonReducers);
     const switchScreenReducers = useSelector(state => state.switchScreenReducers);
     const refreshReducers = useSelector(state => state.refreshReducers);
     const [refreshing, setRefreshing] = useState(false);
@@ -34,7 +34,7 @@ export default function DongLaiScreen() {
         setData([]);
         // if(!refreshReducers) return;
         initData();
-        dispatch({type: 'RESET_REFRESH'});
+        dispatch({ type: 'RESET_REFRESH' });
 
     }, [refreshReducers]);
 
@@ -44,7 +44,7 @@ export default function DongLaiScreen() {
         let countTienLaiConThieu = 0;
         data.forEach((item) => {
             if (item.type === 0 || item.type === 1) {
-                if(item.type===0){countTienLaiConThieu+=item.tienLai}
+                if (item.type === 0) { countTienLaiConThieu += item.tienLai }
                 countTongTienLai = countTongTienLai + item.tienLai
             }
             if (item.type === 3) {
@@ -71,35 +71,42 @@ export default function DongLaiScreen() {
             </View>
             <View style={styles.containerThongTin}>
                 <View style={styles.menu}>
-                    <Text style={{fontSize: 18, fontWeight: 'bold',}}>Ngày trả lãi: </Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold', }}>Ngày trả lãi: </Text>
                 </View>
                 <View style={styles.menu}>
-                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>Tiền lãi: </Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Tiền lãi: </Text>
                 </View>
                 <View style={styles.menu}>
-                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>Tiền gốc: </Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Tiền gốc: </Text>
                 </View>
 
 
             </View>
 
             <FlatList
-                style={{flex: 3}}
+                style={{ flex: 3 }}
                 data={data}
-                renderItem={({item, index}) =>
+                renderItem={({ item, index }) =>
                     <Fragment>
                         {
                             item.type !== 3 && (
                                 <TouchableOpacity
                                     onPress={() => {
-                                        if(loaiHDDangChonReducers==='dangvay'){
-                                            navigation.navigate('Phiếu Thu', {
-                                                idPT: item._id,
-                                                ngayTraLai: item.ngayTraLai,
-                                                tienLai: item.tienLai,
-                                                tienGoc: item.tienGoc,
-                                                type: item.type
-                                            });
+                                        if (loaiHDDangChonReducers === 'dangvay') {
+                                            var ngayTraLaiThucTe = new Date();
+                                            var ngayTraLaiTheoHeThong = new Date(item.ngayTraLai);
+
+                                            if (ngayTraLaiThucTe < ngayTraLaiTheoHeThong) {
+                                                alert('Chưa tới ngày để dóng lãi này');
+                                            } else {
+                                                navigation.navigate('Phiếu Thu', {
+                                                    idPT: item._id,
+                                                    ngayTraLai: item.ngayTraLai,
+                                                    tienLai: item.tienLai,
+                                                    tienGoc: item.tienGoc,
+                                                    type: item.type
+                                                });
+                                            }
                                         }
                                     }}>
                                     <ItemDongLai
@@ -113,7 +120,7 @@ export default function DongLaiScreen() {
                         {item.type === 3 && (
                             <TouchableOpacity
                                 onPress={() => {
-                                    if(loaiHDDangChonReducers==='dangvay') {
+                                    if (loaiHDDangChonReducers === 'dangvay') {
                                         navigation.navigate('Tất toán', {
                                             idPT: item._id,
                                             ngayTraLai: item.ngayTraLai,
@@ -159,7 +166,7 @@ export default function DongLaiScreen() {
     async function getAllCTHD(id) {
         try {
             let token = await AsyncStorage.getItem('token');
-            let response = await fetch(apiLink + switchScreenReducers+'/chitiethopdongs?id=' + id + '&token=' + token);
+            let response = await fetch(apiLink + switchScreenReducers + '/chitiethopdongs?id=' + id + '&token=' + token);
             let responseJson = response.json();
             return responseJson;
         } catch (error) {

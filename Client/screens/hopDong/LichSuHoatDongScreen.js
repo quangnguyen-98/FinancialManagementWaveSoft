@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
     AsyncStorage,
     Dimensions,
@@ -9,13 +9,13 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {apiLink} from '../../config/constant';
-import {useDispatch, useSelector} from "react-redux";
-import {ItemLichSu} from "../../component";
+import { useNavigation } from '@react-navigation/native';
+import { apiLink } from '../../config/constant';
+import { useDispatch, useSelector } from "react-redux";
+import { ItemLichSu } from "../../component";
 import ModalThongTinNguoiThucHien from "../../component/modal/ModalThongTinNguoiThucHien";
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 export default function LichSuHoatDongScreen(props) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
@@ -37,41 +37,41 @@ export default function LichSuHoatDongScreen(props) {
         setData([]);
         // if(!refreshReducers) return;
         initData();
-        dispatch({type: 'RESET_REFRESH'});
+        dispatch({ type: 'RESET_REFRESH' });
     }, [refreshReducers]);
 
     return (
         <View style={styles.thongTin}>
 
             <FlatList
-                style={{flex: 3}}
+                style={{ flex: 3 }}
                 data={data}
-                renderItem={({item, index}) =>
+                renderItem={({ item, index }) =>
                     <Fragment>
                         {
-                        item.type === 0 && (     //Đóng lãi
-                            <TouchableOpacity key={item._id}
-                                onPress={() => {
-                                    getNguoiThucHien(item.idNguoiThucHien).then(() => {
-                                        dispatch({type: 'OPEN_MODAL_TT_NGUOITHUCHIEN'})
-                                    });
-                                }}>
-                                <ItemLichSu
-                                    ngayThucHien={item.ngayThucHien}
-                                    ngayTraLai={item.ngayTraLai}
-                                    nguoiDong={item.nguoiDong}
-                                    ngayDong={item.ngayDong}
-                                    phiKhac={item.phiKhac}
-                                    ghiChu={item.ghiChu}
-                                    type={item.type}
-                                />
-                            </TouchableOpacity>
-                        )}
+                            item.type === 0 && (     //Đóng lãi
+                                <TouchableOpacity key={item._id}
+                                    onPress={() => {
+                                        getNguoiThucHien(item.idNguoiThucHien).then(() => {
+                                            dispatch({ type: 'OPEN_MODAL_TT_NGUOITHUCHIEN' })
+                                        });
+                                    }}>
+                                    <ItemLichSu
+                                        ngayThucHien={item.ngayThucHien}
+                                        ngayTraLai={item.ngayTraLai}
+                                        nguoiDong={item.nguoiDong}
+                                        ngayDong={item.ngayDong}
+                                        phiKhac={item.phiKhac}
+                                        ghiChu={item.ghiChu}
+                                        type={item.type}
+                                    />
+                                </TouchableOpacity>
+                            )}
                         {item.type === 1 && (    //Xóa phiếu thu
                             <TouchableOpacity key={item._id}
                                 onPress={() => {
                                     getNguoiThucHien(item.idNguoiThucHien).then(() => {
-                                        dispatch({type: 'OPEN_MODAL_TT_NGUOITHUCHIEN'})
+                                        dispatch({ type: 'OPEN_MODAL_TT_NGUOITHUCHIEN' })
                                     })
                                 }}>
                                 <ItemLichSu
@@ -88,11 +88,11 @@ export default function LichSuHoatDongScreen(props) {
                         }
                         {item.type === 2 && (     //Gia hạn
                             <TouchableOpacity key={item._id}
-                                              onPress={() => {
-                                                  getNguoiThucHien(item.idNguoiThucHien).then(() => {
-                                                      dispatch({type: 'OPEN_MODAL_TT_NGUOITHUCHIEN'})
-                                                  })
-                                              }}>
+                                onPress={() => {
+                                    getNguoiThucHien(item.idNguoiThucHien).then(() => {
+                                        dispatch({ type: 'OPEN_MODAL_TT_NGUOITHUCHIEN' })
+                                    })
+                                }}>
                                 <ItemLichSu
                                     ngayThucHien={item.ngayThucHien}
                                     soKyGiaHan={item.soKyGiaHan}
@@ -102,13 +102,30 @@ export default function LichSuHoatDongScreen(props) {
                             </TouchableOpacity>
                         )
                         }
+                        {item.type === 3 && (     //Trả bớt gốc
+                            <TouchableOpacity key={item._id}
+                                onPress={() => {
+                                    getNguoiThucHien(item.idNguoiThucHien).then(() => {
+                                        dispatch({ type: 'OPEN_MODAL_TT_NGUOITHUCHIEN' })
+                                    })
+                                }}>
+                                <ItemLichSu
+                                    ngayThucHien={item.ngayThucHien}
+                                    ngayTraBotGoc={item.ngayTraBotGoc}
+                                    tienTraBotGoc={item.tienTraBotGoc}
+                                    ghiChu={item.ghiChu}
+                                    type={item.type}
+                                />
+                            </TouchableOpacity>
+                        )
+                        }
                         {item.type === 4 && (     //Vay thêm
                             <TouchableOpacity key={item._id}
-                                              onPress={() => {
-                                                  getNguoiThucHien(item.idNguoiThucHien).then(() => {
-                                                      dispatch({type: 'OPEN_MODAL_TT_NGUOITHUCHIEN'})
-                                                  })
-                                              }}>
+                                onPress={() => {
+                                    getNguoiThucHien(item.idNguoiThucHien).then(() => {
+                                        dispatch({ type: 'OPEN_MODAL_TT_NGUOITHUCHIEN' })
+                                    })
+                                }}>
                                 <ItemLichSu
                                     ngayThucHien={item.ngayThucHien}
                                     ngayVayThem={item.ngayVayThem}
@@ -132,7 +149,7 @@ export default function LichSuHoatDongScreen(props) {
             />
             <Modal visible={openModalReducers.modalTTNguoiThucHien} transparent={true}>
                 <ModalThongTinNguoiThucHien hoTen={nguoiThucHien.hoTen} email={nguoiThucHien.email}
-                                            sdt={nguoiThucHien.sdt}/>
+                    sdt={nguoiThucHien.sdt} />
             </Modal>
         </View>
     );
@@ -168,7 +185,7 @@ export default function LichSuHoatDongScreen(props) {
     async function getAllLichSu(id, page) {
         try {
             let token = await AsyncStorage.getItem('token');
-            let response = await fetch(apiLink + switchScreenReducers +'/lichsus/' + page + '?idHopDong=' + id + '&token=' + token);
+            let response = await fetch(apiLink + switchScreenReducers + '/lichsus/' + page + '?idHopDong=' + id + '&token=' + token);
             let responseJson = response.json();
             return responseJson;
         } catch (error) {
@@ -179,7 +196,7 @@ export default function LichSuHoatDongScreen(props) {
     async function getNguoiThucHien(id) {
         try {
             let token = await AsyncStorage.getItem('token');
-            let response = await fetch(apiLink + switchScreenReducers +'/nguoitaohopdongs?id=' + id + '&token=' + token);
+            let response = await fetch(apiLink + switchScreenReducers + '/nguoitaohopdongs?id=' + id + '&token=' + token);
             let responseJson = await response.json();
             setNguoiThucHien({
                 hoTen: responseJson.hoTen,

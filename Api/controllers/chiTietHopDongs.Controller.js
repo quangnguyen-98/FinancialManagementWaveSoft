@@ -268,8 +268,131 @@ module.exports = {
         }
     },
 
-    TraBotGoc: async function (req, res, next) {
-        //Chưa làm
+    TraBotGocHopDong: async function (req, res, next) {
+        const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+        try {
+            let idHD = ObjectId(req.body.id);
+            let {ngayTraBotGoc, tienTraBotGoc, ghiChu} = req.body.thongTinTraBotGoc;
+            let tokenResult = await jwt.verify(req.query.token, process.env.SECRET_KEY);
+            const userId = ObjectId(tokenResult.payload.userId);
+            await client.connect();
+            const db = client.db(DbName);
+            const colHD = db.collection('HopDong');
+            const colCTHD = db.collection('ChiTietHopDong');
+            const colLS = db.collection('LichSu');
+            let resHopDong = await colHD.find({_id: idHD}).next();
+            const {ngayVay, tongTienVay, soKyDongLai, cachTinhLai, giaTriLaiSuat, soLanTra, ngayTraGoc, kieuDongLai} = resHopDong.thongTinHopDong;
+             console.log(JSON.stringify(resHopDong));
+            let resLanTraBotGocCuoi = await colLS.find({idHopDong: idHD, type: 3}).sort({ngayTraBotGoc: -1}).next();
+            let resCTHDBeNhat = await colCTHD.find({
+                idHopDong: idHD,
+                type: {'$in': [0, 1]}
+            }).sort({ngayTraLai: 1}).next();
+
+            let resCTHDLonNhat = await colCTHD.find({idHopDong: idHD, type: {'$in': [3]}}).sort({ngayTraLai: 1}).next();
+
+            if (resLanTraBotGocCuoi !== null) {
+                if (Object.keys(resLanTraBotGocCuoi).length !== 0) {
+                    if (moment(ngayTraBotGoc).utc().format('YYYY-MM-DD') <= moment(resLanTraBotGocCuoi.ngayTraBotGoc).utc().format('YYYY-MM-DD')) {
+                        res.status(400).json({
+                            status: "fail",
+                            message: 'Ngày trả bớt gốc không được nhỏ hơn ngày trả bớt gốc của lần trả bớt gốc trước !',
+                        });
+                        return;
+                    }
+                }
+            }
+
+            if (cachTinhLai === 0) {                //Tính lãi ngày
+                if (kieuDongLai === 0) {            //Trả sau
+                    if (moment(ngayTraBotGoc) < (moment(resCTHDBeNhat.ngayTraLai).subtract(soKyDongLai - 1, 'days'))) {
+                        res.status(400).json({
+                            status: "fail",
+                            message: 'Ngày trả bớt gốc không được nhỏ hơn ngày vay !',
+                        });
+                        return;
+                    }
+                    if (moment(ngayTraBotGoc) >= moment(resCTHDLonNhat.ngayTraLai)) {
+                        res.status(400).json({
+                            status: "fail",
+                            message: 'Ngày trả bớt gốc phải nhỏ hơn ngày tất toán !',
+                        });
+                        return;
+                    }
+                } else if (kieuDongLai === 1)        //Trả trước
+                {
+                    if (moment(ngayTraBotGoc) < (moment(resCTHDBeNhat.ngayTraLai))) {
+                        res.status(400).json({
+                            status: "fail",
+                            message: 'Ngày trả bớt gốc không được nhỏ hơn ngày vay !',
+                        });
+                        return;
+                    }
+                    if (moment(ngayTraBotGoc) >= moment(resCTHDLonNhat.ngayTraLai).add(soKyDongLai - 1, 'days')) {
+                        res.status(400).json({
+                            status: "fail",
+                            message: 'Ngày trả bớt gốc phải nhỏ hơn ngày tất toán !',
+                        });
+                        return;
+                    }
+                }
+            } else if (cachTinhLai === 1) {             //Tính lãi tháng
+                if (kieuDongLai === 0) {            //Trả sau
+                    if (moment(ngayTraBotGoc) < (moment(resCTHDBeNhat.ngayTraLai)).subtract(soKyDongLai, 'months')) {
+                        res.status(400).json({
+                            status: "fail",
+                            message: 'Ngày trả bớt gốc không được nhỏ hơn ngày vay !',
+                        });
+                        return;
+                    }
+                    if (moment(ngayTraBotGoc) >= moment(resCTHDLonNhat.ngayTraLai)) {
+                        res.status(400).json({
+                            status: "fail",
+                            message: 'Ngày trả bớt gốc phải nhỏ hơn ngày tất toán !',
+                        });
+                        return;
+                    }
+                } else if (kieuDongLai === 1)         //Trả trước
+                {
+                    if (moment(ngayTraBotGoc) < (moment(resCTHDBeNhat.ngayTraLai))) {
+                        res.status(400).json({
+                            status: "fail",
+                            message: 'Ngày trả bớt gốc không được nhỏ hơn ngày vay !',
+                        });
+                        return;
+                    }
+                    if (moment(ngayTraBotGoc) >= moment(resCTHDLonNhat.ngayTraLai)) {
+                        res.status(400).json({
+                            status: "fail",
+                            message: 'Ngày trả bớt gốc phải nhỏ hơn ngày tất toán !',
+                        });
+                        return;
+                    }
+                }
+            }
+
+            TinhToanTraBotGocHopDong(idHD, ngayTraBotGoc, tienTraBotGoc, cachTinhLai, kieuDongLai, tongTienVay, soKyDongLai, giaTriLaiSuat);
+
+            let r2 = await colLS.insertOne({
+                ngayTraBotGoc: new Date(ngayTraBotGoc),
+                tienTraBotGoc: parseInt(tienTraBotGoc),
+                ghiChu: ghiChu,
+                type: 3,
+                ngayThucHien: new Date(),
+                idHopDong: idHD,
+                idNguoiThucHien: userId
+            });
+            res.status(200).json({
+                status: "ok",
+                message: 'Ok nhé !',
+            });
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: 'Gia hạn thất bại !' + err,
+
+            });
+        }
     },
 
     TatToanHopDong: async function (req, res, next) {
@@ -764,6 +887,137 @@ async function TinhToanVayThemHopDong(idHD, ngayVayThem, tienVayThem, cachTinhLa
                 ngayTraLai: {'$gte': new Date(ngayVayThem)}
             }).next();
             let soThangTruRa = Math.round(moment.duration(moment(ngayVayThem).diff(moment(ngayDongLaiGanNhat.ngayTraLai))).asMonths());
+            //console.log(soNgayTruRa)
+            let soThangCuaKyMoi = soKyDongLai - soThangTruRa;
+            let r1 = await colCTHD.updateOne({_id: ngayDongLaiGanNhat._id}, {
+                $set: {
+                    tienLai: (mucLaiThang * soThangTruRa) + (mucLaiThangMoi * soThangCuaKyMoi)
+                }
+            })
+            for (const item of resCTHD) {
+                //console.log(item);
+                if (moment(item.ngayTraLai) > moment(ngayDongLaiGanNhat.ngayTraLai)) {
+                    let r2 = colCTHD.updateOne({_id: item._id}, {
+                        $set: {
+                            tienLai: mucLaiThangMoi * soKyDongLai
+                        }
+                    });
+                }
+            }
+            let r3 = colHD.updateOne({_id: idHD}, {$set: {'thongTinHopDong.tongTienVay': tongTienVayMoi}});
+            let r4 = colCTHD.updateOne({idHopDong: idHD, type: 3}, {$set: {'tienGoc': tongTienVayMoi}});
+        }
+    }
+}
+
+async function TinhToanTraBotGocHopDong(idHD, ngayTraBotGoc, tienTraBotGoc, cachTinhLai, kieuDongLai, tongTienVay, soKyDongLai, giaTriLaiSuat) {
+    const client = new MongoClient(DbUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+    await client.connect();
+    const db = client.db(DbName);
+    const colHD = db.collection('HopDong');
+    const colCTHD = db.collection('ChiTietHopDong');
+    let resCTHD = await colCTHD.find({idHopDong: idHD, type: {'$in': [0, 1]}}).sort({ngayTraLai: 1}).toArray();
+    let tongTienVayMoi = tongTienVay - parseInt(tienTraBotGoc);
+    //console.log(resCTHD);
+    if (cachTinhLai === 0) {                         //Tính lãi ngày
+        let mucLaiNgay = (tongTienVay / 1000000) * giaTriLaiSuat;
+        let mucLaiNgayMoi = (tongTienVayMoi / 1000000) * giaTriLaiSuat;
+        if (kieuDongLai === 0) {                   //Trả sau
+            let ngayDongLaiGanNhat = await colCTHD.find({
+                idHopDong: idHD,
+                type: {'$in': [0, 1]},
+                ngayTraLai: {'$gte': new Date(ngayTraBotGoc)}
+            }).next();
+            let soNgayTruRa = Math.round(moment.duration(moment(ngayDongLaiGanNhat.ngayTraLai).diff(moment(ngayTraBotGoc))).asDays());
+            //console.log(soNgayTruRa)
+            let soNgayCuaKyCu = soKyDongLai - soNgayTruRa;
+            let r1 = await colCTHD.updateOne({_id: ngayDongLaiGanNhat._id}, {
+                $set: {
+                    tienLai: (mucLaiNgay * soNgayCuaKyCu) + (mucLaiNgayMoi * soNgayTruRa)
+                }
+            })
+            for (const item of resCTHD) {
+                //console.log(item);
+                if (moment(item.ngayTraLai) > moment(ngayDongLaiGanNhat.ngayTraLai)) {
+                    let r2 = colCTHD.updateOne({_id: item._id}, {
+                        $set: {
+                            tienLai: mucLaiNgayMoi * soKyDongLai
+                        }
+                    })
+                }
+            }
+            let r3 = colHD.updateOne({_id: idHD}, {$set: {'thongTinHopDong.tongTienVay': tongTienVayMoi}});
+            let r4 = colCTHD.updateOne({idHopDong: idHD, type: 3}, {$set: {'tienGoc': tongTienVayMoi}});
+
+        } else if (kieuDongLai === 1) {                //Trả trước
+            let ngayDongLaiGanNhat = await colCTHD.find({
+                idHopDong: idHD,
+                type: {'$in': [0, 1]},
+                ngayTraLai: {'$lte': new Date(ngayTraBotGoc)}
+            }).sort({ngayTraLai: -1}).next();
+            // console.log('ngayDongLaiGanNhat');
+            // console.log(ngayDongLaiGanNhat);
+            let soNgayTruRa = Math.round(moment.duration(moment(ngayTraBotGoc).diff(moment(ngayDongLaiGanNhat.ngayTraLai))).asDays());
+            // console.log('soNgayTruRa')
+            // console.log(soNgayTruRa)
+            let soNgayCuaKyMoi = soKyDongLai - soNgayTruRa;
+            // console.log('soNgayCuaKyCu');
+            // console.log(soNgayCuaKyMoi);
+            // console.log(mucLaiNgay*soNgayCuaKyMoi)
+            // console.log(mucLaiNgay*soNgayCuaKyMoi)
+            let r1 = await colCTHD.updateOne({_id: ngayDongLaiGanNhat._id}, {
+                $set: {
+                    tienLai: (mucLaiNgay * soNgayTruRa) + (mucLaiNgayMoi * soNgayCuaKyMoi)
+                }
+            })
+            for (const item of resCTHD) {
+                if (moment(item.ngayTraLai) > moment(ngayDongLaiGanNhat.ngayTraLai)) {
+                    let r2 = colCTHD.updateOne({_id: item._id}, {
+                        $set: {
+                            tienLai: mucLaiNgayMoi * soKyDongLai
+                        }
+                    })
+                }
+            }
+            let r3 = colHD.updateOne({_id: idHD}, {$set: {'thongTinHopDong.tongTienVay': tongTienVayMoi}});
+            let r4 = colCTHD.updateOne({idHopDong: idHD, type: 3}, {$set: {'tienGoc': tongTienVayMoi}});
+        }
+    } else if (cachTinhLai === 1) {                      //Tính lãi theo tháng
+        let mucLaiThang = (tongTienVay / 100) * giaTriLaiSuat;
+        let mucLaiThangMoi = (tongTienVayMoi / 100) * giaTriLaiSuat;
+        if (kieuDongLai === 0) {                     //Trả sau
+            let ngayDongLaiGanNhat = await colCTHD.find({
+                idHopDong: idHD,
+                type: {'$in': [0, 1]},
+                ngayTraLai: {'$gte': new Date(ngayTraBotGoc)}
+            }).next();
+            let soThangTruRa = Math.round(moment.duration(moment(ngayDongLaiGanNhat.ngayTraLai).diff(moment(ngayTraBotGoc))).asMonths());
+            //console.log(soNgayTruRa)
+            let soThangCuaKyCu = soKyDongLai - soThangTruRa;
+            let r1 = await colCTHD.updateOne({_id: ngayDongLaiGanNhat._id}, {
+                $set: {
+                    tienLai: (mucLaiThang * soThangCuaKyCu) + (mucLaiThangMoi * soThangTruRa)
+                }
+            })
+            for (const item of resCTHD) {
+                //console.log(item);
+                if (moment(item.ngayTraLai) > moment(ngayDongLaiGanNhat.ngayTraLai)) {
+                    let r2 = colCTHD.updateOne({_id: item._id}, {
+                        $set: {
+                            tienLai: mucLaiThangMoi * soKyDongLai
+                        }
+                    });
+                }
+            }
+            let r3 = colHD.updateOne({_id: idHD}, {$set: {'thongTinHopDong.tongTienVay': tongTienVayMoi}});
+            let r4 = colCTHD.updateOne({idHopDong: idHD, type: 3}, {$set: {'tienGoc': tongTienVayMoi}});
+        } else if (kieuDongLai === 1) {                   //Trả trước
+            let ngayDongLaiGanNhat = await colCTHD.find({
+                idHopDong: idHD,
+                type: {'$in': [0, 1]},
+                ngayTraLai: {'$gte': new Date(ngayTraBotGoc)}
+            }).next();
+            let soThangTruRa = Math.round(moment.duration(moment(ngayTraBotGoc).diff(moment(ngayDongLaiGanNhat.ngayTraLai))).asMonths());
             //console.log(soNgayTruRa)
             let soThangCuaKyMoi = soKyDongLai - soThangTruRa;
             let r1 = await colCTHD.updateOne({_id: ngayDongLaiGanNhat._id}, {

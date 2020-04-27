@@ -10,6 +10,7 @@ function resetMoney(price) {
     }
     return parseInt(str);
 }
+
 export {formatCurrency,resetMoney};
 
 

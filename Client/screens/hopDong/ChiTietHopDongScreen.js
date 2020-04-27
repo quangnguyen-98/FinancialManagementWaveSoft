@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
     Alert,
     AsyncStorage,
@@ -11,16 +11,16 @@ import {
     View,
     Modal
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {apiLink} from "../../config/constant";
-import {useDispatch, useSelector} from 'react-redux';
-import {Button,ModalNguoiTaoHopDong,ModalXoaHopDong,ModalGuiMail,ModalNhanTin,ModalVayThem,ModalTraBotGoc,ModalGiaHanKy} from "../../component";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { apiLink } from "../../config/constant";
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, ModalNguoiTaoHopDong, ModalXoaHopDong, ModalGuiMail, ModalNhanTin, ModalVayThem, ModalTraBotGoc, ModalGiaHanKy } from "../../component";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import {formatCurrency} from '../../utils/hamHoTro';
+import { formatCurrency } from '../../utils/hamHoTro';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-export default function ChiTietHopDongScreen({route, navigation}) {
+export default function ChiTietHopDongScreen({ route, navigation }) {
     const dispatch = useDispatch();
     const [idHopDong, setIdHopDong] = useState(route.params.id);
     const switchScreenReducers = useSelector(state => state.switchScreenReducers);
@@ -52,8 +52,8 @@ export default function ChiTietHopDongScreen({route, navigation}) {
             ghiChu: ''
         },
         trangThaiHopDong: '',
-        ngayTatToan:new Date(),
-        tienTatToan:''
+        ngayTatToan: new Date(),
+        tienTatToan: ''
     });
     const [nguoiTaoHopDong, setNguoiTaoHopDong] = useState({
         hoTen: '',
@@ -72,7 +72,7 @@ export default function ChiTietHopDongScreen({route, navigation}) {
         getNguoiTaoHopDong(inforHD.idNguoiTaoHopDong).catch((e) => {
             console.log(e)
         });
-        dispatch({type: 'SET_THONGTIN_KH', ten: inforHD.tenKhachHang});
+        dispatch({ type: 'SET_THONGTIN_KH', ten: inforHD.tenKhachHang });
     }, [inforHD]);
 
     function initData() {
@@ -103,8 +103,8 @@ export default function ChiTietHopDongScreen({route, navigation}) {
                 },
                 trangThaiHopDong: result.trangThaiHopDong,
                 idNguoiTaoHopDong: result.idNguoiTaoHopDong,
-                ngayTatToan:new Date(result.ngayTatToan),
-                tienTatToan:result.tienTatToan
+                ngayTatToan: new Date(result.ngayTatToan),
+                tienTatToan: result.tienTatToan
 
             });
             setRefreshing(false);
@@ -118,7 +118,7 @@ export default function ChiTietHopDongScreen({route, navigation}) {
             let token = await AsyncStorage.getItem('token');
             let response = await fetch(apiLink + switchScreenReducers + '/hopdongs?token=' + token, {
                 method: 'PUT',
-                headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     maHopDong: idHopDong,
                     tenKhachHang: inforHD.tenKhachHang,
@@ -150,7 +150,7 @@ export default function ChiTietHopDongScreen({route, navigation}) {
             let token = await AsyncStorage.getItem('token');
             let response = await fetch(apiLink + switchScreenReducers + '/duyethopdongs?token=' + token, {
                 method: 'PUT',
-                headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     idHopDong: idHopDong
                 })
@@ -198,23 +198,23 @@ export default function ChiTietHopDongScreen({route, navigation}) {
     }
 
     return (
-        <KeyboardAwareScrollView style={{flex: 1, flexDirection: 'column', paddingTop: height / 15}}
-                                 enableResetScrollToCoords={false}
-                                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={initData}/>}
+        <KeyboardAwareScrollView style={{ flex: 1, flexDirection: 'column', paddingTop: height / 15 }}
+            enableResetScrollToCoords={false}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={initData} />}
         >
             <View>
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                    <Text style={{fontSize: 24, fontWeight: 'bold', marginLeft: 8}}>Thông Tin Khách Hàng</Text>
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                    <Text style={{ fontSize: 24, fontWeight: 'bold', marginLeft: 8 }}>Thông Tin Khách Hàng</Text>
                     {
-                        loaiHDDangChonReducers === 'dangvay' &&(
+                        loaiHDDangChonReducers === 'dangvay' && (
                             <TouchableOpacity onPress={() => {
                                 if (statusEdit) {
                                     SuaHopDong().then(() => {
-                                        dispatch({type: 'REFRESH'});
+                                        dispatch({ type: 'REFRESH' });
                                         setStatusEdit(!statusEdit);
                                     });
                                 }
-                                dispatch({type: 'REFRESH'});
+                                dispatch({ type: 'REFRESH' });
                                 setStatusEdit(!statusEdit);
                             }}>
                                 <Text style={{
@@ -226,7 +226,7 @@ export default function ChiTietHopDongScreen({route, navigation}) {
 
                     <TouchableOpacity onPress={() => {
                         setStatusEdit(!statusEdit)
-                    }} style={{display: !statusEdit ? 'none' : 'block'}}>
+                    }} style={{ display: !statusEdit ? 'none' : 'block' }}>
                         <Text style={{
                             fontSize: 24,
                             fontWeight: 'bold',
@@ -244,108 +244,108 @@ export default function ChiTietHopDongScreen({route, navigation}) {
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Họ Tên: </Text>
                     <TextInput placeholder="Nhập họ tên khách hàng" style={styles.textInput}
-                               editable={statusEdit}
-                               value={inforHD.tenKhachHang.toString()}
-                               onChangeText={(text) => {
-                                   setInforHD({
-                                       ...inforHD,
-                                       tenKhachHang: text
-                                   })
-                               }}>
+                        editable={statusEdit}
+                        value={inforHD.tenKhachHang.toString()}
+                        onChangeText={(text) => {
+                            setInforHD({
+                                ...inforHD,
+                                tenKhachHang: text
+                            })
+                        }}>
                     </TextInput>
                 </View>
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Số điện thoại: </Text>
                     <TextInput placeholder="Nhập số điện thoại" keyboardType={"number-pad"} style={styles.textInput}
-                               editable={statusEdit}
-                               value={inforHD.sdt}
-                               onChangeText={(text) => {
-                                   setInforHD({
-                                       ...inforHD,
-                                       sdt: text
-                                   })
-                               }}>
+                        editable={statusEdit}
+                        value={inforHD.sdt}
+                        onChangeText={(text) => {
+                            setInforHD({
+                                ...inforHD,
+                                sdt: text
+                            })
+                        }}>
                     </TextInput>
                 </View>
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Email: </Text>
                     <TextInput placeholder="Nhập email" keyboardType={"email-address"} style={styles.textInput}
-                               editable={statusEdit}
-                               value={inforHD.email}
-                               onChangeText={(text) => {
-                                   setInforHD({
-                                       ...inforHD,
-                                       email: text
-                                   })
-                               }}>
+                        editable={statusEdit}
+                        value={inforHD.email}
+                        onChangeText={(text) => {
+                            setInforHD({
+                                ...inforHD,
+                                email: text
+                            })
+                        }}>
                     </TextInput>
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Địa Chỉ: </Text>
                     <TextInput placeholder="Nhập địa chỉ" style={styles.richTextInput}
-                               editable={statusEdit}
-                               value={inforHD.diaChi}
-                               multiline={true}
-                               onChangeText={(text) => {
-                                   setInforHD({
-                                       ...inforHD,
-                                       diaChi: text
-                                   })
-                               }}>
+                        editable={statusEdit}
+                        value={inforHD.diaChi}
+                        multiline={true}
+                        onChangeText={(text) => {
+                            setInforHD({
+                                ...inforHD,
+                                diaChi: text
+                            })
+                        }}>
                     </TextInput>
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Số CMT: </Text>
                     <TextInput placeholder="Nhập số chứng minh thư" keyboardType={"number-pad"} style={styles.textInput}
-                               editable={statusEdit}
-                               defaultValue={inforHD.thongTinCMT.idCMT}
-                               onChangeText={(text) => {
-                                   setInforHD({
-                                       ...inforHD,
-                                       thongTinCMT: {
-                                           ...inforHD.thongTinCMT,
-                                           idCMT: text
-                                       }
-                                   })
-                               }}>
+                        editable={statusEdit}
+                        defaultValue={inforHD.thongTinCMT.idCMT}
+                        onChangeText={(text) => {
+                            setInforHD({
+                                ...inforHD,
+                                thongTinCMT: {
+                                    ...inforHD.thongTinCMT,
+                                    idCMT: text
+                                }
+                            })
+                        }}>
                     </TextInput>
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Nơi Cấp: </Text>
                     <TextInput placeholder="Nhập nơi cấp CMT" style={styles.textInput}
-                               editable={statusEdit}
-                               defaultValue={inforHD.thongTinCMT.noiCap}
-                               onChangeText={(text) => {
-                                   setInforHD({
-                                       ...inforHD,
-                                       thongTinCMT: {
-                                           ...inforHD.thongTinCMT,
-                                           noiCap: text
-                                       }
-                                   })
-                               }}>
+                        editable={statusEdit}
+                        defaultValue={inforHD.thongTinCMT.noiCap}
+                        onChangeText={(text) => {
+                            setInforHD({
+                                ...inforHD,
+                                thongTinCMT: {
+                                    ...inforHD.thongTinCMT,
+                                    noiCap: text
+                                }
+                            })
+                        }}>
 
                     </TextInput>
                 </View>
                 <DateTimePickerModal isVisible={hienThiPickerNgaySinh}
-                                     headerTextIOS={'Chọn ngày sinh'}
-                                     confirmTextIOS={'Xác nhận'}
-                                     mode={'date'}
-                                     date={new Date(inforHD.ngaySinh)}
-                                     onConfirm={(selectedDate) => {
-                                         setHienThiPickerNgaySinh(false);
-                                         setInforHD({
-                                             ...inforHD,
-                                             ngaySinh: new Date(selectedDate)
-                                         })
+                    headerTextIOS={'Chọn ngày sinh'}
+                    confirmTextIOS={'Xác nhận'}
+                    mode={'date'}
+                    date={new Date(inforHD.ngaySinh)}
+                    onConfirm={(selectedDate) => {
+                        setHienThiPickerNgaySinh(false);
+                        setInforHD({
+                            ...inforHD,
+                            ngaySinh: new Date(selectedDate)
+                        })
 
-                                     }}
-                                     onCancel={() => {
-                                         setHienThiPickerNgaySinh(false);
-                                     }}>
+                    }}
+                    onCancel={() => {
+                        setHienThiPickerNgaySinh(false);
+                    }}>
 
                 </DateTimePickerModal>
                 <View style={styles.thongTin}>
@@ -360,38 +360,38 @@ export default function ChiTietHopDongScreen({route, navigation}) {
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Tín chấp: </Text>
                     <TextInput placeholder="Nhập tài sản thế chấp" style={styles.textInput}
-                               editable={statusEdit}
-                               defaultValue={inforHD.thongTinHopDong.tinChap}
-                               onChangeText={(text) => {
-                                   setInforHD({
-                                       ...inforHD,
-                                       thongTinHopDong: {
-                                           ...inforHD.thongTinHopDong,
-                                           tinChap: text
-                                       }
-                                   })
-                               }}>
+                        editable={statusEdit}
+                        defaultValue={inforHD.thongTinHopDong.tinChap}
+                        onChangeText={(text) => {
+                            setInforHD({
+                                ...inforHD,
+                                thongTinHopDong: {
+                                    ...inforHD.thongTinHopDong,
+                                    tinChap: text
+                                }
+                            })
+                        }}>
                     </TextInput>
                 </View>
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Ghi chú: </Text>
                     <TextInput placeholder="Nhập ghi chú nếu có" style={styles.textInput}
-                               editable={statusEdit}
-                               defaultValue={inforHD.thongTinHopDong.ghiChu}
-                               onChangeText={(text) => {
-                                   setInforHD({
-                                       ...inforHD,
-                                       thongTinHopDong: {
-                                           ...inforHD.thongTinHopDong,
-                                           ghiChu: text
-                                       }
-                                   })
-                               }}>
+                        editable={statusEdit}
+                        defaultValue={inforHD.thongTinHopDong.ghiChu}
+                        onChangeText={(text) => {
+                            setInforHD({
+                                ...inforHD,
+                                thongTinHopDong: {
+                                    ...inforHD.thongTinHopDong,
+                                    ghiChu: text
+                                }
+                            })
+                        }}>
                     </TextInput>
                 </View>
             </View>
             <View style={styles.containerHD}>
-                <Text style={{fontSize: 24, fontWeight: 'bold', marginHorizontal: 8}}>Thông Tin Hợp Đồng</Text>
+                <Text style={{ fontSize: 24, fontWeight: 'bold', marginHorizontal: 8 }}>Thông Tin Hợp Đồng</Text>
                 <View
                     style={{
                         borderBottomColor: 'black',
@@ -402,7 +402,7 @@ export default function ChiTietHopDongScreen({route, navigation}) {
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Người tạo hợp đồng: </Text>
                     <Text style={styles.text} onPress={() => {
-                        dispatch({type: 'OPEN_MODAL_NGUOITAO_HD'})
+                        dispatch({ type: 'OPEN_MODAL_NGUOITAO_HD' })
                     }}>{nguoiTaoHopDong.hoTen}</Text>
                 </View>
                 <View style={styles.thongTin}>
@@ -413,24 +413,24 @@ export default function ChiTietHopDongScreen({route, navigation}) {
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Tổng Tiền Vay: </Text>
                     <TextInput style={styles.textInput} editable={false}
-                               value={formatCurrency(inforHD.thongTinHopDong.tongTienVay).toString()}/>
+                        value={formatCurrency(inforHD.thongTinHopDong.tongTienVay).toString()} />
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Số kỳ đóng lãi: </Text>
                     <TextInput style={styles.textInput} editable={false}
-                               value={inforHD.thongTinHopDong.soKyDongLai.toString()}></TextInput>
+                        value={inforHD.thongTinHopDong.soKyDongLai.toString()}></TextInput>
                 </View>
 
                 <View style={styles.thongTinRow}>
                     <Text style={styles.input}>
                         Cách tính lãi: {parseInt(inforHD.thongTinHopDong.cachTinhLai) === 0 ?
-                        <Text style={styles.blue}>Ngày</Text> : <Text style={styles.blue}>Tháng</Text>}
+                            <Text style={styles.blue}>Ngày</Text> : <Text style={styles.blue}>Tháng</Text>}
                     </Text>
                     <View style={styles.thongTin}>
                         <Text style={styles.input}>
                             Kiểu đóng lãi: {parseInt(inforHD.thongTinHopDong.kieuDongLai) === 0 ?
-                            <Text style={styles.blue}>Sau</Text> : <Text style={styles.blue}>Trước</Text>}
+                                <Text style={styles.blue}>Sau</Text> : <Text style={styles.blue}>Trước</Text>}
                         </Text>
                     </View>
                 </View>
@@ -439,14 +439,14 @@ export default function ChiTietHopDongScreen({route, navigation}) {
                     <Text
                         style={styles.input}>{inforHD.thongTinHopDong.cachTinhLai == 0 ? 'Lãi/triệu/ngày:' : 'Lãi %/tháng'} </Text>
                     <TextInput style={styles.textInput}
-                               value={formatCurrency(inforHD.thongTinHopDong.giaTriLaiSuat).toString()}
-                               editable={false}/>
+                        value={formatCurrency(inforHD.thongTinHopDong.giaTriLaiSuat).toString()}
+                        editable={false} />
                 </View>
 
                 <View style={styles.thongTin}>
                     <Text style={styles.input}>Số lần trả: </Text>
                     <TextInput style={styles.textInput} defaultValue={inforHD.thongTinHopDong.soLanTra.toString()}
-                               editable={false}>
+                        editable={false}>
                     </TextInput>
                 </View>
 
@@ -477,68 +477,68 @@ export default function ChiTietHopDongScreen({route, navigation}) {
             {/*//Các nút controll*/}
             {
                 loaiHDDangChonReducers === 'dangvay' && (
-                    <View style={{marginTop: 50, marginBottom: 100}}>
+                    <View style={{ marginTop: 50, marginBottom: 100 }}>
                         <View style={styles.wrapItem}>
                             <View style={styles.itemLeft}>
                                 <TouchableOpacity style={styles.sizeButton} onPress={() => {
                                     navigation.navigate('Tất toán')
                                 }}>
-                                    <Button name={'Tất toán'} color={'#389e0d'}/>
+                                    <Button name={'Tất toán'} color={'#389e0d'} />
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.itemRight}>
                                 <TouchableOpacity style={styles.sizeButton} onPress={() => {
-                                    dispatch({type: 'OPEN_MODAL_GIAHANKY'})
+                                    dispatch({ type: 'OPEN_MODAL_GIAHANKY' })
                                 }}>
-                                    <Button name={'Gia hạn kỳ'} color={'#52c41a'}/>
+                                    <Button name={'Gia hạn kỳ'} color={'#52c41a'} />
                                 </TouchableOpacity>
                             </View>
                         </View>
                         <View style={styles.wrapItem}>
                             <View style={styles.itemLeft}>
                                 <TouchableOpacity style={styles.sizeButton} onPress={() => {
-                                    dispatch({type: 'OPEN_MODAL_TRABOTGOC'})
+                                    dispatch({ type: 'OPEN_MODAL_TRABOTGOC' })
                                 }}>
-                                    <Button name={'Trả bớt gốc'} color={'#fa541c'}/>
+                                    <Button name={'Trả bớt gốc'} color={'#fa541c'} />
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.itemRight}>
                                 <TouchableOpacity style={styles.sizeButton} onPress={() => {
-                                    dispatch({type: 'OPEN_MODAL_VAYTHEM'})
+                                    dispatch({ type: 'OPEN_MODAL_VAYTHEM' })
                                 }}>
-                                    <Button name={'Vay thêm'} color={'#ff7a45'}/>
+                                    <Button name={'Vay thêm'} color={'#ff7a45'} />
                                 </TouchableOpacity>
                             </View>
                         </View>
                         <View style={styles.wrapItem}>
                             <View style={styles.itemLeft}>
                                 <TouchableOpacity style={styles.sizeButton} onPress={() => {
-                                    dispatch({type: 'OPEN_MODAL_NHANTIN'})
+                                    dispatch({ type: 'OPEN_MODAL_NHANTIN' })
                                 }}>
-                                    <Button name={'Nhắn tin'} color={'#08979c'}/>
+                                    <Button name={'Nhắn tin'} color={'#08979c'} />
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.itemRight}>
                                 <TouchableOpacity style={styles.sizeButton} onPress={() => {
-                                    dispatch({type: 'OPEN_MODAL_GUIMAIL'})
+                                    dispatch({ type: 'OPEN_MODAL_GUIMAIL' })
                                 }}>
-                                    <Button name={'Gửi email'} color={'#36cfc9'}/>
+                                    <Button name={'Gửi email'} color={'#36cfc9'} />
                                 </TouchableOpacity>
                             </View>
                         </View>
                         <View style={styles.wrapItem}>
                             <View style={styles.itemLeft}>
                                 <TouchableOpacity style={styles.sizeButton} onPress={() => {
-                                    dispatch({type: 'OPEN_MODAL_XOAHOPDONG'})
+                                    dispatch({ type: 'OPEN_MODAL_XOAHOPDONG' })
                                 }}>
-                                    <Button name={'Xóa hợp đồng'} color={'#cf1322'}/>
+                                    <Button name={'Xóa hợp đồng'} color={'#cf1322'} />
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.itemRight}>
                                 <TouchableOpacity style={styles.sizeButton} onPress={() => {
                                     navigation.navigate('Lịch sử hoạt động');
                                 }}>
-                                    <Button name={'Lịch sử hoạt động'} color={'#ff4d4f'}/>
+                                    <Button name={'Lịch sử hoạt động'} color={'#ff4d4f'} />
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -548,34 +548,34 @@ export default function ChiTietHopDongScreen({route, navigation}) {
             {
                 loaiHDDangChonReducers === 'dangvay' && (
                     <Fragment>
-                    {/* Modal Thông tin người tạo HĐ */}
-                <Modal visible={openModalReducers.modalNguoiTaoHD} transparent={true}>
-                <ModalNguoiTaoHopDong hoTen={nguoiTaoHopDong.hoTen} />
-                </Modal>
-            {/* Modal gia hạn kỳ */}
-                <Modal visible={openModalReducers.modalGiaHanKy} transparent={true}>
-                <ModalGiaHanKy hoTen={nguoiTaoHopDong.hoTen} />
-                </Modal>
-            {/* Modal trả bớt gốc */}
-                <Modal visible={openModalReducers.modalTraBotGoc} transparent={true}>
-                <ModalTraBotGoc hoTen={nguoiTaoHopDong.hoTen}/>
-                </Modal>
-            {/* Modal vay thêm */}
-                <Modal visible={openModalReducers.modalVayThem} transparent={true}>
-                <ModalVayThem hoTen={nguoiTaoHopDong.hoTen} />
-                </Modal>
-            {/* Modal nhắn tin */}
-                <Modal visible={openModalReducers.modalNhanTin} transparent={true}>
-                <ModalNhanTin hoTen={nguoiTaoHopDong.hoTen} sdt={inforHD.sdt}/>
-                </Modal>
-            {/* Modal gửi mail */}
-                <Modal visible={openModalReducers.modalGuiMail} transparent={true}>
-                <ModalGuiMail hoTen={nguoiTaoHopDong.hoTen} email={inforHD.email} />
-                </Modal>
-            {/* Modal xóa hợp đồng */}
-                <Modal visible={openModalReducers.modalXoaHopDong} transparent={true}>
-                <ModalXoaHopDong hoTen={nguoiTaoHopDong.hoTen} />
-                </Modal>
+                        {/* Modal Thông tin người tạo HĐ */}
+                        <Modal visible={openModalReducers.modalNguoiTaoHD} transparent={true}>
+                            <ModalNguoiTaoHopDong hoTen={nguoiTaoHopDong.hoTen} />
+                        </Modal>
+                        {/* Modal gia hạn kỳ */}
+                        <Modal visible={openModalReducers.modalGiaHanKy} transparent={true}>
+                            <ModalGiaHanKy hoTen={nguoiTaoHopDong.hoTen} />
+                        </Modal>
+                        {/* Modal trả bớt gốc */}
+                        <Modal visible={openModalReducers.modalTraBotGoc} transparent={true}>
+                            <ModalTraBotGoc chiTietHD={inforHD} />
+                        </Modal>
+                        {/* Modal vay thêm */}
+                        <Modal visible={openModalReducers.modalVayThem} transparent={true}>
+                            <ModalVayThem hoTen={nguoiTaoHopDong.hoTen} />
+                        </Modal>
+                        {/* Modal nhắn tin */}
+                        <Modal visible={openModalReducers.modalNhanTin} transparent={true}>
+                            <ModalNhanTin hoTen={nguoiTaoHopDong.hoTen} sdt={inforHD.sdt} />
+                        </Modal>
+                        {/* Modal gửi mail */}
+                        <Modal visible={openModalReducers.modalGuiMail} transparent={true}>
+                            <ModalGuiMail hoTen={nguoiTaoHopDong.hoTen} email={inforHD.email} />
+                        </Modal>
+                        {/* Modal xóa hợp đồng */}
+                        <Modal visible={openModalReducers.modalXoaHopDong} transparent={true}>
+                            <ModalXoaHopDong hoTen={nguoiTaoHopDong.hoTen} />
+                        </Modal>
                     </Fragment>
                 )
             }
@@ -585,16 +585,16 @@ export default function ChiTietHopDongScreen({route, navigation}) {
                     <Fragment>
                         {
                             switchScreenReducers === 'managers' && (
-                                <View style={{marginTop: 50, marginBottom: 100}}>
+                                <View style={{ marginTop: 50, marginBottom: 100 }}>
                                     <View style={styles.wrapItem}>
                                         <View style={styles.itemLeft}>
                                             <TouchableOpacity style={styles.sizeButton} onPress={() => {
                                                 DuyetHopDong().then(() => {
-                                                    dispatch({type: 'REFRESH'});
+                                                    dispatch({ type: 'REFRESH' });
                                                     navigation.navigate('Hợp đồng đang vay')
                                                 });
                                             }}>
-                                                <Button name={'Duyệt hợp đồng'} color={'#389e0d'}/>
+                                                <Button name={'Duyệt hợp đồng'} color={'#389e0d'} />
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -609,7 +609,7 @@ export default function ChiTietHopDongScreen({route, navigation}) {
                     <Fragment>
                         {
                             switchScreenReducers === 'users' && (
-                                <View style={{marginTop: 50, marginBottom: 100}}>
+                                <View style={{ marginTop: 50, marginBottom: 100 }}>
                                 </View>
                             )
                         }
@@ -618,7 +618,7 @@ export default function ChiTietHopDongScreen({route, navigation}) {
             }
             {
                 loaiHDDangChonReducers === 'dadong' && (
-                    <View style={{marginTop: 50, marginBottom: 100}}></View>
+                    <View style={{ marginTop: 50, marginBottom: 100 }}></View>
                 )
             }
         </KeyboardAwareScrollView>
